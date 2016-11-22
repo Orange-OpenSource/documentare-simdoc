@@ -17,7 +17,9 @@ addons:
 
 # skip build without tests
 install: true
-script: ./.ci.sh
+script: 
+  - ls /usr/lib/x86_64-linux-gnu/
+  - ./.ci.sh
 
 # avoid downloading each time maven dependencies
 cache:
