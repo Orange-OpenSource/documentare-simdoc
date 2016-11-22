@@ -18,7 +18,8 @@ addons:
 # skip build without tests
 install: true
 script:
-  - apt-cache search opencv
+  - dpkg-query -L libopencv-core2.4
+  - dpkg-query -L libopencv2.4-java
   - ls /usr/lib/x86_64-linux-gnu/
   - ./.ci.sh
 
