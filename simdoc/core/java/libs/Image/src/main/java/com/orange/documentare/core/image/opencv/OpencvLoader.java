@@ -21,11 +21,12 @@ public class OpencvLoader {
     try {
       System.loadLibrary(org.opencv.core.Core.NATIVE_LIBRARY_NAME);
     } catch (UnsatisfiedLinkError e) {
-      showRegularLoadError();
-      loadMacLib();
+      showMessage("Failed to load opencv library from system installation, let's try with nu package provided libraries");
+      nu.pattern.OpenCV.loadShared();
     }
   }
 
+/* FIXME REMOVE
   private static void loadMacLib() {
     try {
       System.load(OPENCV_MAC_LIB);
@@ -35,13 +36,10 @@ public class OpencvLoader {
     }
   }
 
-  private static void showRegularLoadError() {
-    showMessage("Failed to load opencv library through regular api, let's try with absolute path name for mac.");
-  }
-
   private static void showMacLoadError() {
     showMessage(String.format("Failed to load library with absolute path name.\nPlease check you have the library installed here: %s", OPENCV_MAC_LIB));
   }
+*/
 
   private static void showMessage(String message) {
     log.info(message);
