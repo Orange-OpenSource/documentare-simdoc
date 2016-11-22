@@ -17,6 +17,9 @@ addons:
 # skip build without tests
 install: true
 script:
+  - tar xvjf 3rdparty/graphviz_bin.tar.bz2
+  - mkdir -p /opt/local
+  - ln -s bin /opt/local/bin
   - ./.ci.sh
 
 # avoid downloading each time maven dependencies
