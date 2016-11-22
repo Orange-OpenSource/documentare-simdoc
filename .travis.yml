@@ -19,7 +19,7 @@ install: true
 
 before_script:
  - tar xvjf 3rdparty/graphviz_bin.tar.bz2 && mkdir -p /opt/local && ln -s bin /opt/local/bin
- - sfdp --help
+ - /opt/local/bin/sfdp --help
 
 script:
   - ./.ci.sh
