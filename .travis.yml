@@ -7,6 +7,14 @@ sudo: false
 jdk:
 - oraclejdk8
 
+# system dependencies
+addons:
+  apt:
+    packages:
+      - libgvc6
+      - libopencv-core2.4v5
+      - libopencv2.4-java
+
 # skip build without tests
 install: true
 script: ./.ci.sh
