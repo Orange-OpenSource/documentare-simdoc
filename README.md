@@ -1,4 +1,4 @@
-Library and tools for similarity measurement, classification and clustering of digital content and segmentation images from digitized document
+###Library and tools for similarity measurement, classification and clustering of digital content and segmentation images from digitized document
 
 ## Build
 
