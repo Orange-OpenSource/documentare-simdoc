@@ -1,0 +1,284 @@
+{
+  "textElements" : [ {
+    "type" : "C",
+    "digitalTypeIndices" : [ 0 ],
+    "chars" : "A"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 1 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 2 ],
+    "chars" : "p"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 3 ],
+    "chars" : "o"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 4 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 5 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 6 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 7 ],
+    "chars" : "e"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 8 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 9 ],
+    "chars" : "a"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 10 ],
+    "chars" : "d"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 11 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 12 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 13 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 14 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 15 ],
+    "chars" : "e"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 16 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 17 ],
+    "chars" : "n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 18 ],
+    "chars" : "o"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 19 ],
+    "chars" : "n"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 20 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 21 ],
+    "chars" : "v"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 22 ],
+    "chars" : "al"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 23 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 24 ],
+    "chars" : "t"
+  }, {
+    "type" : "L",
+    "chars" : "\n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 25 ],
+    "chars" : "v"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 26 ],
+    "chars" : "a"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 27 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 28 ],
+    "chars" : "a"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 29 ],
+    "chars" : "t"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 30 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 31 ],
+    "chars" : "n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 32 ],
+    "chars" : "d"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 33 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 34 ],
+    "chars" : "n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 35 ],
+    "chars" : "d"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 36 ],
+    "chars" : "o"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 37 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 38 ],
+    "chars" : "a"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 39 ],
+    "chars" : "o"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 40 ],
+    "chars" : "t"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 41 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 42 ],
+    "chars" : "s"
+  }, {
+    "type" : "L",
+    "chars" : "\n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 43 ],
+    "chars" : "o"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 44 ],
+    "chars" : "n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 45 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 46 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 47 ],
+    "chars" : "d"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 48 ],
+    "chars" : "p"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 49 ],
+    "chars" : "d"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 50 ],
+    "chars" : "n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 51 ],
+    "chars" : "a"
+  }, {
+    "type" : "L",
+    "chars" : "\n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 52 ],
+    "chars" : "v"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 53 ],
+    "chars" : "a"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 54 ],
+    "chars" : "a"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 55 ],
+    "chars" : "o"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 56 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 57 ],
+    "chars" : "d"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 58 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 59 ],
+    "chars" : "v"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 60 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 61 ],
+    "chars" : "n"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 62 ],
+    "chars" : "d"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 63 ],
+    "chars" : "a"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 64 ],
+    "chars" : " "
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 65 ],
+    "chars" : "e"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 66 ],
+    "chars" : "s"
+  }, {
+    "type" : "C",
+    "digitalTypeIndices" : [ 67 ],
+    "chars" : "t"
+  } ]
+}

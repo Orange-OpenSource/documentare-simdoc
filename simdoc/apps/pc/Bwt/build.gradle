@@ -1,0 +1,54 @@
+apply plugin: 'java'
+apply plugin: 'fatjar'
+
+sourceCompatibility = javaSourceVersion
+
+fatJar {
+    manifest {
+        attributes("Main-Class": mainClass)
+    }
+}
+
+dependencies {
+    compile "com.orange.documentare.core:Comp:${project.ext.CompVersion}"
+    compile "commons-io:commons-io:${project.ext.commonsIOVersion}"
+    compile "commons-cli:commons-cli:${project.ext.commonsCliVersion}"
+    compile "org.projectlombok:lombok:${project.ext.lombokVersion}"
+}
+
+repositories {
+    mavenLocal()
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse.snapshot"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/public"
+        }
+    mavenCentral()
+}
+
+buildscript {
+    repositories {
+        mavenLocal()
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse.snapshot"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/public"
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath "eu.appsatori:gradle-fatjar-plugin:${project.ext.gradleFatJarPluginVersion}"
+    }
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}

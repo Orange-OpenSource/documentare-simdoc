@@ -1,0 +1,49 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = javaSourceVersion
+    targetCompatibility = javaSourceVersion
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": mainClass)
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+
+    compile "com.orange.documentare.core:Comp:${project.ext.CompVersion}"
+    compile "commons-io:commons-io:${project.ext.commonsIOVersion}"
+    compile "commons-cli:commons-cli:${project.ext.commonsCliVersion}"
+    compile "org.projectlombok:lombok:${project.ext.lombokVersion}"
+}
+
+repositories {
+    mavenLocal()
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse.snapshot"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/public"
+        }
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}

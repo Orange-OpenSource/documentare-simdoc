@@ -1,0 +1,13 @@
+[ {
+  "clazz" : "s",
+  "digitalTypeIndices" : [ 5, 13, 27, 66 ]
+}, {
+  "clazz" : "e",
+  "digitalTypeIndices" : [ 15, 23, 33, 41, 49, 58, 60, 65 ]
+}, {
+  "clazz" : "n",
+  "digitalTypeIndices" : [ 17, 50, 61 ]
+}, {
+  "clazz" : "o",
+  "digitalTypeIndices" : [ 3, 18, 36, 39, 55 ]
+} ]

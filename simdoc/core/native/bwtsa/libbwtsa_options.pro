@@ -1,0 +1,3 @@
+# debug / release
+CONFIG = release
+

@@ -1,0 +1,537 @@
+{
+   "textElements" : [
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            0
+         ],
+         "chars" : "A"
+      },
+      {
+         "type" : 1,
+         "digitalTypeIndices" : [
+            1
+         ]
+      },
+      {
+         "chars" : "p",
+         "digitalTypeIndices" : [
+            2
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "digitalTypeIndices" : [
+            3
+         ],
+         "type" : 0,
+         "userModified" : true,
+         "chars" : "o"
+      },
+      {
+         "digitalTypeIndices" : [
+            4
+         ],
+         "type" : 4
+      },
+      {
+         "chars" : "s",
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            5
+         ]
+      },
+      {
+         "chars" : "s",
+         "digitalTypeIndices" : [
+            6
+         ],
+         "type" : 0,
+         "userModified" : true
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            7
+         ],
+         "chars" : "e"
+      },
+      {
+         "digitalTypeIndices" : [
+            8
+         ],
+         "type" : 1
+      },
+      {
+         "chars" : "a",
+         "digitalTypeIndices" : [
+            9
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "chars" : "d",
+         "digitalTypeIndices" : [
+            10
+         ],
+         "type" : 0,
+         "userModified" : true
+      },
+      {
+         "digitalTypeIndices" : [
+            11
+         ],
+         "type" : 1
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            12
+         ],
+         "chars" : "e"
+      },
+      {
+         "chars" : "s",
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            13
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            14
+         ],
+         "type" : 0,
+         "userModified" : true,
+         "chars" : "s"
+      },
+      {
+         "chars" : "e",
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            15
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            16
+         ],
+         "type" : 1
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            17
+         ],
+         "chars" : "n"
+      },
+      {
+         "chars" : "o",
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            18
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            19
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "n"
+      },
+      {
+         "type" : 1,
+         "digitalTypeIndices" : [
+            20
+         ]
+      },
+      {
+         "chars" : "v",
+         "digitalTypeIndices" : [
+            21
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "chars" : "al",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            22
+         ]
+      },
+      {
+         "chars" : "e",
+         "digitalTypeIndices" : [
+            23
+         ],
+         "type" : 0,
+         "userModified" : true
+      },
+      {
+         "chars" : "t",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            24
+         ]
+      },
+      {
+         "type" : 2
+      },
+      {
+         "digitalTypeIndices" : [
+            25
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "C"
+      },
+      {
+         "digitalTypeIndices" : [
+            26
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "a"
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            27
+         ],
+         "chars" : "s"
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            28
+         ],
+         "chars" : "tiga"
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            29
+         ],
+         "chars" : "t"
+      },
+      {
+         "type" : 1,
+         "digitalTypeIndices" : [
+            30
+         ]
+      },
+      {
+         "chars" : "ri",
+         "digitalTypeIndices" : [
+            31
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            32
+         ],
+         "chars" : "d"
+      },
+      {
+         "digitalTypeIndices" : [
+            33
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "e"
+      },
+      {
+         "digitalTypeIndices" : [
+            34
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "n"
+      },
+      {
+         "chars" : "d",
+         "digitalTypeIndices" : [
+            35
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            36
+         ],
+         "chars" : "o"
+      },
+      {
+         "type" : 1,
+         "digitalTypeIndices" : [
+            37
+         ]
+      },
+      {
+         "chars" : "m",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            38
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            39
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "o"
+      },
+      {
+         "digitalTypeIndices" : [
+            40
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "r"
+      },
+      {
+         "digitalTypeIndices" : [
+            41
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "e"
+      },
+      {
+         "digitalTypeIndices" : [
+            42
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "s"
+      },
+      {
+         "type" : 2
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            43
+         ],
+         "chars" : "co"
+      },
+      {
+         "chars" : "n",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            44
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            45
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "s"
+      },
+      {
+         "chars" : "e",
+         "digitalTypeIndices" : [
+            46
+         ],
+         "type" : 0,
+         "userModified" : true
+      },
+      {
+         "digitalTypeIndices" : [
+            47
+         ],
+         "type" : 0,
+         "userModified" : true,
+         "chars" : "q"
+      },
+      {
+         "chars" : "u",
+         "digitalTypeIndices" : [
+            48
+         ],
+         "type" : 0,
+         "userModified" : true
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            49
+         ],
+         "chars" : "e"
+      },
+      {
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            50
+         ],
+         "chars" : "n"
+      },
+      {
+         "chars" : "tia",
+         "digitalTypeIndices" : [
+            51
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "type" : 2
+      },
+      {
+         "chars" : "C",
+         "digitalTypeIndices" : [
+            52
+         ],
+         "type" : 0,
+         "userModified" : true
+      },
+      {
+         "digitalTypeIndices" : [
+            53
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "arth"
+      },
+      {
+         "digitalTypeIndices" : [
+            54
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "ag"
+      },
+      {
+         "chars" : "o",
+         "digitalTypeIndices" : [
+            55
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "type" : 1,
+         "digitalTypeIndices" : [
+            56
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            57
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "d"
+      },
+      {
+         "chars" : "e",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            58
+         ]
+      },
+      {
+         "chars" : "l",
+         "digitalTypeIndices" : [
+            59
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "chars" : "e",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            60
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            61
+         ],
+         "userModified" : true,
+         "type" : 0,
+         "chars" : "n"
+      },
+      {
+         "chars" : "d",
+         "userModified" : true,
+         "type" : 0,
+         "digitalTypeIndices" : [
+            62
+         ]
+      },
+      {
+         "digitalTypeIndices" : [
+            63
+         ],
+         "type" : 0,
+         "userModified" : true,
+         "chars" : "a"
+      },
+      {
+         "digitalTypeIndices" : [
+            64
+         ],
+         "type" : 1
+      },
+      {
+         "chars" : "e",
+         "digitalTypeIndices" : [
+            65
+         ],
+         "userModified" : true,
+         "type" : 0
+      },
+      {
+         "chars" : "s",
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            66
+         ]
+      },
+      {
+         "chars" : "t",
+         "type" : 0,
+         "userModified" : true,
+         "digitalTypeIndices" : [
+            67
+         ]
+      }
+   ]
+}

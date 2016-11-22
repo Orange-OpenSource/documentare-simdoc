@@ -1,0 +1,284 @@
+{
+  "textElements" : [ {
+    "type" : "U",
+    "digitalTypeIndices" : [ 0 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 1 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 2 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 3 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 4 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 5 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 6 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 7 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 8 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 9 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 10 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 11 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 12 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 13 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 14 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 15 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 16 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 17 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 18 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 19 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 20 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 21 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 22 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 23 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 24 ],
+    "chars" : "*"
+  }, {
+    "type" : "L",
+    "chars" : "\n"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 25 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 26 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 27 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 28 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 29 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 30 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 31 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 32 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 33 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 34 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 35 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 36 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 37 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 38 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 39 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 40 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 41 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 42 ],
+    "chars" : "*"
+  }, {
+    "type" : "L",
+    "chars" : "\n"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 43 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 44 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 45 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 46 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 47 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 48 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 49 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 50 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 51 ],
+    "chars" : "*"
+  }, {
+    "type" : "L",
+    "chars" : "\n"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 52 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 53 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 54 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 55 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 56 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 57 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 58 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 59 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 60 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 61 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 62 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 63 ],
+    "chars" : "*"
+  }, {
+    "type" : "S",
+    "digitalTypeIndices" : [ 64 ],
+    "chars" : " "
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 65 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 66 ],
+    "chars" : "*"
+  }, {
+    "type" : "U",
+    "digitalTypeIndices" : [ 67 ],
+    "chars" : "*"
+  } ]
+}

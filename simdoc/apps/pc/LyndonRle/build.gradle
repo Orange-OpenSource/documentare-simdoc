@@ -1,0 +1,41 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'java'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = javaSourceVersion
+    targetCompatibility = javaSourceVersion
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": mainClass)
+    }
+}
+
+dependencies {
+    compile "com.orange.documentare.core:Comp:${project.ext.CompVersion}"
+    compile "commons-io:commons-io:2.4"
+    compile "commons-cli:commons-cli:${project.ext.commonsCliVersion}"
+    compile "org.projectlombok:lombok:${project.ext.lombokVersion}"
+
+    testCompile "junit:junit:4.12"
+    testCompile "org.easytesting:fest-assert:1.4"
+}
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}

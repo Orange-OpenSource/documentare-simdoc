@@ -1,0 +1,25 @@
+[ {
+  "clazz" : "a",
+  "digitalTypeIndices" : [ 9, 26, 63 ]
+}, {
+  "clazz" : "C",
+  "digitalTypeIndices" : [ 25, 52 ]
+}, {
+  "clazz" : "d",
+  "digitalTypeIndices" : [ 10, 32, 35, 57, 62 ]
+}, {
+  "clazz" : "e",
+  "digitalTypeIndices" : [ 7, 12, 15, 23, 33, 41, 46, 49, 58, 60, 65 ]
+}, {
+  "clazz" : "n",
+  "digitalTypeIndices" : [ 17, 19, 34, 44, 50, 61 ]
+}, {
+  "clazz" : "o",
+  "digitalTypeIndices" : [ 3, 18, 36, 39, 55 ]
+}, {
+  "clazz" : "s",
+  "digitalTypeIndices" : [ 5, 6, 13, 14, 27, 42, 45, 66 ]
+}, {
+  "clazz" : "t",
+  "digitalTypeIndices" : [ 24, 29, 67 ]
+} ]

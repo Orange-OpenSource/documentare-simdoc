@@ -1,0 +1,9 @@
+These components are not detected by the maven license plugin.
+
+(The Apache Software License, Version 2.0) DualPivotQuickSort - https://android.googlesource.com/platform/libcore/+/android-6.0.1_r43/luni/src/main/java/java/util/DualPivotQuicksort.java
+
+(The Apache Software License, Version 2.0) Apache Commons Cli (commons-cli:commons-cli:1.2 - https://commons.apache.org/proper/commons-cli/)
+
+(The MIT License) libdivsufsort - https://github.com/y-256/libdivsufsort - Copyright (c) 2003 Yuta Mori All rights reserved.
+
+(Eclipse Public License (EPL) 1.0) Graphviz - http://graphviz.org/License.php

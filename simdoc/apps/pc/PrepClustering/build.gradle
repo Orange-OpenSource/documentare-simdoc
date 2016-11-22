@@ -1,0 +1,53 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+}
+
+plugins {
+    id 'java'
+    id 'idea'
+    id 'com.github.johnrengelman.shadow' version '1.2.3'
+}
+
+tasks.withType(JavaCompile) {
+    sourceCompatibility = javaSourceVersion
+    targetCompatibility = javaSourceVersion
+}
+
+jar {
+    manifest {
+        attributes("Main-Class": "com.orange.documentare.app.prepclustering.PrepClusteringApp")
+    }
+}
+
+dependencies {
+    compile "com.orange.documentare.core:Comp:${project.ext.simdocVersion}"
+    compile "com.orange.documentare.core:Model:${project.ext.simdocVersion}"
+    compile "commons-io:commons-io:${project.ext.commonsIOVersion}"
+    compile "commons-cli:commons-cli:${project.ext.commonsCliVersion}"
+    compile "org.projectlombok:lombok:${project.ext.lombokVersion}"
+
+    testCompile "junit:junit:${project.ext.junitVersion}"
+    testCompile "com.googlecode.zohhak:zohhak:${project.ext.zohhakVersion}"
+    testCompile "org.easytesting:fest-assert:${project.ext.festAssertVersion}"
+}
+
+repositories {
+    mavenLocal()
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/inhouse.snapshot"
+        }
+        maven {
+            url "http://maven2.rd.francetelecom.fr/proxy/repository/public"
+        }
+    mavenCentral()
+}
+
+task wrapper(type: Wrapper) {
+    gradleVersion = gradleWrapperVersion
+}
