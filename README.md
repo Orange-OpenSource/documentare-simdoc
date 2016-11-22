@@ -1,9 +1,11 @@
-# Documentare Library Readme
-
-### © Joel Gardes – Christophe Maldivi Orange
-*11/15/2016*
-
 Library and tools for similarity measurement, classification and clustering of digital content and segmentation images from digitized document
+
+## Build
+
+To build the core library: ```cd simdoc/core/java/libs && ./mvnw install```
+
+To build tools (***LineDetection***,***NCD***, etc): ```cd simdoc/apps/pc/ && ./compileAll.sh```
+
 
 ## Introduction
 
@@ -179,4 +181,11 @@ A complete documentation is stored on GraphViz Website. Here is an example of sy
 	
 	-XX:+HeapDumpOnOutOfMemoryError
 						   As named : will dump memory content when program crashes
-						   in a ".hprof" file                  
+						   in a ".hprof" file 
+						   
+# License
+@Copyright 2016 Orange
+This software is distributed under the terms of the GPL v2 license, please see license file.
+
+# Authors
+Joël Gardes and Christophe Maldivi
