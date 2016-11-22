@@ -30,6 +30,7 @@ script:
 cache:
   directories:
     $HOME/.m2
+    $HOME/.gradle
 
 # say 'go to hell' when there is a pb
 #notifications:
