@@ -1,8 +1,8 @@
 language: java
 
 # enable container based build
-dist: precise
-sudo: false
+#dist: precise
+#sudo: false
 
 # we need java 8
 jdk:
