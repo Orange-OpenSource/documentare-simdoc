@@ -1,3 +1,3 @@
 #!/bin/sh
 
-(cd simdoc/core/java/libs && ./mvnw clean install -DskipTests=true)
+(cd simdoc/core/java/libs && ./mvnw clean install)
