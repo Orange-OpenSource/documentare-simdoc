@@ -18,6 +18,7 @@ addons:
 install: true
 script:
   - apt-cache search opencv
+  - ls /usr/lib/x86_64-linux-gnu/
   - ./.ci.sh
 
 # avoid downloading each time maven dependencies
