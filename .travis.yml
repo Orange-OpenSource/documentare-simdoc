@@ -13,6 +13,7 @@ addons:
   apt:
     packages:
       - libopencv-core2.4
+      - libopencv2.4-java
 
 # skip build without tests
 install: true
