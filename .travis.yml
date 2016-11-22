@@ -19,7 +19,8 @@ install: true
 
 before_script:
  - tar xvjf 3rdparty/graphviz_bin.tar.bz2 && mkdir -p /opt/local && mv bin /opt/local/
- - /opt/local/bin/sfdp --help
+ - /opt/local/bin/sfdp -V
+ - /opt/local/bin/gvmap --help
 
 script:
   - ./.ci.sh
