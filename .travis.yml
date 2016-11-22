@@ -16,10 +16,12 @@ addons:
 
 # skip build without tests
 install: true
+
+before_script:
+ - tar xvjf 3rdparty/graphviz_bin.tar.bz2 && mkdir -p /opt/local && ln -s bin /opt/local/bin
+ - sfdp --help
+
 script:
-  - tar xvjf 3rdparty/graphviz_bin.tar.bz2
-  - mkdir -p /opt/local
-  - ln -s bin /opt/local/bin
   - ./.ci.sh
 
 # avoid downloading each time maven dependencies
