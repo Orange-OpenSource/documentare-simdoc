@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/Orange-OpenSource/documentare-simdoc.svg?branch=master)](https://travis-ci.org/Orange-OpenSource/documentare-simdoc)
 [![License](https://img.shields.io/aur/license/yaourt.svg?maxAge=2592000)](https://github.com/Orange-OpenSource/documentare-simdoc/blob/master/LICENSE)
 
 # Documentare, SimDoc library & tools
