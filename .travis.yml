@@ -12,12 +12,12 @@ jdk:
 addons:
   apt:
     packages:
-      - libopencv-core2.4
+#      - libopencv-core2.4
 
 # skip build without tests
 install: true
 script:
-  - ls /usr/lib/x86_64-linux-gnu/
+  - apt-cache search opencv
   - ./.ci.sh
 
 # avoid downloading each time maven dependencies
