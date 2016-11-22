@@ -1,0 +1,26 @@
+language: java
+
+# enable container based build
+sudo: false
+
+# we need java 8
+jdk:
+- oraclejdk8
+
+# skip build without tests
+install: true
+script: ./.ci.sh
+
+# avoid downloading each time maven dependencies
+cache:
+  directories:
+    $HOME/.m2
+
+# say 'go to hell' when there is a pb
+#notifications:
+#email:
+#  on_success: change
+#  on_failure: always
+#  recipients:
+#    - christophe.maldivi@orange.com
+#    - joel.gardes@orange.com
