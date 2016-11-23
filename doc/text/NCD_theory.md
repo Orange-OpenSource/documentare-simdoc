@@ -189,7 +189,7 @@ A very common XML exchange format document for digital library (the "[ALTO](http
 	
 Knowlegde on markup definition allows to build a document presentation and indexation. But, without this knowledge, trying to build queries for detecting what document is containing a complete text string will be difficult.
 
-The exercise consiste here by comparing a string "au bras de ton époux heureux" coded as it in a file named "4.txt" with a set of XML files containing "X0000006.xml". Here is the sorted list of increasing distances :
+The exercise consists here by comparing a string "au bras de ton époux heureux" coded as it in a file named "4.txt" with a set of XML files containing "X0000006.xml". Here is the sorted list of increasing distances :
 
  ![textQUERY](../images/textQUERY.png)
  
