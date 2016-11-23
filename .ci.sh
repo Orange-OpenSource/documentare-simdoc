@@ -13,6 +13,6 @@ cp simdoc/apps/pc/Graph/build/libs/*.jar Graph-$TAG.jar && \
 cp simdoc/apps/pc/Multisets/build/libs/*.jar Multisets-$TAG.jar && \
 cp simdoc/apps/pc/Ocr/build/libs/*.jar Ocr-$TAG.jar && \
 echo Create tarball && \
-tar cvjf documentare-simdoc.tar.bz2 *.jar
+tar cvjf documentare-simdoc-$TAG.tar.bz2 *.jar
 echo && \
 echo OK
