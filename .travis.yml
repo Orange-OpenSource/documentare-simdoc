@@ -26,6 +26,15 @@ before_script:
 script:
   - ./.ci.sh
 
+# deploy to github releases
+deploy:
+  provider: releases
+  api_key: "GITHUB OAUTH TOKEN"
+  file: *.jar
+  skip_cleanup: true
+  on:
+    tags: true
+
 # avoid downloading each time maven dependencies
 cache:
   directories:
