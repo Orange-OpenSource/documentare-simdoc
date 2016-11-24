@@ -6,6 +6,11 @@ Library and tools for similarity measurement, classification and clustering of d
 
 ## Build
 
+Prerequisites:
+ - java 8
+ - you need to install graphviz (see .travis.yml to see how we install it)
+ - you need to install convert (imagemagick)
+
 To build the core library: ```cd simdoc/core/java/libs && ./mvnw install```
 
 To build tools (***LineDetection***,***NCD***, etc): ```cd simdoc/apps/pc/ && ./compileAll.sh```
