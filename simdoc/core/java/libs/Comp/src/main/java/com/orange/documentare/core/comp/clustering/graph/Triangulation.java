@@ -12,7 +12,6 @@ package com.orange.documentare.core.comp.clustering.graph;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphEdge;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.SubgraphsBuilder;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.TriangulationGraphBuilder;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.trianglesingleton.TriangleScissor;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;

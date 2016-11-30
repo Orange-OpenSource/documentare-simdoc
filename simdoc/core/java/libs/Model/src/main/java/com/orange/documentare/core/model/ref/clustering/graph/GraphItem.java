@@ -10,17 +10,22 @@ package com.orange.documentare.core.model.ref.clustering.graph;
  */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 @Getter
 @Setter
 public class GraphItem {
   /** triangle first vertex */
   private String vertexName;
+
+  /** no triangle due to K Nearest Neighbours criteria */
+  private Boolean orphan;
 
   @JsonIgnore
   /** triangle first vertex */
@@ -54,4 +59,9 @@ public class GraphItem {
   private int subgraphId;
   private int clusterId;
   private boolean clusterCenter;
+
+  @JsonIgnore
+  public boolean isOrphan() {
+    return orphan != null && orphan;
+  }
 }

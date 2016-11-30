@@ -31,17 +31,13 @@ public class TriangleVertices {
   /** Based on the KNN criterion, if we did not found nearest items to build the triangle, then we declare this item as orphan */
   private Boolean orphan;
 
-  public TriangleVertices(ClusteringItem clusteringItem, ClusteringItem[] items) {
-    this(clusteringItem, items, items.length);
-  }
-
-  public TriangleVertices(ClusteringItem clusteringItem, ClusteringItem[] items, int k_nearest_neighbours_to_keep) {
+  public TriangleVertices(ClusteringItem clusteringItem, ClusteringItem[] items, int kNearestNeighboursThreshold) {
     NearestItem[] vertex1Nearest = clusteringItem.getNearestItems();
     NearestItem v1Nearest = vertex1Nearest[1];
 
     NearestItem[] vertex2Nearest = items[v1Nearest.getIndex()].getNearestItems();
     NearestItem v2Nearest = searchVertex3(vertex1Nearest, vertex2Nearest);
-    int edge13Candidate = searchEdge13(vertex1Nearest, v2Nearest.getIndex(), k_nearest_neighbours_to_keep);
+    int edge13Candidate = searchEdge13(vertex1Nearest, v2Nearest.getIndex(), kNearestNeighboursThreshold);
 
     if (edge13Candidate < 0) {
       orphan = true;
@@ -67,10 +63,10 @@ public class TriangleVertices {
     return vertex3.getIndex() == vertex1.getIndex() ? vertex2Nearest[2] : vertex3;
   }
 
-  private int searchEdge13(NearestItem[] nearestItemsVertex1, int vertex3Index, int k_nearest_neighbours_to_keep) {
+  private int searchEdge13(NearestItem[] nearestItemsVertex1, int vertex3Index, int kNearestNeighboursThreshold) {
     Optional<NearestItem> v3 = Arrays.stream(nearestItemsVertex1)
             // + 1 since first nearest is item itself with null distance
-            .limit(k_nearest_neighbours_to_keep + 1)
+            .limit(kNearestNeighboursThreshold + 1)
             .filter(nearestItem -> nearestItem.getIndex() == vertex3Index)
             .findAny();
 

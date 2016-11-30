@@ -22,13 +22,13 @@ public class TriangulationGraphBuilder extends GraphBuilder {
 
   @Override
   protected void addEdges(ClusteringGraph clusteringGraph) {
-    for (GraphItem graphItem : getGraphItems()) {
-      if (graphItem.isTriangleSingleton()) {
-        log.debug("Do not add edges for item {}", graphItem.getVertexName());
+    getGraphItems().stream().forEach( graphItem -> {
+      if (graphItem.isTriangleSingleton() || graphItem.isOrphan()) {
+        log.debug("Do not add edges for item {}, singleton = {}, orphan = {}", graphItem.getVertexName(), graphItem.isTriangleSingleton(), graphItem.isOrphan());
       } else {
         addEdgesFor(graphItem);
       }
-    }
+    });
   }
 
   private void addEdgesFor(GraphItem graphItem) {

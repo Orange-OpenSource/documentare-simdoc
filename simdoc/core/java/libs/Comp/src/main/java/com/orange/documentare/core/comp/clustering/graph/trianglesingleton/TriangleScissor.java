@@ -9,7 +9,7 @@ package com.orange.documentare.core.comp.clustering.graph.trianglesingleton;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import lombok.RequiredArgsConstructor;

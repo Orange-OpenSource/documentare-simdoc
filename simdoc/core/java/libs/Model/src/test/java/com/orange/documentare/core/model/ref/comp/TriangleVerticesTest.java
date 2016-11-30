@@ -32,13 +32,13 @@ public class TriangleVerticesTest {
   }
 
   @Test
-  public void build_a_triangle() {
+  public void build_a_triangle_without_knn_limitation() {
     // Given
     ClusteringItem[] items = built3Items();
     ClusteringItem clusteringItem = items[0];
 
     // When
-    TriangleVertices triangleVertices = new TriangleVertices(clusteringItem, items);
+    TriangleVertices triangleVertices = new TriangleVertices(clusteringItem, items, items.length);
 
     // Then
     Assertions.assertThat(triangleVertices.isOrphan()).isFalse();

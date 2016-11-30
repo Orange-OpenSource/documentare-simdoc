@@ -10,7 +10,7 @@ package com.orange.documentare.core.comp.clustering.graph.clusters;
  */
 
 import com.google.common.annotations.VisibleForTesting;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.scissors.clusterlongedges.ClusterLongEdgesScissor;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.*;

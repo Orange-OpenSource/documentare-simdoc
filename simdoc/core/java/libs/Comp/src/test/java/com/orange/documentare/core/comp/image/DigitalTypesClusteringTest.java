@@ -11,7 +11,7 @@ package com.orange.documentare.core.comp.image;
 
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
