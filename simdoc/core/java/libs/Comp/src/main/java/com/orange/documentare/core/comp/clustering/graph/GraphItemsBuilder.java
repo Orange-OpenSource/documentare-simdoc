@@ -62,28 +62,13 @@ class GraphItemsBuilder {
     return graphItem;
   }
 
-  private NearestItem getVertex3(int itemIndex, NearestItem vertex2) {
-    NearestItem[] nearestItemsVertex2 = items[vertex2.getIndex()].getNearestItems();
-    NearestItem NearestItemOfVertex2 = nearestItemsVertex2[1];
-    return NearestItemOfVertex2.getIndex() == itemIndex ?  nearestItemsVertex2[2] : NearestItemOfVertex2;
-  }
-
-  private int getDistanceTo(NearestItem[] nearestItems, int itemIndex) {
-    for (NearestItem item : nearestItems) {
-      if (item.getIndex() == itemIndex) {
-        return item.getDistance();
-      }
-    }
-    throw new IllegalStateException("Failed to find searchVertex2 item");
-  }
-
   private ClusteringItem getClusteringItemFrom(NearestItem nearestItem) {
     for (int i = 0; i < items.length; i++) {
       if (i == nearestItem.getIndex()) {
         return items[i];
       }
     }
-    throw new IllegalStateException("Failed to find searchVertex2 item");
+    throw new IllegalStateException("Failed to find clustering item");
   }
 
   private void updateVerticesIndex() {
