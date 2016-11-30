@@ -18,9 +18,14 @@ import java.util.List;
 
 class ClusteringModel {
   public final NcdItem[] items;
+  private final int kNearestNeighboursThreshold;
 
   ClusteringModel(RegularFilesDistances regularFilesDistances, boolean useTriangulationVertices) {
     this.items = regularFilesDistances.getItems1();
+
+    // FIXME
+    kNearestNeighboursThreshold = items.length;
+
     DistancesArray distancesArray = regularFilesDistances.getDistancesArray();
     if (useTriangulationVertices) {
       initWithTriangulationVertices(distancesArray);
@@ -31,11 +36,11 @@ class ClusteringModel {
 
   /** Memory in place creation, it is optimal since we do not allocate nearest arrays */
   private void initWithTriangulationVertices(DistancesArray distancesArray) {
+    List<NcdItem> itemsList = Arrays.asList(items);
     for (int i = 0; i < items.length; i++) {
       NearestItem vertex2 = distancesArray.nearestItemOf(i);
       NearestItem vertex3 = distancesArray.nearestItemOfBut(vertex2.getIndex(), i);
-      int edge13 = distancesArray.get(i, vertex3.getIndex());
-      items[i].setTriangleVertices(new TriangleVertices(vertex2, vertex3, edge13));
+      items[i].setTriangleVertices(new TriangleVertices(distancesArray.nearestItemsFor(itemsList, i), vertex3, kNearestNeighboursThreshold));
     }
   }
 

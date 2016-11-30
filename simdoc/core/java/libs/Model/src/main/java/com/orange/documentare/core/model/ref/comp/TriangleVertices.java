@@ -37,6 +37,17 @@ public class TriangleVertices {
 
     NearestItem[] vertex2Nearest = items[v1Nearest.getIndex()].getNearestItems();
     NearestItem v2Nearest = searchVertex3(vertex1Nearest, vertex2Nearest);
+
+    init(vertex1Nearest, v2Nearest, kNearestNeighboursThreshold);
+  }
+
+  /** Useful for PrepClustering when we use directly the distance matrix to avoid keeping in memory all nearest arrays */
+  public TriangleVertices(NearestItem[] vertex1Nearest, NearestItem v2Nearest, int kNearestNeighboursThreshold) {
+    init(vertex1Nearest, v2Nearest, kNearestNeighboursThreshold);
+  }
+
+  private void init(NearestItem[] vertex1Nearest, NearestItem v2Nearest, int kNearestNeighboursThreshold) {
+    NearestItem v1Nearest = vertex1Nearest[1];
     int edge13Candidate = searchEdge13(vertex1Nearest, v2Nearest.getIndex(), kNearestNeighboursThreshold);
 
     if (edge13Candidate < 0) {
