@@ -38,7 +38,6 @@ public class CommandLineOptions {
     CommandLine commandLine = getCommandLineFromArgs(args);
     boolean helpRequested = commandLine.hasOption(HELP);
     if (helpRequested) {
-      showHelp();
       throw new CommandLineException("\nPrint this help message\n");
     } else {
       initOptionsValues(commandLine);
@@ -48,7 +47,6 @@ public class CommandLineOptions {
   private void initOptionsValues(CommandLine commandLine) {
     boolean fileOption = commandLine.hasOption(FILE);
     if (!fileOption) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file argument is missing\n");
     }
     setInputFiles(commandLine);
@@ -61,7 +59,6 @@ public class CommandLineOptions {
   private void setInputFiles(CommandLine commandLine) {
     String filePath = commandLine.getOptionValue(FILE);
     if (filePath == null) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file name is invalid\n");
     } else {
       doSetInputFiles(filePath);
@@ -71,7 +68,6 @@ public class CommandLineOptions {
   private void doSetInputFiles(String filePath) {
     file = new File(filePath);
     if (!file.exists()) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file is not accessible\n");
     }
   }

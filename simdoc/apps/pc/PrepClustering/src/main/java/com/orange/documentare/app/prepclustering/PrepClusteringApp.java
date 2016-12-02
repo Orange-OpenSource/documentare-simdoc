@@ -38,7 +38,7 @@ public class PrepClusteringApp {
   private static void doTheJob(CommandLineOptions commandLineOptions) throws IOException {
     RegularFilesDistances regularFilesDistances = loadRegularFilesDistances(commandLineOptions.getFile());
     boolean writeCSV = commandLineOptions.isWriteCSV();
-    if (!writeCSV) {
+    if (writeCSV) {
       writeCSVFiles(regularFilesDistances);
     }
     if (regularFilesDistances.getDistancesArray().isOnSameArray()) {
