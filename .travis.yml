@@ -14,7 +14,7 @@ addons:
 install: true
 
 before_script:
-- tar xvjf 3rdparty/graphviz-2.38-ubuntu-trusty.tar.bz2 && mkdir -p /opt/local && mv bin /opt/local/
+- tar xvjf 3rdparty/graphviz-2.38-ubuntu-trusty.tar.bz2 && mv opt/local /opt/
 - /opt/local/bin/sfdp -V
 - /opt/local/bin/gvmap --help
 
