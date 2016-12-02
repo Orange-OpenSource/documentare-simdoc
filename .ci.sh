@@ -15,4 +15,6 @@ cp simdoc/apps/pc/Ocr/build/libs/*.jar Ocr-$TAG.jar && \
 echo Create tarball && \
 tar cvjf documentare-simdoc-$TAG.tar.bz2 *.jar
 echo && \
-echo OK
+echo OK && exit 0
+
+echo [FAILED] && exit 1
