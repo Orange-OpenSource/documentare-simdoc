@@ -37,3 +37,8 @@ deploy:
 
 cache:
   directories: $HOME/.m2 $HOME/.gradle
+
+notifications:
+  email:
+    - christophe.maldivi@orange.com
+
