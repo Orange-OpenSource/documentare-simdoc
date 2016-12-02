@@ -3506,7 +3506,7 @@
   }, {
     "vertexName" : "292",
     "vertex1Index" : 292,
-    "vertex2Index" : 78,
+    "vertex2Index" : 241,
     "vertex3Index" : 930,
     "area" : 1.43486878E11,
     "q" : 0.99932414,
@@ -4634,7 +4634,7 @@
   }, {
     "vertexName" : "386",
     "vertex1Index" : 386,
-    "vertex2Index" : 335,
+    "vertex2Index" : 1083,
     "vertex3Index" : 568,
     "area" : 1.45097556E11,
     "q" : 0.9472769,
@@ -6794,7 +6794,7 @@
   }, {
     "vertexName" : "566",
     "vertex1Index" : 566,
-    "vertex2Index" : 53,
+    "vertex2Index" : 311,
     "vertex3Index" : 919,
     "area" : 2.13045559E11,
     "q" : 0.8908265,
@@ -8870,7 +8870,7 @@
   }, {
     "vertexName" : "739",
     "vertex1Index" : 739,
-    "vertex2Index" : 886,
+    "vertex2Index" : 1083,
     "vertex3Index" : 933,
     "area" : 1.46800214E11,
     "q" : 0.95434916,
@@ -12218,7 +12218,7 @@
   }, {
     "vertexName" : "1018",
     "vertex1Index" : 1018,
-    "vertex2Index" : 72,
+    "vertex2Index" : 438,
     "vertex3Index" : 275,
     "area" : 1.85336218E11,
     "q" : 0.98656386,
@@ -12506,7 +12506,7 @@
   }, {
     "vertexName" : "1042",
     "vertex1Index" : 1042,
-    "vertex2Index" : 576,
+    "vertex2Index" : 1066,
     "vertex3Index" : 449,
     "area" : 2.3796505E11,
     "q" : 0.9667009,
@@ -14646,10 +14646,10 @@
         "length" : 579235
       }, {
         "vertex1Index" : 292,
-        "vertex2Index" : 78,
+        "vertex2Index" : 241,
         "length" : 565218
       }, {
-        "vertex1Index" : 78,
+        "vertex1Index" : 241,
         "vertex2Index" : 930,
         "length" : 586388
       }, {
@@ -15198,10 +15198,10 @@
         "length" : 604279
       }, {
         "vertex1Index" : 1018,
-        "vertex2Index" : 72,
+        "vertex2Index" : 438,
         "length" : 659686
       }, {
-        "vertex1Index" : 72,
+        "vertex1Index" : 438,
         "vertex2Index" : 275,
         "length" : 604279
       }, {
@@ -25435,10 +25435,10 @@
         "length" : 579235
       }, {
         "vertex1Index" : 292,
-        "vertex2Index" : 78,
+        "vertex2Index" : 241,
         "length" : 565218
       }, {
-        "vertex1Index" : 78,
+        "vertex1Index" : 241,
         "vertex2Index" : 930,
         "length" : 586388
       }, {
@@ -25947,10 +25947,10 @@
         "length" : 604279
       }, {
         "vertex1Index" : 1018,
-        "vertex2Index" : 72,
+        "vertex2Index" : 438,
         "length" : 659686
       }, {
-        "vertex1Index" : 72,
+        "vertex1Index" : 438,
         "vertex2Index" : 275,
         "length" : 604279
       }, {
