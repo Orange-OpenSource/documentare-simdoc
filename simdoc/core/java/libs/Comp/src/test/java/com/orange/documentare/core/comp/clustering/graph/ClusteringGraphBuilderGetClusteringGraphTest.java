@@ -99,7 +99,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     ClusteringItem[] clusteringItems = getClusteringItems();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     ClusteringParameters clusteringParameters = new ClusteringParameters();
-    clusteringParameters.setKNearestNeighboursThreshold(2);
+    clusteringParameters.setKNearestNeighboursThreshold(1);
 
     // do
     ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, clusteringParameters);
@@ -107,13 +107,13 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();
 
-    Assertions.assertThat(graphItems.get(0).isOrphan()).isTrue();
+    Assertions.assertThat(graphItems.get(0).iskNNSingleton()).isTrue();
 
     float[] expectedAreas = getExpectedAreas();
     float[] expectedQ = getExpectedQ();
     for (int i = 1; i < clusteringItems.length; i++) {
       GraphItem graphItem = graphItems.get(i);
-      Assertions.assertThat(graphItem.isOrphan()).isFalse();
+      Assertions.assertThat(graphItem.iskNNSingleton()).isFalse();
       Assert.assertEquals(expectedAreas[i], graphItem.getArea(), 0.01f);
       Assert.assertEquals(expectedQ[i], graphItem.getQ(), 0.01f);
     }
@@ -122,7 +122,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
   @Test
   public void compute_triangles_areas_directly_with_triangle_vertices_with_knn_criteria() {
     // given
-    ClusteringItem[] clusteringItems = getClusteringItemsWithVertices(2);
+    ClusteringItem[] clusteringItems = getClusteringItemsWithVertices(1);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
 
     // do
@@ -131,13 +131,13 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();
 
-    Assertions.assertThat(graphItems.get(0).isOrphan()).isTrue();
+    Assertions.assertThat(graphItems.get(0).iskNNSingleton()).isTrue();
 
     float[] expectedAreas = getExpectedAreas();
     float[] expectedQ = getExpectedQ();
     for (int i = 1; i < clusteringItems.length; i++) {
       GraphItem graphItem = graphItems.get(i);
-      Assertions.assertThat(graphItem.isOrphan()).isFalse();
+      Assertions.assertThat(graphItem.iskNNSingleton()).isFalse();
       Assert.assertEquals(expectedAreas[i], graphItem.getArea(), 0.01f);
       Assert.assertEquals(expectedQ[i], graphItem.getQ(), 0.01f);
     }

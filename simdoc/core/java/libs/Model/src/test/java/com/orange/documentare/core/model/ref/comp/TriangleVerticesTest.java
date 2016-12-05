@@ -41,7 +41,7 @@ public class TriangleVerticesTest {
     TriangleVertices triangleVertices = new TriangleVertices(clusteringItem, items, items.length);
 
     // Then
-    Assertions.assertThat(triangleVertices.isOrphan()).isFalse();
+    Assertions.assertThat(triangleVertices.getkNNSingleton()).isFalse();
     Assertions.assertThat(triangleVertices.getEdge12()).isEqualTo(10);
     Assertions.assertThat(triangleVertices.getEdge23()).isEqualTo(20);
     Assertions.assertThat(triangleVertices.getEdge13()).isEqualTo(30);
@@ -49,7 +49,7 @@ public class TriangleVerticesTest {
     Assertions.assertThat(triangleVertices.getVertex3().getIndex()).isEqualTo(2);
   }
 
-  @TestWith({ "2, true", "3, false" })
+  @TestWith({ "1, true", "2, false" })
   public void item_0_may_be_orphan_due_to_knn_criteria(int k, boolean orphan) {
     // Given
     ClusteringItem[] items = built4ItemsToTestKnn();
@@ -59,10 +59,10 @@ public class TriangleVerticesTest {
     TriangleVertices triangleVertices = new TriangleVertices(clusteringItem, items, k);
 
     // Then
-    Assertions.assertThat(triangleVertices.isOrphan()).isEqualTo(orphan);
+    Assertions.assertThat(triangleVertices.getkNNSingleton()).isEqualTo(orphan);
   }
 
-  @TestWith({ "1, true", "2, false" })
+  @TestWith({ "0, true", "1, false" })
   public void item_1_may_be_orphan_due_to_knn_criteria(int k, boolean orphan) {
     // Given
     ClusteringItem[] items = built4ItemsToTestKnn();
@@ -72,7 +72,7 @@ public class TriangleVerticesTest {
     TriangleVertices triangleVertices = new TriangleVertices(clusteringItem, items, k);
 
     // Then
-    Assertions.assertThat(triangleVertices.isOrphan()).isEqualTo(orphan);
+    Assertions.assertThat(triangleVertices.getkNNSingleton()).isEqualTo(orphan);
   }
 
   private Item[] built3Items() {

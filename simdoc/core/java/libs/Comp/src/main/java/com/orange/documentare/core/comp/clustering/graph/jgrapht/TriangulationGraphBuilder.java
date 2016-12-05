@@ -23,8 +23,8 @@ public class TriangulationGraphBuilder extends GraphBuilder {
   @Override
   protected void addEdges(ClusteringGraph clusteringGraph) {
     getGraphItems().stream().forEach( graphItem -> {
-      if (graphItem.isTriangleSingleton() || graphItem.isOrphan()) {
-        log.debug("Do not add edges for item {}, singleton = {}, orphan = {}", graphItem.getVertexName(), graphItem.isTriangleSingleton(), graphItem.isOrphan());
+      if (graphItem.isTriangleSingleton() || graphItem.iskNNSingleton()) {
+        log.debug("Do not add edges for item {}, triangle singleton = {}, kNNSingleton = {}", graphItem.getVertexName(), graphItem.isTriangleSingleton(), graphItem.iskNNSingleton());
       } else {
         addEdgesFor(graphItem);
       }
@@ -51,6 +51,10 @@ public class TriangulationGraphBuilder extends GraphBuilder {
 
   private boolean noSingletons(int indexVertex1, int indexVertex2) {
     List<GraphItem> items = getGraphItems();
-    return !items.get(indexVertex1).isTriangleSingleton() && !items.get(indexVertex2).isTriangleSingleton();
+    GraphItem item1 = items.get(indexVertex1);
+    GraphItem item2 = items.get(indexVertex2);
+    return
+            ! (item1.isTriangleSingleton() || item1.iskNNSingleton()) &&
+            ! (item2.isTriangleSingleton() || item2.iskNNSingleton());
   }
 }

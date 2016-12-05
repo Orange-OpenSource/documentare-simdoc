@@ -40,19 +40,19 @@ class GraphItemsBuilder {
         item.getTriangleVertices() :
         new TriangleVertices(item, items, kNearestNeighboursThreshold);
 
-    boolean orphan = triangleVertices.isOrphan();
-    GraphItem graphItem = buildGraphItem(itemIndex, orphan);
-    if (!orphan) {
+    boolean kNNSingleton = triangleVertices.getkNNSingleton();
+    GraphItem graphItem = buildGraphItem(itemIndex, kNNSingleton);
+    if (!kNNSingleton) {
       addTriangleInfo(graphItem, triangleVertices);
     }
     return graphItem;
   }
 
-  private GraphItem buildGraphItem(int itemIndex, boolean orphan) {
+  private GraphItem buildGraphItem(int itemIndex, boolean kNNSingleton) {
     GraphItem graphItem = new GraphItem();
     ClusteringItem clusteringItem = items[itemIndex];
-    if (orphan) {
-      graphItem.setOrphan(true);
+    if (kNNSingleton) {
+      graphItem.setKNNSingleton(kNNSingleton);
     }
     graphItem.setVertexName(clusteringItem.getHumanReadableId());
     graphItem.setVertex1(clusteringItem);

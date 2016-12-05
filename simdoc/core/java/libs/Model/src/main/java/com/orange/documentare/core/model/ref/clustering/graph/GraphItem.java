@@ -24,26 +24,23 @@ public class GraphItem {
   /** triangle first vertex */
   private String vertexName;
 
-  /** no triangle due to K Nearest Neighbours criteria */
-  private Boolean orphan;
-
   @JsonIgnore
   /** triangle first vertex */
   private ClusteringItem vertex1;
+
   @JsonIgnore
   /** triangle second vertex */
   private ClusteringItem vertex2;
   @JsonIgnore
   /** triangle third vertex */
   private ClusteringItem vertex3;
-
   /** triangle first vertex */
   private int vertex1Index;
+
   /** triangle second vertex */
   private int vertex2Index;
   /** triangle third vertex */
   private int vertex3Index;
-
   /** triangle area */
   private float area;
 
@@ -53,6 +50,9 @@ public class GraphItem {
   /** triangle edges length */
   private int[] edgesLength;
 
+  /** no triangle due to K Nearest Neighbours criteria */
+  private Boolean kNNSingleton;
+
   /** given triangle equilaterality & area, indicates if we exclude this item as a singleton */
   private boolean triangleSingleton;
 
@@ -61,7 +61,7 @@ public class GraphItem {
   private boolean clusterCenter;
 
   @JsonIgnore
-  public boolean isOrphan() {
-    return orphan != null && orphan;
+  public boolean iskNNSingleton() {
+    return kNNSingleton != null && kNNSingleton;
   }
 }

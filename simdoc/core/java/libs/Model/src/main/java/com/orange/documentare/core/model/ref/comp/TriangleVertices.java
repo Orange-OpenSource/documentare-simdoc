@@ -28,8 +28,8 @@ public class TriangleVertices {
   private NearestItem vertex3;
   private Integer edge13;
 
-  /** Based on the KNN criterion, if we did not found nearest items to build the triangle, then we declare this item as orphan */
-  private Boolean orphan;
+  /** Based on the KNN criterion, if we did not found nearest items to build the triangle, then we declare this item as a singleton */
+  private Boolean kNNSingleton;
 
   public TriangleVertices(ClusteringItem clusteringItem, ClusteringItem[] items, int kNearestNeighboursThreshold) {
     NearestItem[] vertex1Nearest = clusteringItem.getNearestItems();
@@ -51,7 +51,7 @@ public class TriangleVertices {
     int edge13Candidate = searchEdge13(vertex1Nearest, v2Nearest.getIndex(), kNearestNeighboursThreshold);
 
     if (edge13Candidate < 0) {
-      orphan = true;
+      kNNSingleton = true;
     } else {
       this.vertex2 = v1Nearest;
       this.vertex3 = v2Nearest;
@@ -75,16 +75,21 @@ public class TriangleVertices {
   }
 
   private int searchEdge13(NearestItem[] nearestItemsVertex1, int vertex3Index, int kNearestNeighboursThreshold) {
+    // + 1 since first nearest is item itself with null distance
+    // + 1 since we need to include nearest k + 1 to know if nearest k can be accepted
+    int limitNearest = kNearestNeighboursThreshold > Integer.MAX_VALUE - 2 ?
+    Integer.MAX_VALUE :
+    kNearestNeighboursThreshold + 1 + 1;
+
     Optional<NearestItem> v3 = Arrays.stream(nearestItemsVertex1)
-            // + 1 since first nearest is item itself with null distance
-            .limit(kNearestNeighboursThreshold + 1)
+            .limit(limitNearest)
             .filter(nearestItem -> nearestItem.getIndex() == vertex3Index)
             .findAny();
 
     return v3.isPresent() ? v3.get().getDistance() : -1;
   }
 
-  public boolean isOrphan() {
-    return orphan != null && orphan;
+  public boolean getkNNSingleton() {
+    return kNNSingleton != null && kNNSingleton;
   }
 }
