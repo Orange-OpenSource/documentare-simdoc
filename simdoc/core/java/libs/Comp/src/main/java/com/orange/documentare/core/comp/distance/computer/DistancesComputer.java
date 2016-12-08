@@ -9,7 +9,6 @@ package com.orange.documentare.core.comp.distance.computer;
  * the Free Software Foundation.
  */
 
-import com.google.common.primitives.Ints;
 import com.orange.documentare.core.comp.distance.Distance;
 import com.orange.documentare.core.comp.distance.computer.threads.DistancesThreadsManager;
 import com.orange.documentare.core.comp.measure.ProgressListener;
@@ -74,7 +73,9 @@ public class DistancesComputer {
         break;
       }
     }
-    return indices.isEmpty() ? null : Ints.toArray(indices);
+    return indices.isEmpty() ?
+            null :
+            indices.stream().mapToInt(Integer::intValue).toArray();
   }
 
   private int[] tryToGetPair() {

@@ -9,7 +9,6 @@ package com.orange.documentare.core.image.segmentation;
  * the Free Software Foundation.
  */
 
-import com.google.common.annotations.VisibleForTesting;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.SegmentationRect;
@@ -60,7 +59,6 @@ public class SpaceDetection {
     return getCentralMean(gaps);
   }
 
-  @VisibleForTesting
   int getCentralMean(int[] gaps) {
     int lowIndex = (int) (gaps.length * 0.25f);
     int highIndex = (int) (gaps.length * 0.75f) - 1;

@@ -9,7 +9,6 @@ package com.orange.documentare.core.comp.clustering.graph.clusters;
  * the Free Software Foundation.
  */
 
-import com.google.common.annotations.VisibleForTesting;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.scissors.clusterlongedges.ClusterLongEdgesScissor;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
@@ -36,7 +35,6 @@ public class ClusterTreatments {
     updateClusteringItemsCenters();
   }
 
-  @VisibleForTesting
   void updateClusteringItemsCenters() {
     clusteringGraph.getItems().stream()
             .filter(graphItem -> graphItem.isClusterCenter())

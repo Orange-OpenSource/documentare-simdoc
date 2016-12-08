@@ -22,7 +22,6 @@
         <zohhak.version>1.1.1</zohhak.version>
 
         <lombok.version>1.14.8</lombok.version>
-        <guava.version>18.0</guava.version>
         <junit.version>4.11</junit.version>
         <fastassert.version>1.4</fastassert.version>
         <compiler.version>1.8</compiler.version>
@@ -46,12 +45,6 @@
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
             <version>${lombok.version}</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>${guava.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -114,11 +107,6 @@
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
                 <version>${commons-codec.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.google.guava</groupId>
-                <artifactId>guava</artifactId>
-                <version>${guava.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.jgrapht</groupId>

@@ -8,9 +8,6 @@ package com.orange.documentare.core.comp.bwt;
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
-
-import com.google.common.annotations.VisibleForTesting;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -40,7 +37,6 @@ class ChangeIndices {
     return getFlattenChangeIndicesFrom(compressedChangeIndices, array.length);
   }
 
-  @VisibleForTesting
   List<Integer> getCompressedChangeIndices(byte[] array) {
     List<Integer> compressedChangeIndices = new ArrayList<>();
     int i = 0;
@@ -54,7 +50,6 @@ class ChangeIndices {
     return compressedChangeIndices;
   }
 
-  @VisibleForTesting
   int[] getFlattenChangeIndicesFrom(List<Integer> compressedChangeIndices, int length) {
     int[] changeIndices = new int[length];
     int changeIndex = compressedChangeIndices.get(0);

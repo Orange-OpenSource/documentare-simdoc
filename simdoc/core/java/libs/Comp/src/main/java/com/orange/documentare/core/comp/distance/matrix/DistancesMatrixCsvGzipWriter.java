@@ -9,7 +9,6 @@ package com.orange.documentare.core.comp.distance.matrix;
  * the Free Software Foundation.
  */
 
-import com.google.common.primitives.Ints;
 import com.orange.documentare.core.comp.distance.Distance;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
@@ -115,8 +114,7 @@ public class DistancesMatrixCsvGzipWriter {
       return getNearestIndicesFrom(nearestItems);
     } else {
       int[] indices = initDistancesIndices(length);
-      sortDistanceByName(indices);
-      return indices;
+      return sortDistanceByName(indices);
     }
   }
 
@@ -128,9 +126,12 @@ public class DistancesMatrixCsvGzipWriter {
     return nearestIndices;
   }
 
-  private void sortDistanceByName(int[] distancesIndices) {
-    List<Integer> indices = Ints.asList(distancesIndices);
-    Collections.sort(indices, new DistanceByNameIndexComparator(itemsToCompare));
+  private int[] sortDistanceByName(int[] distancesIndices) {
+    return Arrays.stream(distancesIndices)
+            .mapToObj(Integer::new)
+            .sorted(new DistanceByNameIndexComparator(itemsToCompare))
+            .mapToInt(Integer::intValue)
+            .toArray();
   }
 
   private int[] initDistancesIndices(int length) {
