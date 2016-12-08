@@ -1,4 +1,4 @@
 #!/bin/sh 
 
 rm -rf *.json* ld_out *.png
-java -jar build/libs/LineDetection-all.jar $1
+java -jar target/LineDetection-1.0-SNAPSHOT.jar $1
