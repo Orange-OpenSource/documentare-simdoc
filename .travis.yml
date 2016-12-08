@@ -36,7 +36,7 @@ deploy:
     repo: Orange-OpenSource/documentare-simdoc
 
 cache:
-  directories: $HOME/.m2 $HOME/.gradle
+  directories: $HOME/.m2
 
 notifications:
   email:

@@ -35,15 +35,14 @@ public class SimClustering {
   private static CommandLineOptions options;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
-    CommandLineOptions commandLineOptions;
     try {
-      commandLineOptions = new CommandLineOptions(args);
+      options = new CommandLineOptions(args);
     } catch (CommandLineException e) {
       CommandLineOptions.showHelp();
       return;
     }
     try {
-      doTheJob(commandLineOptions);
+      doTheJob(options);
     } catch (CommandLineException e) {
       System.out.println(e.getMessage());
     }

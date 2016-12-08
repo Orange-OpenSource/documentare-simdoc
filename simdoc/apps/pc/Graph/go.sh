@@ -1,4 +1,4 @@
 #!/bin/sh
 
 rm -rf out *.csv
-java -jar build/libs/Graph-all.jar $1 $2 $3 $4 $5 $6
+java -jar target/Graph-1.0-SNAPSHOT.jar $1 $2 $3 $4 $5 $6
