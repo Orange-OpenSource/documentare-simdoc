@@ -9,7 +9,6 @@ package com.orange.documentare.core.comp.clustering.graph;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
 import com.orange.documentare.core.model.io.Gzip;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;

@@ -1,4 +1,4 @@
-package com.orange.documentare.core.comp.clustering.graph.scissors;
+package com.orange.documentare.core.comp.clustering.graph;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -21,6 +21,7 @@ public class ClusteringParameters {
   private float stdAreaFactor = 2;
   private float stdSubgraphDistanceFactor = 2;
   private int distClusterThreshPercentile = 75;
+  private int kNearestNeighboursThreshold = Integer.MAX_VALUE - 1;
 
   private boolean cutNonMinimalVerticesEnabled;
   private boolean cutSubgraphLongestVerticesEnabled;

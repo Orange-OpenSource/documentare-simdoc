@@ -18,32 +18,25 @@ import java.util.List;
 
 class ClusteringModel {
   public final NcdItem[] items;
+  private final int kNearestNeighbours;
 
-  ClusteringModel(RegularFilesDistances regularFilesDistances, boolean useTriangulationVertices) {
+  ClusteringModel(RegularFilesDistances regularFilesDistances, int kNearestNeighbours) {
     this.items = regularFilesDistances.getItems1();
+
+    this.kNearestNeighbours =
+            kNearestNeighbours <= 0 ? items.length : kNearestNeighbours;
+
     DistancesArray distancesArray = regularFilesDistances.getDistancesArray();
-    if (useTriangulationVertices) {
-      initWithTriangulationVertices(distancesArray);
-    } else {
-      initWithNearestArrays(distancesArray);
-    }
+    initWithTriangulationVertices(distancesArray);
   }
 
   /** Memory in place creation, it is optimal since we do not allocate nearest arrays */
   private void initWithTriangulationVertices(DistancesArray distancesArray) {
+    List<NcdItem> itemsList = Arrays.asList(items);
     for (int i = 0; i < items.length; i++) {
       NearestItem vertex2 = distancesArray.nearestItemOf(i);
       NearestItem vertex3 = distancesArray.nearestItemOfBut(vertex2.getIndex(), i);
-      int edge13 = distancesArray.get(i, vertex3.getIndex());
-      items[i].setTriangleVertices(new TriangleVertices(vertex2, vertex3, edge13));
-    }
-  }
-
-  private void initWithNearestArrays(DistancesArray distancesArray) {
-    List<NcdItem> itemsList = Arrays.asList(items);
-    for (int i = 0; i < items.length; i++) {
-      NearestItem[] nearestItems = distancesArray.nearestItemsFor(itemsList, i);
-      items[i].setNearestItems(nearestItems);
+      items[i].setTriangleVertices(new TriangleVertices(distancesArray.nearestItemsFor(itemsList, i), vertex3, kNearestNeighbours));
     }
   }
 }

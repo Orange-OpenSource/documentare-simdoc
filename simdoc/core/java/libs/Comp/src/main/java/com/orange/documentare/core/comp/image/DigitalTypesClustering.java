@@ -10,7 +10,7 @@ package com.orange.documentare.core.comp.image;
  */
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
 import com.orange.documentare.core.comp.measure.Progress;

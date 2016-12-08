@@ -11,7 +11,7 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.graphwriter.GraphWriter;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.image.DigitalTypesClustering;

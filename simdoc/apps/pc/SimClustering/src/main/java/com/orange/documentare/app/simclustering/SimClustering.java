@@ -12,7 +12,7 @@ package com.orange.documentare.app.simclustering;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.app.simclustering.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;

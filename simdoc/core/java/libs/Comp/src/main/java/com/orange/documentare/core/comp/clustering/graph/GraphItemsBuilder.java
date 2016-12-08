@@ -24,6 +24,7 @@ import java.util.List;
 class GraphItemsBuilder {
   private final ClusteringItem[] items;
   private final List<GraphItem> graphItems;
+  private final int kNearestNeighboursThreshold;
 
   void initGraphItems() {
     for (int i = 0; i < items.length; i++) {
@@ -37,44 +38,41 @@ class GraphItemsBuilder {
     ClusteringItem item = items[itemIndex];
     TriangleVertices triangleVertices = item.triangleVerticesAvailable() ?
         item.getTriangleVertices() :
-        new TriangleVertices(item, items);
+        new TriangleVertices(item, items, kNearestNeighboursThreshold);
+
+    boolean kNNSingleton = triangleVertices.getkNNSingleton();
+    GraphItem graphItem = buildGraphItem(itemIndex, kNNSingleton);
+    if (!kNNSingleton) {
+      addTriangleInfo(graphItem, triangleVertices);
+    }
+    return graphItem;
+  }
+
+  private GraphItem buildGraphItem(int itemIndex, boolean kNNSingleton) {
+    GraphItem graphItem = new GraphItem();
+    ClusteringItem clusteringItem = items[itemIndex];
+    if (kNNSingleton) {
+      graphItem.setKNNSingleton(kNNSingleton);
+    }
+    graphItem.setVertexName(clusteringItem.getHumanReadableId());
+    graphItem.setVertex1(clusteringItem);
+    graphItem.setVertex1Index(itemIndex);
+    return graphItem;
+  }
+
+  private void addTriangleInfo(GraphItem graphItem, TriangleVertices triangleVertices) {
+    graphItem.setVertex2(getClusteringItemFrom(triangleVertices.getVertex2()));
+    graphItem.setVertex3(getClusteringItemFrom(triangleVertices.getVertex3()));
 
     // +1 to avoid null distance, which would disturb area and Q computation
     int edge12 = triangleVertices.getEdge12() + 1;
     int edge23 = triangleVertices.getEdge23() + 1;
     int edge31 = triangleVertices.getEdge13() + 1;
-
-    return getGraphItemWith(itemIndex, triangleVertices.getVertex2(), triangleVertices.getVertex3(), edge12, edge23, edge31);
-  }
-
-  private GraphItem getGraphItemWith(int itemIndex, NearestItem vertex2, NearestItem vertex3, int edge12, int edge23, int edge31) {
-    GraphItem graphItem = new GraphItem();
-    ClusteringItem clusteringItem = items[itemIndex];
-    graphItem.setVertexName(clusteringItem.getHumanReadableId());
-    graphItem.setVertex1(clusteringItem);
-    graphItem.setVertex1Index(itemIndex);
-    graphItem.setVertex2(getClusteringItemFrom(vertex2));
-    graphItem.setVertex3(getClusteringItemFrom(vertex3));
     graphItem.setEdgesLength(new int[]{edge12, edge23, edge31});
+
     float area = Heron.get(edge12, edge23, edge31);
     graphItem.setArea(area);
     graphItem.setQ(Equilaterality.get(area, edge12, edge23, edge31));
-    return graphItem;
-  }
-
-  private NearestItem getVertex3(int itemIndex, NearestItem vertex2) {
-    NearestItem[] nearestItemsVertex2 = items[vertex2.getIndex()].getNearestItems();
-    NearestItem NearestItemOfVertex2 = nearestItemsVertex2[1];
-    return NearestItemOfVertex2.getIndex() == itemIndex ?  nearestItemsVertex2[2] : NearestItemOfVertex2;
-  }
-
-  private int getDistanceTo(NearestItem[] nearestItems, int itemIndex) {
-    for (NearestItem item : nearestItems) {
-      if (item.getIndex() == itemIndex) {
-        return item.getDistance();
-      }
-    }
-    throw new IllegalStateException("Failed to find searchVertex2 item");
   }
 
   private ClusteringItem getClusteringItemFrom(NearestItem nearestItem) {
@@ -83,7 +81,7 @@ class GraphItemsBuilder {
         return items[i];
       }
     }
-    throw new IllegalStateException("Failed to find searchVertex2 item");
+    throw new IllegalStateException("Failed to find clustering item");
   }
 
   private void updateVerticesIndex() {

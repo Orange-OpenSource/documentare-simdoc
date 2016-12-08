@@ -10,28 +10,53 @@ package com.orange.documentare.core.model.ref.comp;
  */
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.Arrays;
+import java.util.Optional;
+
+@JsonInclude(JsonInclude.Include.NON_NULL)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
 public class TriangleVertices {
   private NearestItem vertex2;
   private NearestItem vertex3;
-  private int edge13;
+  private Integer edge13;
 
+  /** Based on the KNN criterion, if we did not found nearest items to build the triangle, then we declare this item as a singleton */
+  private Boolean kNNSingleton;
 
-  public TriangleVertices(ClusteringItem clusteringItem, ClusteringItem[] items) {
+  public TriangleVertices(ClusteringItem clusteringItem, ClusteringItem[] items, int kNearestNeighboursThreshold) {
     NearestItem[] vertex1Nearest = clusteringItem.getNearestItems();
-    this.vertex2 = searchVertex2(vertex1Nearest);
+    NearestItem v1Nearest = vertex1Nearest[1];
 
-    NearestItem[] vertex2Nearest = items[vertex2.getIndex()].getNearestItems();
-    this.vertex3 = searchVertex3(vertex1Nearest, vertex2Nearest);
+    NearestItem[] vertex2Nearest = items[v1Nearest.getIndex()].getNearestItems();
+    NearestItem v2Nearest = searchVertex3(vertex1Nearest, vertex2Nearest);
 
-    this.edge13 = searchEdge13(vertex1Nearest, vertex3.getIndex());
+    init(vertex1Nearest, v2Nearest, kNearestNeighboursThreshold);
+  }
+
+  /** Useful for PrepClustering when we use directly the distance matrix to avoid keeping in memory all nearest arrays */
+  public TriangleVertices(NearestItem[] vertex1Nearest, NearestItem v2Nearest, int kNearestNeighboursThreshold) {
+    init(vertex1Nearest, v2Nearest, kNearestNeighboursThreshold);
+  }
+
+  private void init(NearestItem[] vertex1Nearest, NearestItem v2Nearest, int kNearestNeighboursThreshold) {
+    NearestItem v1Nearest = vertex1Nearest[1];
+    int edge13Candidate = searchEdge13(vertex1Nearest, v2Nearest.getIndex(), kNearestNeighboursThreshold);
+
+    if (edge13Candidate < 0) {
+      kNNSingleton = true;
+    } else {
+      this.vertex2 = v1Nearest;
+      this.vertex3 = v2Nearest;
+      this.edge13 = edge13Candidate;
+    }
   }
 
   @JsonIgnore
@@ -43,22 +68,28 @@ public class TriangleVertices {
     return vertex3.getDistance();
   }
 
-  public static NearestItem searchVertex2(NearestItem[] vertex1Nearest) {
-    return vertex1Nearest[1];
-  }
-
   private NearestItem searchVertex3(NearestItem[] vertex1Nearest, NearestItem[] vertex2Nearest) {
     NearestItem vertex1 = vertex1Nearest[0];
     NearestItem vertex3 = vertex2Nearest[1];
     return vertex3.getIndex() == vertex1.getIndex() ? vertex2Nearest[2] : vertex3;
   }
 
-  private int searchEdge13(NearestItem[] nearestItemsVertex1, int vertex3Index) {
-    for (NearestItem item : nearestItemsVertex1) {
-      if (item.getIndex() == vertex3Index) {
-        return item.getDistance();
-      }
-    }
-    throw new IllegalStateException("Failed to find searchVertex2 item");
+  private int searchEdge13(NearestItem[] nearestItemsVertex1, int vertex3Index, int kNearestNeighboursThreshold) {
+    // + 1 since first nearest is item itself with null distance
+    // + 1 since we need to include nearest k + 1 to know if nearest k can be accepted
+    int limitNearest = kNearestNeighboursThreshold > Integer.MAX_VALUE - 2 ?
+    Integer.MAX_VALUE :
+    kNearestNeighboursThreshold + 1 + 1;
+
+    Optional<NearestItem> v3 = Arrays.stream(nearestItemsVertex1)
+            .limit(limitNearest)
+            .filter(nearestItem -> nearestItem.getIndex() == vertex3Index)
+            .findAny();
+
+    return v3.isPresent() ? v3.get().getDistance() : -1;
+  }
+
+  public boolean getkNNSingleton() {
+    return kNNSingleton != null && kNNSingleton;
   }
 }

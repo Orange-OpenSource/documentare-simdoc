@@ -9,7 +9,6 @@ package com.orange.documentare.core.comp.clustering.graph;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
@@ -18,10 +17,12 @@ import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
+import org.fest.assertions.Assertions;
 import org.junit.Assert;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class ClusteringGraphBuilderGetClusteringGraphTest {
   @Getter
@@ -49,7 +50,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
   }
 
   @Test
-  public void shouldComputeTrianglesAreas() {
+  public void compute_triangles_areas_with_nearest_arrays_without_knn_criteria() {
     // given
     ClusteringItem[] clusteringItems = getClusteringItems();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
@@ -71,9 +72,9 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
   }
 
   @Test
-  public void shouldComputeTrianglesAreasDirectlyWithVertices() {
+  public void compute_triangles_areas_directly_with_triangle_vertices_without_knn_criteria() {
     // given
-    ClusteringItem[] clusteringItems = getClusteringItemsWithVertices();
+    ClusteringItem[] clusteringItems = getClusteringItemsWithVertices(-1);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
 
     // do
@@ -92,18 +93,69 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     }
   }
 
+  @Test
+  public void compute_triangles_areas_with_nearest_arrays_with_knn_criteria() {
+    // given
+    ClusteringItem[] clusteringItems = getClusteringItems();
+    ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
+    ClusteringParameters clusteringParameters = new ClusteringParameters();
+    clusteringParameters.setKNearestNeighboursThreshold(1);
+
+    // do
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, clusteringParameters);
+
+    // then
+    List<GraphItem> graphItems = clusteringGraph.getItems();
+
+    Assertions.assertThat(graphItems.get(0).iskNNSingleton()).isTrue();
+
+    float[] expectedAreas = getExpectedAreas();
+    float[] expectedQ = getExpectedQ();
+    for (int i = 1; i < clusteringItems.length; i++) {
+      GraphItem graphItem = graphItems.get(i);
+      Assertions.assertThat(graphItem.iskNNSingleton()).isFalse();
+      Assert.assertEquals(expectedAreas[i], graphItem.getArea(), 0.01f);
+      Assert.assertEquals(expectedQ[i], graphItem.getQ(), 0.01f);
+    }
+  }
+
+  @Test
+  public void compute_triangles_areas_directly_with_triangle_vertices_with_knn_criteria() {
+    // given
+    ClusteringItem[] clusteringItems = getClusteringItemsWithVertices(1);
+    ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
+
+    // do
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, new ClusteringParameters());
+
+    // then
+    List<GraphItem> graphItems = clusteringGraph.getItems();
+
+    Assertions.assertThat(graphItems.get(0).iskNNSingleton()).isTrue();
+
+    float[] expectedAreas = getExpectedAreas();
+    float[] expectedQ = getExpectedQ();
+    for (int i = 1; i < clusteringItems.length; i++) {
+      GraphItem graphItem = graphItems.get(i);
+      Assertions.assertThat(graphItem.iskNNSingleton()).isFalse();
+      Assert.assertEquals(expectedAreas[i], graphItem.getArea(), 0.01f);
+      Assert.assertEquals(expectedQ[i], graphItem.getQ(), 0.01f);
+    }
+  }
+
   private float[] getExpectedAreas() {
-    return new float[] { 29318.832f, 29318.832f, 29318.832f, 104443.06f };
+    return new float[] { 58.225315f, 58.225315f, 110.244896f, 58.225315f };
   }
 
   private float[] getExpectedQ() {
-    return new float[] { 0.7473311f, 0.7473311f, 0.7473311f, 0.6677748f };
+    return new float[] { 0.30491066f, 0.30491066f, 0.26493204f, 0.30491066f };
   }
 
-  private ClusteringItem[] getClusteringItemsWithVertices() {
+  private ClusteringItem[] getClusteringItemsWithVertices(int kNearestNeighboursThreshold) {
     Item[] items = getClusteringItems();
+    int knn = kNearestNeighboursThreshold < 0 ? items.length : kNearestNeighboursThreshold;
     for (int i = 0; i < items.length; i++) {
-      items[i].setTriangleVertices(new TriangleVertices(items[i], items));
+      items[i].setTriangleVertices(new TriangleVertices(items[i], items, knn));
     }
     // Ensure we can only rely on vertices
     Arrays.asList(items).stream().forEach(item -> item.setNearestItems(null));
@@ -117,10 +169,10 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
   }
 
   private void initItems(Item[] items) {
-    items[0].setNearestItems(new NearestItem[] { new NearestItem(0, 0), new NearestItem(1, 200),  new NearestItem(2, 400), new NearestItem(3, 900) });
-    items[1].setNearestItems(new NearestItem[] { new NearestItem(1, 0), new NearestItem(0, 200),  new NearestItem(2, 300), new NearestItem(3, 800) });
-    items[2].setNearestItems(new NearestItem[] { new NearestItem(2, 0), new NearestItem(1, 300),  new NearestItem(0, 400), new NearestItem(3, 700) });
-    items[3].setNearestItems(new NearestItem[] { new NearestItem(3, 0), new NearestItem(2, 700),  new NearestItem(1, 800), new NearestItem(0, 900) });
+    items[0].setNearestItems(new NearestItem[]{ new NearestItem(0, 0), new NearestItem(1, 20), new NearestItem(2, 25), new NearestItem(3, 30)});
+    items[1].setNearestItems(new NearestItem[]{ new NearestItem(1, 0), new NearestItem(3, 10), new NearestItem(0, 20), new NearestItem(2, 45)});
+    items[2].setNearestItems(new NearestItem[]{ new NearestItem(2, 0), new NearestItem(0, 25), new NearestItem(1, 45), new NearestItem(3, 55)});
+    items[3].setNearestItems(new NearestItem[]{ new NearestItem(3, 0), new NearestItem(1, 10), new NearestItem(0, 30), new NearestItem(2, 55)});
   }
 
   private Item[] getItems() {

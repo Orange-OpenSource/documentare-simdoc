@@ -9,7 +9,7 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.image.opencv.OpencvLoader;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.io.FileUtils;

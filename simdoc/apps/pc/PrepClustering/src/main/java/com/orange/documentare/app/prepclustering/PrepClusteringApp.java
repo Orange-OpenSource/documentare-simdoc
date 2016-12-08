@@ -9,7 +9,6 @@ package com.orange.documentare.app.prepclustering;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.prepclustering.cmdline.CommandLineException;
 import com.orange.documentare.app.prepclustering.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.matrix.DistancesMatrixCsvGzipWriter;
@@ -19,7 +18,6 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.OptionalInt;
 
 public class PrepClusteringApp {
 
@@ -28,21 +26,23 @@ public class PrepClusteringApp {
   private static final File CLUSTERING_EXPORT_FILE = new File("prep_clustering_ready.json.gz");
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    CommandLineOptions commandLineOptions;
     try {
-      doTheJob(new CommandLineOptions(args));
-    } catch (CommandLineException e) {
-      System.out.println(e.getMessage());
+      commandLineOptions = new CommandLineOptions(args);
+      doTheJob(commandLineOptions);
+    } catch (Exception e) {
+      CommandLineOptions.showHelp();
     }
   }
 
   private static void doTheJob(CommandLineOptions commandLineOptions) throws IOException {
     RegularFilesDistances regularFilesDistances = loadRegularFilesDistances(commandLineOptions.getFile());
-    boolean useTriangulationVertices = commandLineOptions.isUseTriangulationVertices();
-    if (!useTriangulationVertices) {
+    boolean writeCSV = commandLineOptions.isWriteCSV();
+    if (writeCSV) {
       writeCSVFiles(regularFilesDistances);
     }
     if (regularFilesDistances.getDistancesArray().isOnSameArray()) {
-      writeJsonForClustering(regularFilesDistances, useTriangulationVertices);
+      writeJsonForClustering(regularFilesDistances, commandLineOptions.getKNearestNeighbours());
     }
     System.out.println("\n[Done]");
   }
@@ -60,9 +60,9 @@ public class PrepClusteringApp {
     csvWriter.writeTo(new File(NEAREST), true);
   }
 
-  private static void writeJsonForClustering(RegularFilesDistances regularFilesDistances, boolean useTriangulationVertices) throws IOException {
+  private static void writeJsonForClustering(RegularFilesDistances regularFilesDistances, int kNearestNeighbours) throws IOException {
     System.out.println("[Export clustering model]");
-    ClusteringModel clusteringModel = new ClusteringModel(regularFilesDistances, useTriangulationVertices);
+    ClusteringModel clusteringModel = new ClusteringModel(regularFilesDistances, kNearestNeighbours);
     exportToJson(clusteringModel, CLUSTERING_EXPORT_FILE);
   }
 

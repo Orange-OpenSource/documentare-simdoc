@@ -10,7 +10,7 @@ package com.orange.documentare.core.comp.clustering.graph.trianglesingleton;
  */
 
 import com.orange.documentare.core.comp.clustering.graph.Items;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import org.junit.Assert;
 import org.junit.Before;

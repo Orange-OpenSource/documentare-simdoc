@@ -11,13 +11,12 @@ package com.orange.documentare.core.comp.clustering.graph.subgraphs;
 
 import com.orange.documentare.core.comp.clustering.graph.scissors.nonminimaledges.NonMinimalEdgesScissor;
 import com.orange.documentare.core.comp.clustering.graph.scissors.longedges.LongEdgesScissor;
-import com.orange.documentare.core.comp.clustering.graph.scissors.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 
-import java.util.Collection;
 import java.util.Map;
 
 
