@@ -2,9 +2,8 @@
 
 TAG=`git describe`
 
-(cd simdoc/core/java/libs && ./mvnw clean install) && \
-(cd simdoc/apps/ && ./mvnw clean install) && \
-(cd simdoc/apps/ && ./refIntegrationTest.sh) && \
+(cd simdoc && ./prep-simdoc.sh) && \
+(cd simdoc/apps && ./refIntegrationTest.sh) && \
 cp simdoc/apps/LineDetection/target/Line*.jar LineDetection-$TAG.jar && \
 cp simdoc/apps/Ncd/target/Ncd*.jar Ncd-$TAG.jar && \
 cp simdoc/apps/PrepClustering/target/Prep*.jar PrepClustering-$TAG.jar && \
