@@ -12,6 +12,7 @@ package com.orange.documentare.core.image.linedetection;
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import com.orange.documentare.core.image.connectedcomponents.ConnectedComponents;
+import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.image.test.TestDrawer;
 import com.orange.documentare.core.model.io.Gzip;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
@@ -23,6 +24,10 @@ import java.io.IOException;
 
 @RunWith(ZohhakRunner.class)
 public class LineDetectionTest {
+
+  static {
+    OpencvLoader.load();
+  }
 
   @TestWith({
           "/latin_connected_components_ref.json.gz, /latin_line_detection_ref.json.gz, latin_line_detection.json.gz, /latin.png, latin_line_detection.png"
