@@ -12,6 +12,7 @@ package com.orange.documentare.app.prepclustering;
 import com.orange.documentare.app.prepclustering.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.matrix.DistancesMatrixCsvGzipWriter;
+import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import org.apache.commons.cli.ParseException;
@@ -29,6 +30,11 @@ public class PrepClusteringApp {
     CommandLineOptions commandLineOptions;
     try {
       commandLineOptions = new CommandLineOptions(args);
+    } catch (CommandLineException e) {
+      CommandLineOptions.showHelp();
+      return;
+    }
+    try {
       doTheJob(commandLineOptions);
     } catch (Exception e) {
       CommandLineOptions.showHelp();
@@ -36,7 +42,7 @@ public class PrepClusteringApp {
   }
 
   private static void doTheJob(CommandLineOptions commandLineOptions) throws IOException {
-    RegularFilesDistances regularFilesDistances = loadRegularFilesDistances(commandLineOptions.getFile());
+    RegularFilesDistances regularFilesDistances = loadRegularFilesDistances(commandLineOptions.getInputJsonGz());
     boolean writeCSV = commandLineOptions.isWriteCSV();
     if (writeCSV) {
       writeCSVFiles(regularFilesDistances);

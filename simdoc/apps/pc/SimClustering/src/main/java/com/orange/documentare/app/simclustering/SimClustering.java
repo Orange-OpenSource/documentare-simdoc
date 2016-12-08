@@ -35,9 +35,15 @@ public class SimClustering {
   private static CommandLineOptions options;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    CommandLineOptions commandLineOptions;
     try {
-      options = new CommandLineOptions(args);
-      doTheJob(options);
+      commandLineOptions = new CommandLineOptions(args);
+    } catch (CommandLineException e) {
+      CommandLineOptions.showHelp();
+      return;
+    }
+    try {
+      doTheJob(commandLineOptions);
     } catch (CommandLineException e) {
       System.out.println(e.getMessage());
     }
@@ -66,7 +72,7 @@ public class SimClustering {
   }
 
   private static void doTheJobForRegularFiles(CommandLineOptions options) throws IOException {
-    InputItem[] inputItems = getInputItemsFrom(options.getDistancesJsonFile());
+    InputItem[] inputItems = getInputItemsFrom(options.getInputJsonGz());
     computeClustering(inputItems);
   }
 

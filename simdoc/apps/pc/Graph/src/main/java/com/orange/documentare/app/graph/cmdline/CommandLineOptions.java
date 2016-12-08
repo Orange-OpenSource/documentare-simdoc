@@ -19,10 +19,10 @@ import java.io.File;
 public class CommandLineOptions {
 
   private static final String HELP = "h";
-  private static final String GRAPH_INPUT_FILE = "i";
+  private static final String GRAPH_INPUT_FILE = "json";
   private static final String IMAGE_DIRECTORY = "d";
 
-  private final Options options = new Options();
+  private static final Options options = new Options();
 
   private File graphJsonFile;
   private String imageDirectory = ".";
@@ -91,7 +91,7 @@ public class CommandLineOptions {
     return parser.parse(options, args);
   }
 
-  private void showHelp() {
+  public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp("Graph supporter of the Mouse liberation front, free Mickey from watches!!!", options);

@@ -19,14 +19,14 @@ import java.io.File;
 @Log4j2
 public class CommandLineOptions {
 
-  private static final String HELP = "help";
-  private static final String FILE = "f";
+  private static final String HELP = "h";
+  private static final String INPUT_JSON_GZ = "json";
   private static final String WRITE_CSV = "writeCSV";
   private static final String KNN = "k";
 
   private static final Options options = new Options();
 
-  private File file;
+  private File inputJsonGz;
   private boolean writeCSV;
   private int kNearestNeighbours = - 1;
 
@@ -45,9 +45,9 @@ public class CommandLineOptions {
   }
 
   private void initOptionsValues(CommandLine commandLine) {
-    boolean fileOption = commandLine.hasOption(FILE);
+    boolean fileOption = commandLine.hasOption(INPUT_JSON_GZ);
     if (!fileOption) {
-      throw new CommandLineException("\nERROR: an input file argument is missing\n");
+      throw new CommandLineException("\nERROR: an input inputJsonGz argument is missing\n");
     }
     setInputFiles(commandLine);
     writeCSV = commandLine.hasOption(WRITE_CSV);
@@ -57,25 +57,25 @@ public class CommandLineOptions {
   }
 
   private void setInputFiles(CommandLine commandLine) {
-    String filePath = commandLine.getOptionValue(FILE);
+    String filePath = commandLine.getOptionValue(INPUT_JSON_GZ);
     if (filePath == null) {
-      throw new CommandLineException("\nERROR: an input file name is invalid\n");
+      throw new CommandLineException("\nERROR: an input inputJsonGz name is invalid\n");
     } else {
       doSetInputFiles(filePath);
     }
   }
 
   private void doSetInputFiles(String filePath) {
-    file = new File(filePath);
-    if (!file.exists()) {
-      throw new CommandLineException("\nERROR: an input file is not accessible\n");
+    inputJsonGz = new File(filePath);
+    if (!inputJsonGz.exists()) {
+      throw new CommandLineException("\nERROR: an input inputJsonGz is not accessible\n");
     }
   }
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
     Option csv = new Option(WRITE_CSV, "write WRITE_CSV files (matrix, nearest)");
-    Option file = OptionBuilder.withArgName("file path").hasArg().withDescription("NCD input file").create(FILE);
+    Option file = OptionBuilder.withArgName("inputJsonGz path").hasArg().withDescription("NCD input inputJsonGz").create(INPUT_JSON_GZ);
     Option knn = OptionBuilder.withArgName("knn").hasArg().withDescription("k nearest neighbours").create(KNN);
     options.addOption(help);
     options.addOption(csv);

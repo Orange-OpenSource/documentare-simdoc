@@ -18,19 +18,19 @@ import java.io.File;
 @Getter
 public class CommandLineOptions {
   private static final String HELP = "h";
-  private static final String DISTANCES_FILE = "i";
-  private static final String SIMDOC_JSON = "simDocJsonGz";
-  private static final String Q_SD_FACTOR = "sdQ";
-  private static final String AREA_SD_FACTOR = "sdArea";
-  private static final String SUBGRAPH_SCALPEL_SD = "sdScut";
-  private static final String CLUSTER_SCALPEL_PERCENTILE = "tileCcut";
+  private static final String DISTANCES_FILE = "json";
+  private static final String SIMDOC_MODE = "simdoc";
+  private static final String Q_SD_FACTOR = "sdq";
+  private static final String AREA_SD_FACTOR = "sdarea";
+  private static final String SUBGRAPH_SCALPEL_SD = "sdscut";
+  private static final String CLUSTER_SCALPEL_PERCENTILE = "tileccut";
   private static final String WONDER_CUT = "wcut";
   private static final String SUBGRAPH_CUT = "scut";
   private static final String CLUSTER_CUT = "ccut";
 
-  private final Options options = new Options();
+  private static final Options options = new Options();
 
-  private File distancesJsonFile;
+  private File inputJsonGz;
   private File simDocJson;
   private float qStdFactor = -1;
   private float areaSdFactor = -1;
@@ -60,7 +60,7 @@ public class CommandLineOptions {
   }
 
   private void checkInputFiles(CommandLine commandLine) {
-    if (!commandLine.hasOption(SIMDOC_JSON) && !commandLine.hasOption(DISTANCES_FILE)) {
+    if (!commandLine.hasOption(SIMDOC_MODE) && !commandLine.hasOption(DISTANCES_FILE)) {
       showHelp();
       throw new CommandLineException("\nERROR: an input file argument is missing\n");
     } else {
@@ -93,7 +93,7 @@ public class CommandLineOptions {
   }
 
   private void setInputFiles(CommandLine commandLine) {
-    String simDocPath = commandLine.getOptionValue(SIMDOC_JSON);
+    String simDocPath = commandLine.getOptionValue(SIMDOC_MODE);
     String distancesJsonPath = commandLine.getOptionValue(DISTANCES_FILE);
     if (distancesJsonPath == null && simDocPath == null) {
       showHelp();
@@ -106,8 +106,8 @@ public class CommandLineOptions {
   private void doSetInputFiles(String distancesJsonPath, String simDocPath) {
     boolean error;
     if (distancesJsonPath != null) {
-      distancesJsonFile = new File(distancesJsonPath);
-      error = !distancesJsonFile.isFile();
+      inputJsonGz = new File(distancesJsonPath);
+      error = !inputJsonGz.isFile();
     } else {
       simDocJson = new File(simDocPath);
       error = !simDocJson.exists();
@@ -121,7 +121,7 @@ public class CommandLineOptions {
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
     Option distanceJsonOpt = OptionBuilder.withArgName("distances json gzip file path").hasArg().withDescription("path to json gzip file containing items distances").create(DISTANCES_FILE);
-    Option simDocOpt = OptionBuilder.withArgName("SimDoc json gzip file path").hasArg().withDescription("path to json gzip file containing SimDoc model ready for clustering").create(SIMDOC_JSON);
+    Option simDocOpt = OptionBuilder.withArgName("SimDoc json gzip file path").hasArg().withDescription("path to json gzip file containing SimDoc model ready for clustering").create(SIMDOC_MODE);
 
     Option qOpt = OptionBuilder.withArgName("graph scissor Q SD factor").hasArg().withDescription("graph scissor equilaterality's standard deviation factor").create(Q_SD_FACTOR);
     Option areaOpt = OptionBuilder.withArgName("graph scissor Area SD factor").hasArg().withDescription("graph scissor area's standard deviation factor").create(AREA_SD_FACTOR);
@@ -146,9 +146,9 @@ public class CommandLineOptions {
     return parser.parse(options, args);
   }
 
-  private void showHelp() {
+  public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("sim clustering supporter of the Mouse liberation front, free Mickey from watches!!!", options);
+    formatter.printHelp("sim clustering ", options);
   }
 }

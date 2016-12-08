@@ -34,8 +34,13 @@ public class GraphWriter {
   private static CommandLineOptions options;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
-    try {
+try {
       options = new CommandLineOptions(args);
+    } catch (CommandLineException e) {
+      CommandLineOptions.showHelp();
+      return;
+    }
+    try {
       doTheJob(options);
     } catch (CommandLineException e) {
       System.out.println(e.getMessage());
