@@ -9,7 +9,6 @@ package com.orange.documentare.app.ncd.thumbnail;
  * the Free Software Foundation.
  */
 
-import com.google.common.annotations.VisibleForTesting;
 import com.orange.documentare.app.ncd.FileToIdMapper;
 import com.orange.documentare.core.comp.nativeinterface.NativeInterface;
 import org.apache.commons.io.FileUtils;
@@ -87,7 +86,6 @@ public class Thumbnail {
     System.out.print("\r" + thumbnailProgress.progress().displayString("Thumbnails"));
   }
 
-  @VisibleForTesting
   boolean canCreateThumbnail(File file) {
     String filename = file.getName().toLowerCase();
     return Arrays.asList(SUPPORT_THUMBNAILS).stream()
