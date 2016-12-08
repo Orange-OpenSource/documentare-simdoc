@@ -9,11 +9,11 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.ncd.cmdline.CommandLineException;
-import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.app.ncd.memory.MemoryWatcher;
 import com.orange.documentare.app.ncd.thumbnail.Thumbnail;
+import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
+import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
@@ -29,18 +29,25 @@ public class NcdApp {
   private static final File REGULAR_FILES_EXPORT_FILE = new File("ncd_regular_files_model.json.gz");
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    CommandLineOptions options;
     try {
-      doTheJob(new CommandLineOptions(args));
-    } catch (CommandLineException e) {
+      options = new CommandLineOptions(args);
+    } catch(CommandLineException e) {
+      CommandLineOptions.showHelp();
+      return;
+    }
+    try {
+      doTheJob(options);
+    } catch (IOException e) {
       System.out.println(e.getMessage());
     }
   }
 
   private static void doTheJob(CommandLineOptions commandLineOptions) throws IOException {
-    if (commandLineOptions.getSimDocJsonGz() != null) {
-      doTheJobForSimDocInput(commandLineOptions.getSimDocJsonGz());
+    if (commandLineOptions.getSimdoc() != null) {
+      doTheJobForSimDocInput(commandLineOptions.getSimdoc());
     } else {
-      doTheJobForRegularFiles(commandLineOptions.getFile1(), commandLineOptions.getFile2());
+      doTheJobForRegularFiles(commandLineOptions.getD1(), commandLineOptions.getD2());
     }
     System.out.println("\n[Done]");
   }
