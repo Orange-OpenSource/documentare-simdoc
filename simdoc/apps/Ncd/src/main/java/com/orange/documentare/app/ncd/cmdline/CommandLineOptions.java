@@ -9,6 +9,7 @@ package com.orange.documentare.app.ncd.cmdline;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.model.common.CommandLineException;
 import lombok.Getter;
 import lombok.extern.log4j.Log4j2;
 import org.apache.commons.cli.*;
@@ -86,8 +87,8 @@ public class CommandLineOptions {
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
     Option d1 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory 1").create(DIRECTORY_1);
-    Option d2 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory 2, not mandatory (we will assume d2 = d1)").create(DIRECTORY_2);
-    Option simdoc = OptionBuilder.withArgName("file path").hasArg().withDescription("SimDoc model json gzip file").create(SIMDOC_MODE);
+    Option d2 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory 2, not mandatory (we assume d2=d1)").create(DIRECTORY_2);
+    Option simdoc = OptionBuilder.withArgName("simdoc file path").hasArg().withDescription("SimDoc model .json.gz file path").create(SIMDOC_MODE);
     options.addOption(help);
     options.addOption(d1);
     options.addOption(d2);
@@ -99,6 +100,6 @@ public class CommandLineOptions {
   public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("ncd ", options);
+    formatter.printHelp("ncd", options);
   }
 }

@@ -48,7 +48,6 @@ public class CommandLineOptions {
     CommandLine commandLine = getCommandLineFromArgs(args);
     boolean helpRequested = commandLine.hasOption(HELP);
     if (helpRequested) {
-      showHelp();
       throw new CommandLineException("\nPrint this help message\n");
     } else {
       initOptionsValues(commandLine);
@@ -61,7 +60,6 @@ public class CommandLineOptions {
 
   private void checkInputFiles(CommandLine commandLine) {
     if (!commandLine.hasOption(SIMDOC_MODE) && !commandLine.hasOption(DISTANCES_FILE)) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file argument is missing\n");
     } else {
       setGraphConfiguration(commandLine);
@@ -96,7 +94,6 @@ public class CommandLineOptions {
     String simDocPath = commandLine.getOptionValue(SIMDOC_MODE);
     String distancesJsonPath = commandLine.getOptionValue(DISTANCES_FILE);
     if (distancesJsonPath == null && simDocPath == null) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input argument is invalid\n");
     } else {
       doSetInputFiles(distancesJsonPath, simDocPath);
@@ -113,7 +110,6 @@ public class CommandLineOptions {
       error = !simDocJson.exists();
     }
     if (error) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file is not accessible\n");
     }
   }
@@ -149,6 +145,6 @@ public class CommandLineOptions {
   public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("sim clustering ", options);
+    formatter.printHelp("SimClustering ", options);
   }
 }

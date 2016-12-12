@@ -35,7 +35,6 @@ public class CommandLineOptions {
     CommandLine commandLine = getCommandLineFromArgs(args);
     boolean helpRequested = commandLine.hasOption(HELP);
     if (helpRequested) {
-      showHelp();
       throw new CommandLineException("\nPrint this help message\n");
     } else {
       initOptionsValues(commandLine);
@@ -51,7 +50,6 @@ public class CommandLineOptions {
 
   private void checkInputFiles(CommandLine commandLine) {
     if (!commandLine.hasOption(GRAPH_INPUT_FILE)) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file argument is missing\n");
     } else {
       setInputFiles(commandLine);
@@ -61,7 +59,6 @@ public class CommandLineOptions {
   private void setInputFiles(CommandLine commandLine) {
     String trianglesJsonPath = commandLine.getOptionValue(GRAPH_INPUT_FILE);
     if (trianglesJsonPath == null) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input argument is invalid\n");
     } else {
       doSetInputFiles(trianglesJsonPath);
@@ -75,7 +72,6 @@ public class CommandLineOptions {
       error = !graphJsonFile.isFile();
     }
     if (error) {
-      showHelp();
       throw new CommandLineException("\nERROR: an input file is not accessible\n");
     }
   }
@@ -94,6 +90,6 @@ public class CommandLineOptions {
   public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("Graph supporter of the Mouse liberation front, free Mickey from watches!!!", options);
+    formatter.printHelp("Graph", options);
   }
 }

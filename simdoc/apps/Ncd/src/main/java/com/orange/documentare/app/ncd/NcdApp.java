@@ -32,13 +32,13 @@ public class NcdApp {
     CommandLineOptions options;
     try {
       options = new CommandLineOptions(args);
-    } catch(CommandLineException e) {
+    } catch(Exception e) {
       CommandLineOptions.showHelp();
       return;
     }
     try {
       doTheJob(options);
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }

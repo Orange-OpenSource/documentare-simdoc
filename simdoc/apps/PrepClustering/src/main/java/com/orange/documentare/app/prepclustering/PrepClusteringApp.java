@@ -30,7 +30,7 @@ public class PrepClusteringApp {
     CommandLineOptions commandLineOptions;
     try {
       commandLineOptions = new CommandLineOptions(args);
-    } catch (CommandLineException e) {
+    } catch (Exception e) {
       CommandLineOptions.showHelp();
       return;
     }
