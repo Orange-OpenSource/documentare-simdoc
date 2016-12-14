@@ -11,10 +11,10 @@ package com.orange.documentare.app.simclustering;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.app.simclustering.cmdline.CommandLineOptions;
+import com.orange.documentare.app.simclustering.cmdline.SimClusteringOptions;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
-import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
@@ -32,32 +32,32 @@ public class SimClustering {
   private static final File SIMDOC_EXPORT_FILE = new File("sc_segmentation_ready_for_user_interface.json.gz");
   private static final File GRAPH_OUTPUT = new File("sc_graph_input.json.gz");
 
-  private static CommandLineOptions options;
+  private static SimClusteringOptions options;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
     try {
-      options = new CommandLineOptions(args);
+      options = (new CommandLineOptions(args)).simClusteringOptions();
     } catch (Exception e) {
       CommandLineOptions.showHelp();
       return;
     }
     try {
-      doTheJob(options);
+      doTheJob();
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
   }
 
-  private static void doTheJob(CommandLineOptions options) throws IOException {
-    if (options.getSimDocJson() != null) {
-      doTheJobForSimDoc(options.getSimDocJson());
+  private static void doTheJob() throws IOException {
+    if (options.simdoc) {
+      doTheJobForSimDoc();
     } else {
-      doTheJobForRegularFiles(options);
+      doTheJobForRegularFiles();
     }
   }
 
-  private static void doTheJobForSimDoc(File simDocJson) throws IOException {
-    ImageSegmentation imageSegmentation = segmentationOf(simDocJson);
+  private static void doTheJobForSimDoc() throws IOException {
+    ImageSegmentation imageSegmentation = segmentationOf();
     DigitalTypes copyWithoutSpaces = imageSegmentation.getDigitalTypes().copyWithoutSpaces();
     ClusteringItem[] items = copyWithoutSpaces.toArray(new DigitalType[copyWithoutSpaces.size()]);
     computeClustering(items);
@@ -65,13 +65,13 @@ public class SimClustering {
     export.exportTo(SIMDOC_EXPORT_FILE);
   }
 
-  private static ImageSegmentation segmentationOf(File simDocJson) throws IOException {
+  private static ImageSegmentation segmentationOf() throws IOException {
     JsonGenericHandler jsonHandler = new JsonGenericHandler(true);
-    return (ImageSegmentation) jsonHandler.getObjectFromJsonGzipFile(ImageSegmentation.class, simDocJson);
+    return (ImageSegmentation) jsonHandler.getObjectFromJsonGzipFile(ImageSegmentation.class, options.simdocFile);
   }
 
-  private static void doTheJobForRegularFiles(CommandLineOptions options) throws IOException {
-    InputItem[] inputItems = getInputItemsFrom(options.getInputJsonGz());
+  private static void doTheJobForRegularFiles() throws IOException {
+    InputItem[] inputItems = getInputItemsFrom(options.regularFile);
     computeClustering(inputItems);
   }
 
@@ -92,35 +92,6 @@ public class SimClustering {
 
   private static ClusteringGraph getClusteringGraphFor(ClusteringItem[] items) {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = new ClusteringParameters();
-    updateParameters(parameters);
-    return clusteringGraphBuilder.build(items, parameters);
-  }
-
-  private static void updateParameters(ClusteringParameters parameters) {
-    float qStdFactor = options.getQStdFactor();
-    float areaStdFactor = options.getAreaSdFactor();
-    float subgraphScalpelStdFactor = options.getSubgraphScalpelSdFactor();
-    int clusterDistThreshPercentile = options.getClusterDistThreshPercentile();
-    if (qStdFactor >= 0) {
-      parameters.setStdQFactor(qStdFactor);
-    }
-    if (areaStdFactor >= 0) {
-      parameters.setStdAreaFactor(areaStdFactor);
-    }
-    if (subgraphScalpelStdFactor >= 0) {
-      parameters.setStdSubgraphDistanceFactor(subgraphScalpelStdFactor);
-    }
-    if (clusterDistThreshPercentile >= 0) {
-      parameters.setDistClusterThreshPercentile(clusterDistThreshPercentile);
-    }
-    if (options.isSubGraphsWonderCutEnabled()) {
-      parameters.setCutNonMinimalVerticesEnabled(true);
-    } else if (options.isSubGraphsScalpelCutEnabled()) {
-      parameters.setCutSubgraphLongestVerticesEnabled(true);
-    }
-    if (options.isClustersScalpelCutEnabled()) {
-      parameters.setCutClusterLongestVerticesEnabled(true);
-    }
+    return clusteringGraphBuilder.build(items, options.clusteringParameters());
   }
 }

@@ -10,38 +10,33 @@ package com.orange.documentare.app.simclustering.cmdline;
  */
 
 import com.orange.documentare.core.model.common.CommandLineException;
-import lombok.Getter;
 import org.apache.commons.cli.*;
 
-import java.io.File;
-
-@Getter
 public class CommandLineOptions {
   private static final String HELP = "h";
   private static final String DISTANCES_FILE = "json";
   private static final String SIMDOC_MODE = "simdoc";
-  private static final String Q_SD_FACTOR = "sdq";
-  private static final String AREA_SD_FACTOR = "sdarea";
-  private static final String SUBGRAPH_SCALPEL_SD = "sdscut";
-  private static final String CLUSTER_SCALPEL_PERCENTILE = "tileccut";
+  private static final String ACUT = "acut";
+  private static final String QCUT = "qcut";
   private static final String WONDER_CUT = "wcut";
-  private static final String SUBGRAPH_CUT = "scut";
-  private static final String CLUSTER_CUT = "ccut";
+  private static final String SCUT = "scut";
+  private static final String CCUT = "ccut";
+
+  private static final String A_DEFAULT_SD_FACTOR = "2";
+  private static final String Q_DEFAULT_SD_FACTOR = "2";
+  private static final String SCUT_DEFAULT_SD_FACTOR = "2";
+  private static final String CCUT_DEFAULT_PERCENTILE = "75";
 
   private static final Options options = new Options();
 
-  private File inputJsonGz;
-  private File simDocJson;
-  private float qStdFactor = -1;
-  private float areaSdFactor = -1;
-  private float subgraphScalpelSdFactor = -1;
-  private int clusterDistThreshPercentile = -1;
-  private boolean subGraphsWonderCutEnabled;
-  private boolean subGraphsScalpelCutEnabled;
-  private boolean clustersScalpelCutEnabled;
+  private SimClusteringOptionsBuilder optionsBuilder = new SimClusteringOptionsBuilder();
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
+  }
+
+  public SimClusteringOptions simClusteringOptions() {
+    return optionsBuilder.build();
   }
 
   private void init(String[] args) throws ParseException {
@@ -50,84 +45,74 @@ public class CommandLineOptions {
     if (helpRequested) {
       throw new CommandLineException("\nPrint this help message\n");
     } else {
-      initOptionsValues(commandLine);
+      initOptions(commandLine);
     }
   }
 
-  private void initOptionsValues(CommandLine commandLine) {
-    checkInputFiles(commandLine);
-  }
-
-  private void checkInputFiles(CommandLine commandLine) {
-    if (!commandLine.hasOption(SIMDOC_MODE) && !commandLine.hasOption(DISTANCES_FILE)) {
-      throw new CommandLineException("\nERROR: an input file argument is missing\n");
-    } else {
-      setGraphConfiguration(commandLine);
-      setInputFiles(commandLine);
+  private void initOptions(CommandLine commandLine) {
+    if (commandLine.hasOption(QCUT)) {
+      optionsBuilder.qcut(commandLine.getOptionValue(QCUT, Q_DEFAULT_SD_FACTOR));
     }
-  }
-
-  private void setGraphConfiguration(CommandLine commandLine) {
-    if (commandLine.hasOption(Q_SD_FACTOR)) {
-      qStdFactor = Float.parseFloat(commandLine.getOptionValue(Q_SD_FACTOR));
+    if (commandLine.hasOption(ACUT)) {
+      optionsBuilder.acut(commandLine.getOptionValue(ACUT, A_DEFAULT_SD_FACTOR));
     }
-    if (commandLine.hasOption(AREA_SD_FACTOR)) {
-      areaSdFactor = Float.parseFloat(commandLine.getOptionValue(AREA_SD_FACTOR));
+    if (commandLine.hasOption(SCUT)) {
+      optionsBuilder.scut(commandLine.getOptionValue(SCUT, SCUT_DEFAULT_SD_FACTOR));
     }
-    if (commandLine.hasOption(SUBGRAPH_SCALPEL_SD)) {
-      subgraphScalpelSdFactor = Float.parseFloat(commandLine.getOptionValue(SUBGRAPH_SCALPEL_SD));
-    }
-    if (commandLine.hasOption(CLUSTER_SCALPEL_PERCENTILE)) {
-      clusterDistThreshPercentile = Integer.parseInt(commandLine.getOptionValue(CLUSTER_SCALPEL_PERCENTILE));
+    if (commandLine.hasOption(CCUT)) {
+      optionsBuilder.ccut(commandLine.getOptionValue(CCUT, CCUT_DEFAULT_PERCENTILE));
     }
     if (commandLine.hasOption(WONDER_CUT)) {
-      subGraphsWonderCutEnabled = true;
-    } else if (commandLine.hasOption(SUBGRAPH_CUT)) {
-      subGraphsScalpelCutEnabled = true;
+      optionsBuilder.wcut();
     }
-    if (commandLine.hasOption(CLUSTER_CUT)) {
-      clustersScalpelCutEnabled = true;
+    if (commandLine.hasOption(SIMDOC_MODE)) {
+      optionsBuilder.simdocFile(commandLine.getOptionValue(SIMDOC_MODE));
     }
-  }
-
-  private void setInputFiles(CommandLine commandLine) {
-    String simDocPath = commandLine.getOptionValue(SIMDOC_MODE);
-    String distancesJsonPath = commandLine.getOptionValue(DISTANCES_FILE);
-    if (distancesJsonPath == null && simDocPath == null) {
-      throw new CommandLineException("\nERROR: an input argument is invalid\n");
-    } else {
-      doSetInputFiles(distancesJsonPath, simDocPath);
-    }
-  }
-
-  private void doSetInputFiles(String distancesJsonPath, String simDocPath) {
-    boolean error;
-    if (distancesJsonPath != null) {
-      inputJsonGz = new File(distancesJsonPath);
-      error = !inputJsonGz.isFile();
-    } else {
-      simDocJson = new File(simDocPath);
-      error = !simDocJson.exists();
-    }
-    if (error) {
-      throw new CommandLineException("\nERROR: an input file is not accessible\n");
+    if (commandLine.hasOption(DISTANCES_FILE)) {
+      optionsBuilder.regularFile(commandLine.getOptionValue(DISTANCES_FILE));
     }
   }
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
-    Option distanceJsonOpt = OptionBuilder.withArgName("distances json gzip file path").hasArg().withDescription("path to json gzip file containing items distances").create(DISTANCES_FILE);
-    Option simDocOpt = OptionBuilder.withArgName("SimDoc json gzip file path").hasArg().withDescription("path to json gzip file containing SimDoc model ready for clustering").create(SIMDOC_MODE);
 
-    Option qOpt = OptionBuilder.withArgName("graph scissor Q SD factor").hasArg().withDescription("graph scissor equilaterality's standard deviation factor").create(Q_SD_FACTOR);
-    Option areaOpt = OptionBuilder.withArgName("graph scissor Area SD factor").hasArg().withDescription("graph scissor area's standard deviation factor").create(AREA_SD_FACTOR);
+    Option distanceJsonOpt = Option.builder()
+            .desc("distances file (.json.gz)")
+            .argName(DISTANCES_FILE)
+            .hasArg()
+            .build();
 
-    Option sSdOpt = OptionBuilder.withArgName("subgraph scalpel SD factor").hasArg().withDescription("subgraph scalpel standard deviation factor").create(SUBGRAPH_SCALPEL_SD);
-    Option cTileOpt = OptionBuilder.withArgName("cluster scalpel percentile threshold").hasArg().withDescription("cluster scalpel percentile threshold").create(CLUSTER_SCALPEL_PERCENTILE);
+    Option simDocOpt = Option.builder()
+            .desc("path to json gzip file containing SimDoc model ready for clustering")
+            .argName(SIMDOC_MODE)
+            .build();
 
-    Option subGraphsScalpelCutPost = new Option(SUBGRAPH_CUT, "enable subgraphs scalpel cut post treatments");
-    Option clustersScalpelCutPost = new Option(CLUSTER_CUT, "enable clusters scalpel cut post treatments");
+    Option qOpt = Option.builder()
+            .optionalArg(true)
+            .desc("graph equilaterality scissor, optional argument: standard deviation factor, default=" + Q_DEFAULT_SD_FACTOR)
+            .argName(QCUT)
+            .build();
+
+    Option areaOpt = Option.builder()
+            .optionalArg(true)
+            .desc("graph area scissor, optional argument: standard deviation factor, default=" + A_DEFAULT_SD_FACTOR)
+            .argName(ACUT)
+            .build();
+
+    Option sSdOpt = Option.builder()
+            .optionalArg(true)
+            .desc("subgraph scalpel, optional argument: standard deviation factor, default=" + SCUT_DEFAULT_SD_FACTOR)
+            .argName(SCUT)
+            .build();
+
+    Option cTileOpt = Option.builder()
+            .optionalArg(true)
+            .desc("cluster scalpel, optional argument: percentile threshold, default=" + CCUT_DEFAULT_PERCENTILE)
+            .argName(CCUT)
+            .build();
+
     Option subGraphsWonderCutPost = new Option(WONDER_CUT, "enable subgraphs wonder cut post treatments");
+
     options.addOption(help);
     options.addOption(distanceJsonOpt);
     options.addOption(simDocOpt);
@@ -135,10 +120,8 @@ public class CommandLineOptions {
     options.addOption(areaOpt);
     options.addOption(sSdOpt);
     options.addOption(cTileOpt);
-    options.addOption(subGraphsScalpelCutPost);
-    options.addOption(clustersScalpelCutPost);
     options.addOption(subGraphsWonderCutPost);
-    CommandLineParser parser = new PosixParser();
+    CommandLineParser parser = new DefaultParser();
     return parser.parse(options, args);
   }
 
