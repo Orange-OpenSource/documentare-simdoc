@@ -22,29 +22,35 @@ import java.util.List;
 @Log4j2
 @Getter(AccessLevel.PACKAGE)
 class TriangleScissorTrigger {
+  private final boolean acut;
+  private final boolean qcut;
   private final float qThreshold;
   private final float areaThreshold;
 
   TriangleScissorTrigger(List<GraphItem> items, ClusteringParameters clusteringParameters) {
+    acut = clusteringParameters.acut();
+    qcut = clusteringParameters.qcut();
     TrianglesStats trianglesStats = getTriangleStats(items);
-    qThreshold = getQCutThreshold(trianglesStats.getTrianglesEquilaterality(), clusteringParameters);
-    areaThreshold = getAreaThreshold(trianglesStats.getTrianglesArea(), clusteringParameters);
+    qThreshold = getQCutThreshold(trianglesStats.getTrianglesEquilaterality(), clusteringParameters.qcutSdFactor);
+    areaThreshold = getAreaThreshold(trianglesStats.getTrianglesArea(), clusteringParameters.acutSdFactor);
   }
 
   boolean shouldCut(GraphItem graphItem) {
-    boolean shouldCut = graphItem.getQ() < qThreshold || graphItem.getArea() > areaThreshold;
+    boolean shouldCut =
+            (qcut && graphItem.getQ() < qThreshold) || (acut && graphItem.getArea() > areaThreshold);
+
     if (shouldCut && log.isDebugEnabled()) {
       log.debug(String.format("Cut item %s (q %f - a %f - triangulation qThresh %f aThresh %f)", graphItem.getVertexName(), graphItem.getQ(), graphItem.getArea(), qThreshold, areaThreshold));
     }
     return shouldCut;
   }
 
-  private float getQCutThreshold(Stats trianglesEquilaterality, ClusteringParameters clusteringParameters) {
-    return (float) (trianglesEquilaterality.getMean() - clusteringParameters.qcutSdFactor * trianglesEquilaterality.getStandardDeviation());
+  private float getQCutThreshold(Stats trianglesEquilaterality, float qcutSdFactor) {
+    return (float) (trianglesEquilaterality.getMean() - qcutSdFactor * trianglesEquilaterality.getStandardDeviation());
   }
 
-  private float getAreaThreshold(Stats trianglesArea, ClusteringParameters clusteringParameters) {
-    return (float) (trianglesArea.getMean() + clusteringParameters.acutSdFactor * trianglesArea.getStandardDeviation());
+  private float getAreaThreshold(Stats trianglesArea, float acutSdFactor) {
+    return (float) (trianglesArea.getMean() + acutSdFactor * trianglesArea.getStandardDeviation());
   }
 
   private TrianglesStats getTriangleStats(List<GraphItem> items) {
