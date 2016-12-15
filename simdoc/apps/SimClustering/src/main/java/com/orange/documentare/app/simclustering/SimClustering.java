@@ -49,7 +49,7 @@ public class SimClustering {
   }
 
   private static void doTheJob() throws IOException {
-    System.out.println("Options: " + options.clusteringParameters.toString() + "\n");
+    System.out.println("Clustering parameters, " + options.clusteringParameters.toString());
     if (options.simdoc) {
       doTheJobForSimDoc();
     } else {

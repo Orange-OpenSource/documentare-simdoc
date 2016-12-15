@@ -51,8 +51,7 @@ public class CommandLineOptions {
     ClusteringParameters.ClusteringParametersBuilder builder = optionsBuilder.clusteringParametersBuilder;
 
     if (commandLine.hasOption(ACUT)) {
-      String optionValue = commandLine.getOptionValue(ACUT, String.valueOf(A_DEFAULT_SD_FACTOR));
-      builder.acut(Float.parseFloat(optionValue));
+      builder.acut(Float.parseFloat(commandLine.getOptionValue(ACUT, String.valueOf(A_DEFAULT_SD_FACTOR))));
     }
     if (commandLine.hasOption(QCUT)) {
       builder.qcut(Float.parseFloat(commandLine.getOptionValue(QCUT, String.valueOf(Q_DEFAULT_SD_FACTOR))));
@@ -87,26 +86,28 @@ public class CommandLineOptions {
             .hasArg()
             .build();
 
-    Option areaOpt = Option.builder()
+    Option areaOpt = Option.builder(ACUT)
             .optionalArg(true)
-            .longOpt(ACUT)
-            .valueSeparator('=')
+            .hasArgs()
             .desc("graph area scissor, optional argument: standard deviation factor, default=" + A_DEFAULT_SD_FACTOR)
             .build();
 
     Option qOpt = Option.builder(QCUT)
             .optionalArg(true)
+            .hasArgs()
             .desc("graph equilaterality scissor, optional argument: standard deviation factor, default=" + Q_DEFAULT_SD_FACTOR)
             .build();
 
 
     Option sSdOpt = Option.builder(SCUT)
             .optionalArg(true)
+            .hasArgs()
             .desc("subgraph scalpel, optional argument: standard deviation factor, default=" + SCUT_DEFAULT_SD_FACTOR)
             .build();
 
     Option cTileOpt = Option.builder(CCUT)
             .optionalArg(true)
+            .hasArgs()
             .desc("cluster scalpel, optional argument: percentile threshold, default=" + CCUT_DEFAULT_PERCENTILE)
             .build();
 
