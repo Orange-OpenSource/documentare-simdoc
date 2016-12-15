@@ -30,8 +30,9 @@ public class ClusteringGraphBuilderIntegrationTest {
     ImportModel importModel = (ImportModel) jsonGenericHandler.getObjectFromJsonGzipFile(ImportModel.class, new File(getClass().getResource(CLUSTERING_INPUT).getFile()));
     importModel.loadItemsBytes();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
+    ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(importModel.getItems(), new ClusteringParameters());
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(importModel.getItems(), parameters);
     File output = new File(GRAPH_OUTPUT);
     jsonGenericHandler.writeObjectToJsonGzipFile(clusteringGraph, output);
     // then

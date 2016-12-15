@@ -40,11 +40,11 @@ class TriangleScissorTrigger {
   }
 
   private float getQCutThreshold(Stats trianglesEquilaterality, ClusteringParameters clusteringParameters) {
-    return (float) (trianglesEquilaterality.getMean() - clusteringParameters.getStdQFactor() * trianglesEquilaterality.getStandardDeviation());
+    return (float) (trianglesEquilaterality.getMean() - clusteringParameters.qcutSdFactor * trianglesEquilaterality.getStandardDeviation());
   }
 
   private float getAreaThreshold(Stats trianglesArea, ClusteringParameters clusteringParameters) {
-    return (float) (trianglesArea.getMean() + clusteringParameters.getStdAreaFactor() * trianglesArea.getStandardDeviation());
+    return (float) (trianglesArea.getMean() + clusteringParameters.acutSdFactor * trianglesArea.getStandardDeviation());
   }
 
   private TrianglesStats getTriangleStats(List<GraphItem> items) {

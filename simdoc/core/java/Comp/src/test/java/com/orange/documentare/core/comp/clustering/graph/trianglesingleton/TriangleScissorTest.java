@@ -20,19 +20,18 @@ import org.junit.Test;
 import java.util.List;
 
 public class TriangleScissorTest {
-  private final ClusteringParameters clusteringParameters = new ClusteringParameters();
   private final ClusteringGraph clusteringGraph = new ClusteringGraph();
+  private final ClusteringParameters parameters = ClusteringParameters.builder().acut(0.5f).qcut(0.8f).build();
+
   private TriangleScissor triangleScissor;
 
   @Before
   public void setup() {
-    clusteringParameters.setStdQFactor(0.8f);
-    clusteringParameters.setStdAreaFactor(0.5f);
     Items items = new Items();
     clusteringGraph.getItems().add(items.get(0));
     clusteringGraph.getItems().add(items.get(1));
     clusteringGraph.getItems().add(items.get(2));
-    triangleScissor = new TriangleScissor(clusteringGraph, clusteringParameters);
+    triangleScissor = new TriangleScissor(clusteringGraph, parameters);
   }
 
   @Test

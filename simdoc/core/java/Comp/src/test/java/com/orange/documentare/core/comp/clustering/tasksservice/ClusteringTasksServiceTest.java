@@ -27,6 +27,7 @@ public class ClusteringTasksServiceTest {
   private static final String CLUSTERING_TASK_FILE_PREFIX = "clustering_tasks_";
 
   private final ClusteringTasksService tasksHandler = ClusteringTasksService.instance();
+  private final ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
 
   @Test
   public void runSeveralDistinctTasks() throws IOException, InterruptedException {
@@ -47,10 +48,10 @@ public class ClusteringTasksServiceTest {
       outputFilenames[i] = CLUSTERING_TASK_FILE_PREFIX + i + ".json";
     }
     for (int i = 0; i < NB_TASKS/4; i++) {
-      clusteringTasks[i * 4]     = new ClusteringTask(segFile1.getAbsolutePath(), outputFilenames[i * 4], new ClusteringParameters());
-      clusteringTasks[i * 4 + 1] = new ClusteringTask(segFile2.getAbsolutePath(), outputFilenames[i * 4 + 1], new ClusteringParameters());
-      clusteringTasks[i * 4 + 2] = new ClusteringTask(segFile3.getAbsolutePath(), outputFilenames[i * 4 + 2], new ClusteringParameters());
-      clusteringTasks[i * 4 + 3] = new ClusteringTask(segFile4.getAbsolutePath(), outputFilenames[i * 4 + 3], new ClusteringParameters());
+      clusteringTasks[i * 4]     = new ClusteringTask(segFile1.getAbsolutePath(), outputFilenames[i * 4], parameters);
+      clusteringTasks[i * 4 + 1] = new ClusteringTask(segFile2.getAbsolutePath(), outputFilenames[i * 4 + 1], parameters);
+      clusteringTasks[i * 4 + 2] = new ClusteringTask(segFile3.getAbsolutePath(), outputFilenames[i * 4 + 2], parameters);
+      clusteringTasks[i * 4 + 3] = new ClusteringTask(segFile4.getAbsolutePath(), outputFilenames[i * 4 + 3], parameters);
     }
 
     // when
@@ -89,7 +90,7 @@ public class ClusteringTasksServiceTest {
 
     File segFile = new File(getClass().getResource("/clusteringtasks/latin1_segmentation.json").getFile());
     String outputFilename = "clustering_task_write_graph.json";
-    ClusteringTask clusteringTask = new ClusteringTask(segFile.getAbsolutePath(), outputFilename, new ClusteringParameters());
+    ClusteringTask clusteringTask = new ClusteringTask(segFile.getAbsolutePath(), outputFilename, parameters);
     clusteringTask.saveGraphTo(filename);
 
     // when
@@ -115,7 +116,7 @@ public class ClusteringTasksServiceTest {
 
     File segFile = new File(getClass().getResource("/clusteringtasks/latin1_segmentation.json").getFile());
     String outputFilename = "not_stripped_clustering.json";
-    ClusteringTask task = new ClusteringTask(segFile.getAbsolutePath(), outputFilename, new ClusteringParameters());
+    ClusteringTask task = new ClusteringTask(segFile.getAbsolutePath(), outputFilename, parameters);
     task.strippedOutputFilename(strippedFilename);
 
 

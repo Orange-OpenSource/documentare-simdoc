@@ -30,9 +30,9 @@ public class SubGraphTreatments {
   private int edgesCutTotalCount;
 
   public void doTreatments() {
-    if (clusteringParameters.isCutNonMinimalVerticesEnabled()) {
+    if (clusteringParameters.wcut) {
       cutNonMinimalVertices();
-    } else if (clusteringParameters.isCutSubgraphLongestVerticesEnabled()) {
+    } else if (clusteringParameters.scut()) {
       cutLongestVertices();
     }
   }
@@ -45,7 +45,7 @@ public class SubGraphTreatments {
 
   private void cutLongestVertices() {
     Map<Integer, SubGraph> subgraphs = clusteringGraph.getSubGraphs();
-    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs.values(), clusteringParameters.getStdSubgraphDistanceFactor());
+    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs.values(), clusteringParameters.scutSdFactor);
     stabilityLoopCount = 0;
     edgesCutTotalCount = 0;
     while(loopOnRemoveStaticallyLongestVertices(longEdgesScissor));

@@ -58,14 +58,12 @@ public class DigitalTypesClusteringTest implements ProgressListener {
 
   /** change default settings so that we check we actually test it as well */
   private ClusteringParameters clusteringParameters() {
-    ClusteringParameters parameters = new ClusteringParameters();
-    parameters.setStdAreaFactor(4);
-    parameters.setStdQFactor(4);
-    parameters.setCutSubgraphLongestVerticesEnabled(true);
-    parameters.setStdSubgraphDistanceFactor(4);
-    parameters.setCutClusterLongestVerticesEnabled(true);
-    parameters.setDistClusterThreshPercentile(90);
-    return parameters;
+    return ClusteringParameters.builder()
+            .acut(4)
+            .qcut(4)
+            .scut(4)
+            .ccut(90)
+            .build();
   }
 
   private ImageSegmentation loadSegmentationTest(String segmentationInput) throws IOException {

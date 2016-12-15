@@ -9,8 +9,11 @@ package com.orange.documentare.app.simclustering.cmdline;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.common.CommandLineException;
 import org.apache.commons.cli.*;
+
+import static com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.*;
 
 public class CommandLineOptions {
   private static final String HELP = "h";
@@ -22,14 +25,9 @@ public class CommandLineOptions {
   private static final String SCUT = "scut";
   private static final String CCUT = "ccut";
 
-  private static final String A_DEFAULT_SD_FACTOR = "2";
-  private static final String Q_DEFAULT_SD_FACTOR = "2";
-  private static final String SCUT_DEFAULT_SD_FACTOR = "2";
-  private static final String CCUT_DEFAULT_PERCENTILE = "75";
-
   private static final Options options = new Options();
 
-  private SimClusteringOptionsBuilder optionsBuilder = new SimClusteringOptionsBuilder();
+  private SimClusteringOptions.SimClusteringOptionsBuilder optionsBuilder = SimClusteringOptions.builder();
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
@@ -50,20 +48,23 @@ public class CommandLineOptions {
   }
 
   private void initOptions(CommandLine commandLine) {
-    if (commandLine.hasOption(QCUT)) {
-      optionsBuilder.qcut(commandLine.getOptionValue(QCUT, Q_DEFAULT_SD_FACTOR));
-    }
+    ClusteringParameters.ClusteringParametersBuilder builder = optionsBuilder.clusteringParametersBuilder;
+
     if (commandLine.hasOption(ACUT)) {
-      optionsBuilder.acut(commandLine.getOptionValue(ACUT, A_DEFAULT_SD_FACTOR));
+      String optionValue = commandLine.getOptionValue(ACUT, String.valueOf(A_DEFAULT_SD_FACTOR));
+      builder.acut(Float.parseFloat(optionValue));
+    }
+    if (commandLine.hasOption(QCUT)) {
+      builder.qcut(Float.parseFloat(commandLine.getOptionValue(QCUT, String.valueOf(Q_DEFAULT_SD_FACTOR))));
     }
     if (commandLine.hasOption(SCUT)) {
-      optionsBuilder.scut(commandLine.getOptionValue(SCUT, SCUT_DEFAULT_SD_FACTOR));
+      builder.scut(Float.parseFloat(commandLine.getOptionValue(SCUT, String.valueOf(SCUT_DEFAULT_SD_FACTOR))));
     }
     if (commandLine.hasOption(CCUT)) {
-      optionsBuilder.ccut(commandLine.getOptionValue(CCUT, CCUT_DEFAULT_PERCENTILE));
+      builder.ccut(Integer.parseInt(commandLine.getOptionValue(CCUT, String.valueOf(CCUT_DEFAULT_PERCENTILE))));
     }
     if (commandLine.hasOption(WONDER_CUT)) {
-      optionsBuilder.wcut();
+      builder.wcut();
     }
     if (commandLine.hasOption(SIMDOC_MODE)) {
       optionsBuilder.simdocFile(commandLine.getOptionValue(SIMDOC_MODE));
@@ -76,39 +77,37 @@ public class CommandLineOptions {
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
 
-    Option distanceJsonOpt = Option.builder()
+    Option distanceJsonOpt = Option.builder(DISTANCES_FILE)
             .desc("distances file (.json.gz)")
-            .argName(DISTANCES_FILE)
             .hasArg()
             .build();
 
-    Option simDocOpt = Option.builder()
+    Option simDocOpt = Option.builder(SIMDOC_MODE)
             .desc("path to json gzip file containing SimDoc model ready for clustering")
-            .argName(SIMDOC_MODE)
-            .build();
-
-    Option qOpt = Option.builder()
-            .optionalArg(true)
-            .desc("graph equilaterality scissor, optional argument: standard deviation factor, default=" + Q_DEFAULT_SD_FACTOR)
-            .argName(QCUT)
+            .hasArg()
             .build();
 
     Option areaOpt = Option.builder()
             .optionalArg(true)
+            .longOpt(ACUT)
+            .valueSeparator('=')
             .desc("graph area scissor, optional argument: standard deviation factor, default=" + A_DEFAULT_SD_FACTOR)
-            .argName(ACUT)
             .build();
 
-    Option sSdOpt = Option.builder()
+    Option qOpt = Option.builder(QCUT)
+            .optionalArg(true)
+            .desc("graph equilaterality scissor, optional argument: standard deviation factor, default=" + Q_DEFAULT_SD_FACTOR)
+            .build();
+
+
+    Option sSdOpt = Option.builder(SCUT)
             .optionalArg(true)
             .desc("subgraph scalpel, optional argument: standard deviation factor, default=" + SCUT_DEFAULT_SD_FACTOR)
-            .argName(SCUT)
             .build();
 
-    Option cTileOpt = Option.builder()
+    Option cTileOpt = Option.builder(CCUT)
             .optionalArg(true)
             .desc("cluster scalpel, optional argument: percentile threshold, default=" + CCUT_DEFAULT_PERCENTILE)
-            .argName(CCUT)
             .build();
 
     Option subGraphsWonderCutPost = new Option(WONDER_CUT, "enable subgraphs wonder cut post treatments");
@@ -125,8 +124,9 @@ public class CommandLineOptions {
     return parser.parse(options, args);
   }
 
-  public static void showHelp() {
+  public static void showHelp(Exception e) {
     System.out.println();
+    System.out.println("[ERROR] " + e.getMessage());
     HelpFormatter formatter = new HelpFormatter();
     formatter.printHelp("SimClustering ", options);
   }

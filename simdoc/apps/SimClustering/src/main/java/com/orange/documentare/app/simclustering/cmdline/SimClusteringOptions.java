@@ -10,60 +10,53 @@ package com.orange.documentare.app.simclustering.cmdline;
  */
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.core.model.common.CommandLineException;
 
 import java.io.File;
 
 public class SimClusteringOptions {
   public final boolean simdoc;
-  public final boolean qcut;
-  public final boolean acut;
-  public final boolean scut;
-  public final boolean ccut;
-  public final boolean wcut;
   public final File regularFile;
   public final File simdocFile;
-  public final float qcutSdFactor;
-  public final float acutSdFactor;
-  public final float scutSdFactor;
-  public final int ccutPercentile;
+  public final ClusteringParameters clusteringParameters;
 
-  public SimClusteringOptions(File regularFile, File simdocFile, float qcutSdFactor, float acutSdFactor, float scutSdFactor, int ccutPercentile, boolean wcut) {
+  private SimClusteringOptions(File regularFile, File simdocFile, ClusteringParameters clusteringParameters) {
     this.regularFile = regularFile;
     this.simdocFile = simdocFile;
-    this.qcutSdFactor = qcutSdFactor;
-    this.acutSdFactor = acutSdFactor;
-    this.scutSdFactor = scutSdFactor;
-    this.ccutPercentile = ccutPercentile;
-    this.wcut = wcut;
-
+    this.clusteringParameters = clusteringParameters;
     simdoc = simdocFile != null;
-    qcut = qcutSdFactor >= 0;
-    acut = qcutSdFactor >= 0;
-    scut = qcutSdFactor >= 0;
-    ccut = qcutSdFactor >= 0;
   }
 
-  public ClusteringParameters clusteringParameters() {
-    ClusteringParameters parameters = new ClusteringParameters();
+  public static SimClusteringOptionsBuilder builder() {
+    return new SimClusteringOptionsBuilder();
+  }
 
-    if (qcut) {
-      parameters.setStdQFactor(qcutSdFactor);
-    }
-    if (acut) {
-      parameters.setStdAreaFactor(acutSdFactor);
-    }
-    if (scut) {
-      parameters.setCutSubgraphLongestVerticesEnabled(true);
-      parameters.setStdSubgraphDistanceFactor(scutSdFactor);
-    }
-    if (ccut) {
-      parameters.setCutClusterLongestVerticesEnabled(true);
-      parameters.setDistClusterThreshPercentile(ccutPercentile);
-    }
-    if (wcut) {
-      parameters.setCutNonMinimalVerticesEnabled(true);
+  public static class SimClusteringOptionsBuilder {
+    public final ClusteringParameters.ClusteringParametersBuilder clusteringParametersBuilder = ClusteringParameters.builder();
+    private File regularFile;
+    private File simdocFile;
+
+    private SimClusteringOptionsBuilder() {
+
     }
 
-    return parameters;
+    public void regularFile(String optionValue) {
+      regularFile = new File(optionValue);
+    }
+
+    public void simdocFile(String optionValue) {
+      simdocFile = new File(optionValue);
+    }
+
+    public SimClusteringOptions build() {
+      checkOptions();
+      return new SimClusteringOptions(regularFile, simdocFile, clusteringParametersBuilder.build());
+    }
+
+    private void checkOptions() {
+      if ((regularFile == null || !regularFile.exists()) && (simdocFile == null || !simdocFile.exists())) {
+        throw new CommandLineException("Missing input file");
+      }
+    }
   }
 }

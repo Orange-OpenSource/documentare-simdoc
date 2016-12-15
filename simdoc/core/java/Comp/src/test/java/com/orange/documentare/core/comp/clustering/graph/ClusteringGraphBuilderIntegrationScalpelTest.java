@@ -30,9 +30,11 @@ public class ClusteringGraphBuilderIntegrationScalpelTest {
     ImportModel importModel = (ImportModel) jsonGenericHandler.getObjectFromJsonGzipFile(ImportModel.class, new File(getClass().getResource(CLUSTERING_INPUT).getFile()));
     importModel.loadItemsBytes();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters clusteringParameters = new ClusteringParameters();
-    clusteringParameters.setCutSubgraphLongestVerticesEnabled(true);
-    clusteringParameters.setStdSubgraphDistanceFactor(1);
+    ClusteringParameters clusteringParameters = ClusteringParameters.builder()
+            .acut()
+            .qcut()
+            .scut(1)
+            .build();
     // do
     ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(importModel.getItems(), clusteringParameters);
     File output = new File(GRAPH_OUTPUT);

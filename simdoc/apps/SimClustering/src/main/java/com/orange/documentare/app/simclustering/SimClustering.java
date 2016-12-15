@@ -38,7 +38,7 @@ public class SimClustering {
     try {
       options = (new CommandLineOptions(args)).simClusteringOptions();
     } catch (Exception e) {
-      CommandLineOptions.showHelp();
+      CommandLineOptions.showHelp(e);
       return;
     }
     try {
@@ -49,6 +49,7 @@ public class SimClustering {
   }
 
   private static void doTheJob() throws IOException {
+    System.out.println("Options: " + options.clusteringParameters.toString() + "\n");
     if (options.simdoc) {
       doTheJobForSimDoc();
     } else {
@@ -92,6 +93,6 @@ public class SimClustering {
 
   private static ClusteringGraph getClusteringGraphFor(ClusteringItem[] items) {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    return clusteringGraphBuilder.build(items, options.clusteringParameters());
+    return clusteringGraphBuilder.build(items, options.clusteringParameters);
   }
 }

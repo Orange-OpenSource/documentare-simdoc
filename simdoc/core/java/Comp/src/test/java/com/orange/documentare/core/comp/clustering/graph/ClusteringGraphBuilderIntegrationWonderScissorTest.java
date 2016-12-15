@@ -30,8 +30,11 @@ public class ClusteringGraphBuilderIntegrationWonderScissorTest {
     ImportModel importModel = (ImportModel) jsonGenericHandler.getObjectFromJsonGzipFile(ImportModel.class, new File(getClass().getResource(CLUSTERING_INPUT).getFile()));
     importModel.loadItemsBytes();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = new ClusteringParameters();
-    parameters.setCutNonMinimalVerticesEnabled(true);
+    ClusteringParameters parameters = ClusteringParameters.builder()
+            .acut()
+            .qcut()
+            .wcut()
+            .build();
     // do
     ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(importModel.getItems(), parameters);
     File output = new File(GRAPH_OUTPUT);

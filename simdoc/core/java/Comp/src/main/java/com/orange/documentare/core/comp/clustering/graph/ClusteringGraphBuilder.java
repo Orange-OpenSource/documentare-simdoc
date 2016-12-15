@@ -35,7 +35,7 @@ public class ClusteringGraphBuilder {
   private final ClusteringGraph clusteringGraph = new ClusteringGraph();
 
   private ClusteringItem[] items;
-  private ClusteringParameters clusteringParameters;
+  private ClusteringParameters parameters;
   private SubgraphsBuilder subgraphsBuilder;
   private Graph<GraphItem, JGraphEdge> graph;
 
@@ -47,7 +47,7 @@ public class ClusteringGraphBuilder {
 
   public ClusteringGraph build(ClusteringItem[] items, ClusteringParameters parameters) {
     this.items = items;
-    this.clusteringParameters = parameters;
+    this.parameters = parameters;
     log.info(parameters.toString());
     t0 = System.currentTimeMillis();
     buildTriangulationGraph();
@@ -61,9 +61,10 @@ public class ClusteringGraphBuilder {
 
   private void buildTriangulationGraph() {
     onProgress(TreatmentStep.TRIANGULATION);
-    GraphItemsBuilder graphItemsBuilder = new GraphItemsBuilder(items, clusteringGraph.getItems(), clusteringParameters.getKNearestNeighboursThreshold());
+    int kNearestNeighboursThreshold = parameters.knn() ? parameters.kNearestNeighboursThreshold : items.length;
+    GraphItemsBuilder graphItemsBuilder = new GraphItemsBuilder(items, clusteringGraph.getItems(), kNearestNeighboursThreshold);
     graphItemsBuilder.initGraphItems();
-    Triangulation triangulation = new Triangulation(clusteringGraph, clusteringParameters);
+    Triangulation triangulation = new Triangulation(clusteringGraph, parameters);
     graph = triangulation.getTriangulationGraph();
   }
 
@@ -71,7 +72,7 @@ public class ClusteringGraphBuilder {
     percent = 10;
     onProgress(TreatmentStep.SUBGRAPHS_POST_PROCESSING);
     subgraphsBuilder = new SubgraphsBuilder(clusteringGraph, new JGraphTBuilder());
-    SubGraphTreatments subGraphTreatments = new SubGraphTreatments(clusteringGraph, clusteringParameters);
+    SubGraphTreatments subGraphTreatments = new SubGraphTreatments(clusteringGraph, parameters);
     subGraphTreatments.doTreatments();
     rebuildSubGraphsAndClusters(items);
   }
@@ -79,8 +80,8 @@ public class ClusteringGraphBuilder {
   private void clustersPostTreatments() {
     percent = 50;
     onProgress(TreatmentStep.CLUSTERS_POST_PROCESSING);
-    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, clusteringParameters, items);
-    if (clusteringParameters.isCutClusterLongestVerticesEnabled()) {
+    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, parameters, items);
+    if (parameters.ccut()) {
       clusterTreatments.cutLongestVertices();
       rebuildSubGraphsAndClusters(items);
     }

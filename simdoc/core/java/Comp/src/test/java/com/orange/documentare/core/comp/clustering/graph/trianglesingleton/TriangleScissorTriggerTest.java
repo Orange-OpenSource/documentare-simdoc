@@ -19,16 +19,14 @@ import org.junit.Test;
 import java.util.List;
 
 public class TriangleScissorTriggerTest {
-  private final ClusteringParameters clusteringParameters = new ClusteringParameters();
+  private final ClusteringParameters parameters = ClusteringParameters.builder().acut(0.5f).qcut(0.8f).build();
   private final List<GraphItem> items = new Items();
 
   private TriangleScissorTrigger scissorTrigger;
 
   @Before
   public void setup() {
-    clusteringParameters.setStdQFactor(0.8f);
-    clusteringParameters.setStdAreaFactor(0.5f);
-    scissorTrigger = new TriangleScissorTrigger(items, clusteringParameters);
+    scissorTrigger = new TriangleScissorTrigger(items, parameters);
   }
 
   @Test

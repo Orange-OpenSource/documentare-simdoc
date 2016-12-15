@@ -54,9 +54,10 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     // given
     ClusteringItem[] clusteringItems = getClusteringItems();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
+    ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, new ClusteringParameters());
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
 
     // then
     float[] expectedAreas = getExpectedAreas();
@@ -76,9 +77,10 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     // given
     ClusteringItem[] clusteringItems = getClusteringItemsWithVertices(-1);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
+    ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, new ClusteringParameters());
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
 
     // then
     float[] expectedAreas = getExpectedAreas();
@@ -98,11 +100,13 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     // given
     ClusteringItem[] clusteringItems = getClusteringItems();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters clusteringParameters = new ClusteringParameters();
-    clusteringParameters.setKNearestNeighboursThreshold(1);
-
+    ClusteringParameters parameters = ClusteringParameters.builder()
+            .acut()
+            .qcut()
+            .knn(1)
+            .build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, clusteringParameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
 
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();
@@ -124,9 +128,9 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     // given
     ClusteringItem[] clusteringItems = getClusteringItemsWithVertices(1);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-
+    ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, new ClusteringParameters());
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
 
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();

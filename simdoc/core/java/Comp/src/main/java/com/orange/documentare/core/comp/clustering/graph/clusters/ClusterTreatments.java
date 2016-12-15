@@ -24,7 +24,7 @@ public class ClusterTreatments {
   private final ClusteringItem[] clusteringItems;
 
   public void cutLongestVertices() {
-    ClusterLongEdgesScissor scissor = new ClusterLongEdgesScissor(clusteringGraph, clusteringGraph.getClusters().values(), clusteringParameters.getDistClusterThreshPercentile());
+    ClusterLongEdgesScissor scissor = new ClusterLongEdgesScissor(clusteringGraph, clusteringGraph.getClusters().values(), clusteringParameters.ccutPercentile);
     int edgesCutInGraph = scissor.clean();
     log.info("Scalpel in clusters, {} edges cut", edgesCutInGraph);
   }
