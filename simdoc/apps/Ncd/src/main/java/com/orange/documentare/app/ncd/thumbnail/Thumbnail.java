@@ -10,10 +10,12 @@ package com.orange.documentare.app.ncd.thumbnail;
  */
 
 import com.orange.documentare.core.comp.nativeinterface.NativeInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 
 import static org.apache.commons.io.FileUtils.forceDelete;
 
+@Slf4j
 public class Thumbnail {
   private static final File THUMBNAILS_DIR = new File("thumbnails");
   private static final String CMD = "convert";
@@ -84,7 +87,17 @@ public class Thumbnail {
   }
 
   boolean canCreateThumbnail(File file) {
-    String filename = file.getName().toLowerCase();
+    File target;
+    try {
+      target = Files.isSymbolicLink(file.toPath()) ?
+        Files.readSymbolicLink(file.toPath()).toFile() :
+        file;
+    } catch (IOException e) {
+      log.error("[Thumbnails] Failed to read file", e);
+      return false;
+    }
+
+    String filename = target.getName().toLowerCase();
     return Arrays.asList(SUPPORT_THUMBNAILS).stream()
             .filter(extension -> filename.endsWith(extension))
             .count() > 0;
