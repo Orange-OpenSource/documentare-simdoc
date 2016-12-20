@@ -11,11 +11,11 @@ package com.orange.documentare.core.comp.nativeinterface;/*
 
 
 import lombok.NonNull;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-@Log4j2
+@Slf4j
 public final class NativeInterface {
 
   /**
@@ -73,7 +73,7 @@ public final class NativeInterface {
 
   private static void throwException(String cmd, Exception e) {
     String msg = String.format("Failed to launch command line: %s / exception msg = %s", cmd, e.getMessage());
-    log.fatal(msg, e);
+    log.error(msg, e);
     throw new NativeException(msg);
   }
 }

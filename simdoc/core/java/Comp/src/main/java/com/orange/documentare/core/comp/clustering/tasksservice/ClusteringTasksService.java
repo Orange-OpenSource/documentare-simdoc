@@ -12,7 +12,7 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.experimental.Accessors;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * RxJava or Reactor
  */
 @Accessors(fluent = true)
-@Log4j2
+@Slf4j
 public class ClusteringTasksService {
 
   @Getter

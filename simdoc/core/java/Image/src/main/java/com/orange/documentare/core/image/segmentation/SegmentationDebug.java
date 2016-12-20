@@ -16,13 +16,13 @@ import com.orange.documentare.core.image.test.TestDrawer;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
 import java.io.IOException;
 
 @RequiredArgsConstructor
-@Log4j2
+@Slf4j
 public class SegmentationDebug {
   @Getter
   private final File imageFile;
@@ -31,7 +31,7 @@ public class SegmentationDebug {
   private boolean debugEnabled;
 
   private Glyphs glyphs = new Glyphs();
-  
+
   private int step;
 
   public int newStep() {

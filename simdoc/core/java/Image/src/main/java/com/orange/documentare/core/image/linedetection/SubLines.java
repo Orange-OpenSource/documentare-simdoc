@@ -14,9 +14,9 @@ import com.orange.documentare.core.image.connectedcomponents.ConnectedComponents
 import com.orange.documentare.core.image.segmentationcollection.SegmentationCollection;
 import com.orange.documentare.core.model.ref.segmentation.SegmentationRect;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 class SubLines {
   private static float SUBLINE_HEIGHT_TRIGGER_RATIO = 2f;

@@ -9,9 +9,9 @@ package com.orange.documentare.core.comp.clustering.geometry;
  * the Free Software Foundation.
  */
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class Heron {
   /**
    * @param a

@@ -1,7 +1,5 @@
 package com.orange.documentare.core.filesio.filesid;
 
-import com.orange.documentare.core.filesio.filesid.FilesIdBuilder;
-import com.orange.documentare.core.filesio.filesid.FilesIdMap;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.After;
@@ -21,13 +19,14 @@ public class FilesIdBuilderTest {
   };
 
   private final static String SRC_DIR = "test_tmp/files_id_src";
-  private final static String DEST_DIR = "test_tmp/fake_parent_to_test_parent_creation/files_id_dest";
+  private final static String DEST_ROOT_DIR = "test_tmp/fake_parent_to_test_parent_creation/files_id_dest";
+  private final static String DEST_DIR = DEST_ROOT_DIR + "/safe-input-dir";
 
   @Before
   @After
   public void cleanup() throws IOException {
     FileUtils.deleteDirectory(new File(SRC_DIR));
-    FileUtils.deleteDirectory(new File(DEST_DIR));
+    FileUtils.deleteDirectory(new File(DEST_ROOT_DIR));
   }
 
   @Test
@@ -37,7 +36,7 @@ public class FilesIdBuilderTest {
     buildSourceDir(SRC_DIR, TEST_FILES);
 
     // When
-    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR);
+    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
 
     // Then
     for (int index = 0; index < TEST_FILES.length; index++) {
@@ -54,8 +53,8 @@ public class FilesIdBuilderTest {
     buildSourceDir(SRC_DIR, TEST_FILES);
 
     // When
-    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR);
-    FilesIdMap map = builder.readMapIn(DEST_DIR);
+    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
+    FilesIdMap map = builder.readMapIn(DEST_ROOT_DIR);
 
     // Then
     map.keySet().forEach(index -> {

@@ -9,10 +9,10 @@ package com.orange.documentare.core.comp.bwt;
  * the Free Software Foundation.
  */
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 /** Bwt implementation using the SAIS (suffix array) algorithm */
-@Log4j2
+@Slf4j
 public class SaisBwt {
   private static final boolean ALLOW_NATIVE = false;
 
@@ -33,7 +33,7 @@ public class SaisBwt {
     if (nativeLibraryLoaded) {
       byte[] nativeBytes = getBwtNative(bytes);
       if (nativeBytes == null) {
-        log.fatal("OOM on native side");
+        log.error("OOM on native side");
         return new byte[0];
       } else {
         return nativeBytes;

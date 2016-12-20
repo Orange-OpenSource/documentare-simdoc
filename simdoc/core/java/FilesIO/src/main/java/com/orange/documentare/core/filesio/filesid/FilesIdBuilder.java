@@ -18,7 +18,7 @@ public class FilesIdBuilder {
 
   private static final String MAP_NAME = "map.json.gz";
 
-  public void createFilesIdDirectory(String srcDir, String destDir) {
+  public void createFilesIdDirectory(String srcDir, String destDir, String mapDir) {
     File src = new File(srcDir);
     if (!src.isDirectory()) {
       throw new FilesIdException("[FilesIdBuilder] Source directory does not exists: " + src.getAbsolutePath());
@@ -27,7 +27,7 @@ public class FilesIdBuilder {
     File dest = createDestination(destDir);
 
     File[] srcFiles = createFilesId(src, dest);
-    createMap(srcFiles, dest);
+    createMap(srcFiles, new File(mapDir));
   }
 
   public FilesIdMap readMapIn(String absoluteDirectoryPath) {
@@ -59,7 +59,7 @@ public class FilesIdBuilder {
     return srcFiles;
   }
 
-  private void createMap(File[] srcFiles, File dest) {
+  private void createMap(File[] srcFiles, File mapDir) {
     FilesIdMap map = new FilesIdMap();
     for (int id = 0; id < srcFiles.length; id++) {
       map.put(id, srcFiles[id].getAbsolutePath());
@@ -67,7 +67,7 @@ public class FilesIdBuilder {
 
     ObjectMapper mapper = new ObjectMapper();
     ObjectWriter writer = mapper.writerWithDefaultPrettyPrinter();
-    File mapFile = new File(dest.getAbsolutePath() + "/" + MAP_NAME);
+    File mapFile = new File(mapDir.getAbsolutePath() + "/" + MAP_NAME);
     try {
       GZIPOutputStream out = new GZIPOutputStream(new FileOutputStream(mapFile));
       writer.writeValue(out, map);

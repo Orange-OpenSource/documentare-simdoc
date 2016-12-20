@@ -13,8 +13,9 @@ import com.orange.documentare.core.comp.bwt.SaisBwt;
 import com.orange.documentare.core.comp.lyndonrle.LyndonRle;
 import com.orange.documentare.core.comp.rle.RunLength;
 import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class Ncd {
   private static final boolean USE_LYNDON = false;
 
@@ -42,7 +43,7 @@ public class Ncd {
     try {
       System.arraycopy(yBytes, 0, mergedXY, xLen, yLen);
     } catch (ArrayIndexOutOfBoundsException e) {
-      log.fatal(String.format("%d %d", xLen, yLen));
+      log.error(String.format("%d %d", xLen, yLen));
     }
     return mergedXY;
   }

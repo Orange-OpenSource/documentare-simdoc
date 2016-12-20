@@ -10,17 +10,17 @@ package com.orange.documentare.core.comp.distance.computer;
  */
 
 import com.orange.documentare.core.comp.distance.Distance;
+import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.threads.DistancesThreadsManager;
 import com.orange.documentare.core.comp.measure.ProgressListener;
-import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 /** Compute distances between two sets of items. Can not be recycled for a second use. */
 public class DistancesComputer {
   private final DistanceItem[] items;

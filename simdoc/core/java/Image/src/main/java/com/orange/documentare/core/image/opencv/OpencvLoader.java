@@ -9,9 +9,9 @@ package com.orange.documentare.core.image.opencv;
  * the Free Software Foundation.
  */
 
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class OpencvLoader {
 
   private static final String OPENCV_MAC_LIB = "/opt/opencv-mac-lib/libopencv_java249.dylib";
@@ -25,21 +25,6 @@ public class OpencvLoader {
       nu.pattern.OpenCV.loadShared();
     }
   }
-
-/* FIXME REMOVE
-  private static void loadMacLib() {
-    try {
-      System.load(OPENCV_MAC_LIB);
-      showMessage("Library loaded, great :)");
-    } catch(UnsatisfiedLinkError e) {
-      showMacLoadError();
-    }
-  }
-
-  private static void showMacLoadError() {
-    showMessage(String.format("Failed to load library with absolute path name.\nPlease check you have the library installed here: %s", OPENCV_MAC_LIB));
-  }
-*/
 
   private static void showMessage(String message) {
     log.info(message);

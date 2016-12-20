@@ -23,14 +23,14 @@ import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 
 /**
  * For each clustering item, computes the triangle surface and equilaterality factor
  * of this item with its first two nearests elements, then build the associated graph.
  */
-@Log4j2
+@Slf4j
 public class ClusteringGraphBuilder {
   private final ClusteringGraph clusteringGraph = new ClusteringGraph();
 

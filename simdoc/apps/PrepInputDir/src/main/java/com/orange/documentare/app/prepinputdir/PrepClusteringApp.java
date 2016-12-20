@@ -38,7 +38,7 @@ public class PrepClusteringApp {
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
     FilesIdBuilder builder = new FilesIdBuilder();
-    builder.createFilesIdDirectory(options.getInputDir().getAbsolutePath(), OUTPUT_DIR.getAbsolutePath());
+    builder.createFilesIdDirectory(options.getInputDir().getAbsolutePath(), OUTPUT_DIR.getAbsolutePath(), "./");
     log.info("\n[Done]");
   }
 }

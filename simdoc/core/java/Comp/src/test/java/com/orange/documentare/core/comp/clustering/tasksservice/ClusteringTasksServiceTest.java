@@ -11,7 +11,7 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.image.opencv.OpencvLoader;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
@@ -20,7 +20,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Log4j2
+@Slf4j
 public class ClusteringTasksServiceTest {
 
   private static final int NB_TASKS = 4 * 20;
@@ -58,7 +58,7 @@ public class ClusteringTasksServiceTest {
     for (int i = 0; i < NB_TASKS; i++) {
       tasksHandler.addNewTask(clusteringTasks[i]);
       Thread.sleep(200);
-      log.info(tasksHandler.tasksDescription());
+      log.info(tasksHandler.tasksDescription().toString());
     }
     tasksHandler.waitForAllTasksDone();
 

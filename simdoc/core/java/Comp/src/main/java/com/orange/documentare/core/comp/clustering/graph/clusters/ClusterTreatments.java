@@ -12,12 +12,12 @@ package com.orange.documentare.core.comp.clustering.graph.clusters;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.scissors.clusterlongedges.ClusterLongEdgesScissor;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
-import com.orange.documentare.core.model.ref.clustering.graph.*;
+import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 @RequiredArgsConstructor(suppressConstructorProperties = true)
-@Log4j2
+@Slf4j
 public class ClusterTreatments {
   private final ClusteringGraph clusteringGraph;
   private final ClusteringParameters clusteringParameters;

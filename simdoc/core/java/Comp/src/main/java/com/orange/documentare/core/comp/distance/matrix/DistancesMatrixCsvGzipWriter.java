@@ -14,7 +14,8 @@ import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPOutputStream;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class DistancesMatrixCsvGzipWriter {
   private static final String MATRIX_SEP = ";  ";
@@ -158,7 +159,7 @@ public class DistancesMatrixCsvGzipWriter {
     try {
       outputStream.write(string.getBytes());
     } catch (IOException e) {
-      log.fatal("Failed to write to output file, " + e.getMessage(), e);
+      log.error("Failed to write to output file, " + e.getMessage(), e);
     }
   }
 }

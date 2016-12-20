@@ -19,7 +19,7 @@ import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.graph.AbstractBaseGraph;
@@ -33,7 +33,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.UUID;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 public class GraphWriter {
   private static final String IMAGES_PREFIX = "/tmp/graph_images/";

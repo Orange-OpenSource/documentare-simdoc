@@ -12,15 +12,17 @@ package com.orange.documentare.core.model.ref.clustering.graph;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.stat.descriptive.SummaryStatistics;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-@Log4j2
+@Slf4j
 public class SubGraph extends GraphGroup {
 
   /** indices of contained clusters */

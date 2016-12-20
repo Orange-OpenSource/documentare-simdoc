@@ -18,3 +18,5 @@
 **/simdoc/core/java/libs/Comp/*.pdf
 **/simdoc/core/java/libs/Model/*.json
 **/simdoc/core/java/libs/Model/*.gz
+**/LineDetection/ld_out
+**/PrepInputDir/safe-input-dir

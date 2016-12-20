@@ -14,12 +14,12 @@ import com.orange.documentare.core.comp.clustering.graph.scissors.ScissorTrigger
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphGroup;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Collection;
 import java.util.List;
 
-@Log4j2
+@Slf4j
 public class LongEdgesScissor extends GraphScissor {
   private final ScissorTrigger trigger;
 
