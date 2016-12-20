@@ -9,7 +9,6 @@ package com.orange.documentare.app.ncd.thumbnail;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.ncd.FileToIdMapper;
 import com.orange.documentare.core.comp.nativeinterface.NativeInterface;
 import org.apache.commons.io.FileUtils;
 
@@ -34,11 +33,9 @@ public class Thumbnail {
   };
 
   private final File directory;
-  private final FileToIdMapper fileToIdMapper;
 
-  public Thumbnail(File directory, FileToIdMapper fileToIdMapper) throws IOException {
+  public Thumbnail(File directory) throws IOException {
     this.directory = directory;
-    this.fileToIdMapper = fileToIdMapper;
     FileUtils.deleteDirectory(THUMBNAILS_DIR);
     THUMBNAILS_DIR.mkdir();
   }
@@ -72,7 +69,7 @@ public class Thumbnail {
 
   private void createThumbnail(File file, ThumbnailProgress thumbnailProgress) {
     List<String> options = new ArrayList<>(Arrays.asList(ARGS));
-    String thumbnailPath = THUMBNAILS_DIR.getAbsolutePath() + "/" + fileToIdMapper.idOf(file) + ".png";
+    String thumbnailPath = THUMBNAILS_DIR.getAbsolutePath() + "/" + file.getName() + ".png";
     options.add(0, file.getAbsolutePath() + "[0]");
     options.add(thumbnailPath);
     NativeInterface.launch(

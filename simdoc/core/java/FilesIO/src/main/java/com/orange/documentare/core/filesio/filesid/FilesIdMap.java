@@ -1,4 +1,4 @@
-package com.orange.documentare.core.filesio;
+package com.orange.documentare.core.filesio.filesid;
 
 import java.util.HashMap;
 

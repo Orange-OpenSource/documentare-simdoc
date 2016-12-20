@@ -11,7 +11,6 @@ package com.orange.documentare.app.ncd.thumbnail;
 
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
-import com.orange.documentare.app.ncd.FileToIdMapper;
 import org.fest.assertions.Assertions;
 import org.junit.runner.RunWith;
 
@@ -21,7 +20,7 @@ import java.io.IOException;
 @RunWith(ZohhakRunner.class)
 public class ThumbnailTest {
 
-  private final Thumbnail thumbnail = new Thumbnail(new File("test"), new FileToIdMapper());
+  private final Thumbnail thumbnail = new Thumbnail(new File("test"));
 
   public ThumbnailTest() throws IOException {
   }

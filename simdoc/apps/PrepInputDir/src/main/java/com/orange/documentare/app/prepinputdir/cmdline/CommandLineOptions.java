@@ -1,4 +1,4 @@
-package com.orange.documentare.app.prepclustering.cmdline;
+package com.orange.documentare.app.prepinputdir.cmdline;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,27 +9,23 @@ package com.orange.documentare.app.prepclustering.cmdline;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.model.common.CommandLineException;
+import com.orange.documentare.core.filesio.CommandLineException;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 
 import java.io.File;
 
 @Getter
-@Log4j2
+@Slf4j
 public class CommandLineOptions {
 
   private static final String HELP = "h";
-  private static final String INPUT_JSON_GZ = "json";
-  private static final String WRITE_CSV = "writeCSV";
-  private static final String KNN = "k";
+  private static final String INPUT_DIR = "d";
 
   private static final Options options = new Options();
 
-  private File inputJsonGz;
-  private boolean writeCSV;
-  private int kNearestNeighbours = - 1;
+  private File inputDir;
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
@@ -46,42 +42,34 @@ public class CommandLineOptions {
   }
 
   private void initOptionsValues(CommandLine commandLine) {
-    boolean fileOption = commandLine.hasOption(INPUT_JSON_GZ);
+    boolean fileOption = commandLine.hasOption(INPUT_DIR);
     if (!fileOption) {
-      throw new CommandLineException("\nERROR: an input inputJsonGz argument is missing\n");
+      throw new CommandLineException("\nERROR: input directory argument is missing\n");
     }
     setInputFiles(commandLine);
-    writeCSV = commandLine.hasOption(WRITE_CSV);
-    if (commandLine.hasOption(KNN)) {
-      kNearestNeighbours = Integer.parseInt(commandLine.getOptionValue(KNN));
-    }
   }
 
   private void setInputFiles(CommandLine commandLine) {
-    String filePath = commandLine.getOptionValue(INPUT_JSON_GZ);
+    String filePath = commandLine.getOptionValue(INPUT_DIR);
     if (filePath == null) {
-      throw new CommandLineException("\nERROR: an input inputJsonGz name is invalid\n");
+      throw new CommandLineException("\nERROR: input directory name is invalid\n");
     } else {
       doSetInputFiles(filePath);
     }
   }
 
   private void doSetInputFiles(String filePath) {
-    inputJsonGz = new File(filePath);
-    if (!inputJsonGz.exists()) {
-      throw new CommandLineException("\nERROR: an input inputJsonGz is not accessible\n");
+    inputDir = new File(filePath);
+    if (!inputDir.isDirectory()) {
+      throw new CommandLineException("\nERROR: input directory not accessible\n");
     }
   }
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
-    Option csv = new Option(WRITE_CSV, "write WRITE_CSV files (matrix, nearest)");
-    Option file = OptionBuilder.withArgName("inputJsonGz path").hasArg().withDescription("NCD input inputJsonGz").create(INPUT_JSON_GZ);
-    Option knn = OptionBuilder.withArgName("knn").hasArg().withDescription("k nearest neighbours").create(KNN);
+    Option file = OptionBuilder.withArgName("inputDirectory path").hasArg().withDescription("input directory").create(INPUT_DIR);
     options.addOption(help);
-    options.addOption(csv);
     options.addOption(file);
-    options.addOption(knn);
     CommandLineParser parser = new PosixParser();
     return parser.parse(options, args);
   }
@@ -89,6 +77,6 @@ public class CommandLineOptions {
   public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("prepclustering ", options);
+    formatter.printHelp("PrepInputDir ", options);
   }
 }

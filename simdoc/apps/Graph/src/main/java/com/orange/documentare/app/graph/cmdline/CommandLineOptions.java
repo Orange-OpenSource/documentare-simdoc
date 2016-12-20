@@ -9,7 +9,7 @@ package com.orange.documentare.app.graph.cmdline;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.model.common.CommandLineException;
+import com.orange.documentare.core.filesio.CommandLineException;
 import lombok.Getter;
 import org.apache.commons.cli.*;
 

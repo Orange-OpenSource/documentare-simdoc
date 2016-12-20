@@ -1,5 +1,7 @@
-package com.orange.documentare.core.filesio;
+package com.orange.documentare.core.filesio.filesid;
 
+import com.orange.documentare.core.filesio.filesid.FilesIdBuilder;
+import com.orange.documentare.core.filesio.filesid.FilesIdMap;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.After;

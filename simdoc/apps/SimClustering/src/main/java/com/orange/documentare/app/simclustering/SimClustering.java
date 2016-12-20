@@ -13,21 +13,19 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.app.simclustering.cmdline.CommandLineOptions;
 import com.orange.documentare.app.simclustering.cmdline.SimClusteringOptions;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
-import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
-import lombok.extern.log4j.Log4j2;
-import org.apache.commons.cli.*;
-
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
 
-@Log4j2
+@Slf4j
 public class SimClustering {
   private static final File SIMDOC_EXPORT_FILE = new File("sc_segmentation_ready_for_user_interface.json.gz");
   private static final File GRAPH_OUTPUT = new File("sc_graph_input.json.gz");

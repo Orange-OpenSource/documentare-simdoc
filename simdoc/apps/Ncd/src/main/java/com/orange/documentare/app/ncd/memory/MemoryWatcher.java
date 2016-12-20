@@ -10,9 +10,9 @@ package com.orange.documentare.app.ncd.memory;
  */
 
 import com.orange.documentare.core.comp.measure.MemoryState;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class MemoryWatcher extends Thread {
 
   private static final MemoryWatcher sMemoryWatcher = new MemoryWatcher();
@@ -46,7 +46,7 @@ public class MemoryWatcher extends Thread {
       try {
         Thread.sleep(1000);
       } catch (InterruptedException e) {
-        log.error(e);
+        log.error("[MemoryWatcher] Error while sleeping", e);
       }
     } while(!stop);
   }

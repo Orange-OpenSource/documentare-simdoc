@@ -9,15 +9,15 @@ package com.orange.documentare.app.ncd.cmdline;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.model.common.CommandLineException;
+import com.orange.documentare.core.filesio.CommandLineException;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 
 import java.io.File;
 
 @Getter
-@Log4j2
+@Slf4j
 public class CommandLineOptions {
 
   private static final Options options = new Options();

@@ -9,11 +9,10 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.app.ncd.memory.MemoryWatcher;
 import com.orange.documentare.app.ncd.thumbnail.Thumbnail;
-import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
-import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
@@ -53,9 +52,7 @@ public class NcdApp {
   }
 
   private static void doTheJobForRegularFiles(File file1, File file2) throws IOException {
-    FileToIdMapper fileToIdMapper = new FileToIdMapper();
-    FilesDistances filesDistances = new FilesDistances(fileToIdMapper);
-
+    FilesDistances filesDistances = new FilesDistances();
     RegularFilesDistances regularFilesDistances = filesDistances.handleDirectoriesDistanceMatrix(file1, file2);
 
     System.out.println("\n[Export regular files distances]");
@@ -65,10 +62,8 @@ public class NcdApp {
 
     boolean sameDirectories = file1.equals(file2);
     if (sameDirectories) {
-      Thumbnail thumbnail = new Thumbnail(file1, fileToIdMapper);
+      Thumbnail thumbnail = new Thumbnail(file1);
       thumbnail.createDirectoryFilesThumbnails();
-
-      fileToIdMapper.writeMappingCsv();
     }
   }
 

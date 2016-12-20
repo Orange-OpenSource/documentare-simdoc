@@ -1,4 +1,4 @@
-package com.orange.documentare.core.model.common;
+package com.orange.documentare.core.filesio;
 /*
  * Copyright (c) 2016 Orange
  *

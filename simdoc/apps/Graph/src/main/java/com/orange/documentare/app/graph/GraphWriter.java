@@ -16,12 +16,9 @@ import com.orange.documentare.app.graph.importexport.VertexAttributeProvider;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphEdge;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphTBuilder;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
-import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.core.model.ref.clustering.graph.GraphEdge;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import org.apache.commons.cli.*;
-import org.jgrapht.Graph;
+import org.apache.commons.cli.ParseException;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.graph.AbstractBaseGraph;
 

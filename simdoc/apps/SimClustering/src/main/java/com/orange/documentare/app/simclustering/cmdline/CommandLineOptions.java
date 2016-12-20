@@ -10,7 +10,7 @@ package com.orange.documentare.app.simclustering.cmdline;
  */
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
-import com.orange.documentare.core.model.common.CommandLineException;
+import com.orange.documentare.core.filesio.CommandLineException;
 import org.apache.commons.cli.*;
 
 import static com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.*;

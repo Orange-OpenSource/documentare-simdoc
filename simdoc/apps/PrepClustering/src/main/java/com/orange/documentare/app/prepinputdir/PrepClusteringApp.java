@@ -1,4 +1,4 @@
-package com.orange.documentare.app.prepclustering;
+package com.orange.documentare.app.prepinputdir;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,10 +9,9 @@ package com.orange.documentare.app.prepclustering;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.prepclustering.cmdline.CommandLineOptions;
+import com.orange.documentare.app.prepinputdir.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.matrix.DistancesMatrixCsvGzipWriter;
-import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import org.apache.commons.cli.ParseException;

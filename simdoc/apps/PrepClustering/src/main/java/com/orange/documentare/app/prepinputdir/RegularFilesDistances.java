@@ -1,4 +1,4 @@
-package com.orange.documentare.app.prepclustering;
+package com.orange.documentare.app.prepinputdir;
 /*
  * Copyright (c) 2016 Orange
  *

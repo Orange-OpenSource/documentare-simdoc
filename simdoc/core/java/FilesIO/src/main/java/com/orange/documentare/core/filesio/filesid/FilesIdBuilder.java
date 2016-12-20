@@ -1,4 +1,4 @@
-package com.orange.documentare.core.filesio;
+package com.orange.documentare.core.filesio.filesid;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
