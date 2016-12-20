@@ -8,6 +8,7 @@
 
     <modules>
         <module>LineDetection</module>
+        <module>PrepInputDir</module>
         <module>Ncd</module>
         <module>PrepClustering</module>
         <module>SimClustering</module>
