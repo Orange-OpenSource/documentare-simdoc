@@ -10,7 +10,7 @@ package com.orange.documentare.app.prepinputdir;
  */
 
 import com.orange.documentare.app.prepinputdir.cmdline.CommandLineOptions;
-import com.orange.documentare.core.filesio.filesid.FilesIdBuilder;
+import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;

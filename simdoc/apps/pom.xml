@@ -35,7 +35,7 @@
   <dependencies>
     <dependency>
       <groupId>com.orange.documentare.core</groupId>
-      <artifactId>FilesIO</artifactId>
+      <artifactId>System</artifactId>
       <version>${simdoc.version}</version>
     </dependency>
     <dependency>

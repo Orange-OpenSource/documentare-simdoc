@@ -9,7 +9,7 @@ package com.orange.documentare.app.prepinputdir.cmdline;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.filesio.CommandLineException;
+import com.orange.documentare.core.system.CommandLineException;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
