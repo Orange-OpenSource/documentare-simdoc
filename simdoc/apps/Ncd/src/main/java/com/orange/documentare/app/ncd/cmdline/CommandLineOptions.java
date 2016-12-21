@@ -17,7 +17,6 @@ import org.apache.commons.cli.*;
 import java.io.File;
 
 @Getter
-@Slf4j
 public class CommandLineOptions {
 
   private static final Options options = new Options();
@@ -80,7 +79,7 @@ public class CommandLineOptions {
     if (error) {
       throw new CommandLineException("\nERROR: an input file is not accessible\n");
     } else if (file2Path == null) {
-      log.info("Assumes d2 = d1");
+      System.out.println("Assumes d2 = d1");
     }
   }
 

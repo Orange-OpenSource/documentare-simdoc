@@ -9,14 +9,13 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.ncd.memory.MemoryWatcher;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
-import lombok.RequiredArgsConstructor;
+import com.orange.documentare.core.system.measure.MemoryWatcher;
+import com.orange.documentare.core.system.measure.Progress;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 

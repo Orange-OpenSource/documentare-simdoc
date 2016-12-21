@@ -10,10 +10,10 @@ package com.orange.documentare.core.comp.distance.computer.threads;
  */
 
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
+import com.orange.documentare.core.system.measure.Progress;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;

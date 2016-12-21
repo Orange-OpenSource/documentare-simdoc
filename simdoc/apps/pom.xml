@@ -12,6 +12,7 @@
     <module>Ncd</module>
     <module>PrepClustering</module>
     <module>SimClustering</module>
+    <module>Thumbnails</module>
     <module>Graph</module>
   </modules>
 
@@ -76,6 +77,11 @@
   <!-- Pre-configured dependencies -->
   <dependencyManagement>
     <dependencies>
+      <dependency>
+        <groupId>com.orange.documentare.core</groupId>
+        <artifactId>System</artifactId>
+        <version>${simdoc.version}</version>
+      </dependency>
       <dependency>
         <groupId>com.orange.documentare.core</groupId>
         <artifactId>Model</artifactId>

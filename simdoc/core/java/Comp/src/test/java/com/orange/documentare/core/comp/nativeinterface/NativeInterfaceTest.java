@@ -9,6 +9,8 @@ package com.orange.documentare.core.comp.nativeinterface;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.system.nativeinterface.NativeException;
+import com.orange.documentare.core.system.nativeinterface.NativeInterface;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;

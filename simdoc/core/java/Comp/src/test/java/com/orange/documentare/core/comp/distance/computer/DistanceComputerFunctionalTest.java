@@ -9,11 +9,11 @@ package com.orange.documentare.core.comp.distance.computer;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.distance.matrix.DistancesMatrixCsvGzipWriter;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.io.Gzip;
+import com.orange.documentare.core.system.measure.Progress;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;

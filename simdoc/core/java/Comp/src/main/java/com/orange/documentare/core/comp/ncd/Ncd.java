@@ -17,14 +17,8 @@ import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Ncd {
-  private static final boolean USE_LYNDON = false;
-
-  static {
-    log.info(USE_LYNDON ? "Use Lyndon words" : "Use legacy Runlength");
-  }
-
   private final SaisBwt bwt = new SaisBwt();
-  private final CompressedLength compressedLength = USE_LYNDON ? new LyndonRle() : new RunLength();
+  private final CompressedLength compressedLength = new RunLength();
 
   public NcdResult getNcdDistance(NcdInput x, NcdInput y) {
     byte[] mergedXY = getMergedXY(x.getBytes(), y.getBytes());
