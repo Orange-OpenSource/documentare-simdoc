@@ -26,6 +26,7 @@ public class PrepClusteringApp {
   private static final File CLUSTERING_EXPORT_FILE = new File("prep_clustering_ready.json.gz");
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    System.out.println("\n[PrepClustering - Start]");
     CommandLineOptions commandLineOptions;
     try {
       commandLineOptions = new CommandLineOptions(args);
@@ -35,6 +36,7 @@ public class PrepClusteringApp {
     }
     try {
       doTheJob(commandLineOptions);
+      System.out.println("\n[PrepClustering - Done]");
     } catch (Exception e) {
       CommandLineOptions.showHelp();
     }
@@ -49,7 +51,6 @@ public class PrepClusteringApp {
     if (regularFilesDistances.getDistancesArray().isOnSameArray()) {
       writeJsonForClustering(regularFilesDistances, commandLineOptions.getKNearestNeighbours());
     }
-    System.out.println("\n[Done]");
   }
 
   private static void writeCSVFiles(RegularFilesDistances regularFilesDistances) throws IOException {

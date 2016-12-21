@@ -26,13 +26,14 @@ import java.io.File;
 import java.io.IOException;
 
 @Slf4j
-public class SimClustering {
+public class SimClusteringApp {
   private static final File SIMDOC_EXPORT_FILE = new File("sc_segmentation_ready_for_user_interface.json.gz");
   private static final File GRAPH_OUTPUT = new File("sc_graph_input.json.gz");
 
   private static SimClusteringOptions options;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    System.out.println("\n[SimClustering - Start]");
     try {
       options = (new CommandLineOptions(args)).simClusteringOptions();
     } catch (Exception e) {
@@ -41,6 +42,7 @@ public class SimClustering {
     }
     try {
       doTheJob();
+      System.out.println("\n[SimClustering - End]");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }

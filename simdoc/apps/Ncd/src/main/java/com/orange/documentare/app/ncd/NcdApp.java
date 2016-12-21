@@ -37,6 +37,7 @@ public class NcdApp {
     }
     try {
       doTheJob(options);
+      System.out.println("[NCD - Done]");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -48,7 +49,6 @@ public class NcdApp {
     } else {
       doTheJobForRegularFiles(commandLineOptions.getD1(), commandLineOptions.getD2());
     }
-    System.out.println("[NCD - Done]");
   }
 
   private static void doTheJobForRegularFiles(File file1, File file2) throws IOException {

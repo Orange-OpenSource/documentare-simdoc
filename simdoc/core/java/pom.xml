@@ -9,8 +9,9 @@
   <modules>
     <module>System</module>
     <module>Model</module>
-    <module>Comp</module>
     <module>Image</module>
+    <module>Comp</module>
+    <module>GraphWriter</module>
   </modules>
 
   <properties>

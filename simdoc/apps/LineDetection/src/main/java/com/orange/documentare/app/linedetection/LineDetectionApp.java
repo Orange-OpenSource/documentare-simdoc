@@ -33,9 +33,11 @@ public class LineDetectionApp {
   private static final String DEBUG_OUT_DIR = "ld_out";
 
   public static void main(String[] args) throws IOException {
+    System.out.println("\n[LineDetection - Start]");
     OpencvLoader.load();
     try {
       doTheJob(args);
+      System.out.println("\n[LineDetection - Done]");
     } catch(ArrayIndexOutOfBoundsException e) {
       showHelp();
     }

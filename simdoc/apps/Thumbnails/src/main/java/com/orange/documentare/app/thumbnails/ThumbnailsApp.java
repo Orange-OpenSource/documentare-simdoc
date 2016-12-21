@@ -16,6 +16,7 @@ import java.io.IOException;
 
 public class ThumbnailsApp {
   public static void main(String[] args) {
+    System.out.println("\n[Thumbnails - Start]");
     CommandLineOptions options;
     try {
       options = new CommandLineOptions(args);
@@ -25,6 +26,7 @@ public class ThumbnailsApp {
     }
     try {
       doTheJob(options);
+      System.out.println("\n[Thumbnails - Done]");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -33,6 +35,5 @@ public class ThumbnailsApp {
   private static void doTheJob(CommandLineOptions options) throws IOException {
     Thumbnail thumbnail = new Thumbnail(options.getDirectory());
     thumbnail.createDirectoryFilesThumbnails();
-    System.out.println("\n[Done]");
   }
 }

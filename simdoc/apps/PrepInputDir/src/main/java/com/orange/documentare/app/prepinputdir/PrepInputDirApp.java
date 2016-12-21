@@ -17,11 +17,12 @@ import java.io.File;
 import java.io.IOException;
 
 @Slf4j
-public class PrepClusteringApp {
+public class PrepInputDirApp {
 
   private static final File OUTPUT_DIR = new File("safe-input-dir");
 
   public static void main(String[] args) {
+    System.out.println("\n[PrepInputDir - Start]");
     CommandLineOptions options;
     try {
       options = new CommandLineOptions(args);
@@ -31,6 +32,7 @@ public class PrepClusteringApp {
     }
     try {
       doTheJob(options);
+      System.out.println("\n[PrepInputDir - Done]");
     } catch (Exception e) {
       e.printStackTrace();
     }
@@ -39,6 +41,5 @@ public class PrepClusteringApp {
   private static void doTheJob(CommandLineOptions options) throws IOException {
     FilesIdBuilder builder = new FilesIdBuilder();
     builder.createFilesIdDirectory(options.getInputDir().getAbsolutePath(), OUTPUT_DIR.getAbsolutePath(), "./");
-    log.info("\n[Done]");
   }
 }

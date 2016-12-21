@@ -31,6 +31,7 @@ public class GraphWriter {
   private static CommandLineOptions options;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    System.out.println("\n[Graph - Start]");
     try {
       options = new CommandLineOptions(args);
     } catch (Exception e) {
@@ -39,6 +40,7 @@ public class GraphWriter {
     }
     try {
       doTheJob(options);
+      System.out.println("\n[Graph - Done]");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }

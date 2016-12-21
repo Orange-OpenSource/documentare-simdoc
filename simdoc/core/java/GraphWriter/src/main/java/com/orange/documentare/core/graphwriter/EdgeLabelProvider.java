@@ -1,4 +1,4 @@
-package com.orange.documentare.core.comp.clustering.graph.jgrapht.graphwriter;
+package com.orange.documentare.core.graphwriter;
 /*
  * Copyright (c) 2016 Orange
  *

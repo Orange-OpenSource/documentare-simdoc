@@ -1,4 +1,4 @@
-package com.orange.documentare.core.comp.clustering.graph.jgrapht.graphwriter;
+package com.orange.documentare.core.graphwriter;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -12,6 +12,7 @@ package com.orange.documentare.core.comp.clustering.graph.jgrapht.graphwriter;
 import com.orange.documentare.core.comp.clustering.graph.GraphvizPath;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphEdge;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphTBuilder;
+import com.orange.documentare.core.comp.clustering.tasksservice.GraphWriter;
 import com.orange.documentare.core.image.opencv.OpenCvImage;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
@@ -35,28 +36,24 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-public class GraphWriter {
+public class GraphWriterPdf implements GraphWriter {
   private static final String IMAGES_PREFIX = "/tmp/graph_images/";
 
   private final String imagesDir = IMAGES_PREFIX + UUID.randomUUID();
   private final String graphDot = imagesDir + "/graph.dot";
-  private final String cmdLog = imagesDir + "/log.txt";
 
-  private final String outputGraphFilename;
-  private final ClusteringGraph clusteringGraph;
-  private final DigitalTypes digitalTypes;
-
-  public void write() {
+  @Override
+  public void write(String outputGraphFilename, ClusteringGraph clusteringGraph, DigitalTypes digitalTypes) {
     try {
-      writeImages();
-      writeGraphDot();
-      buildPdf();
+      writeImages(digitalTypes);
+      writeGraphDot(clusteringGraph);
+      buildPdf(outputGraphFilename);
     } catch (IOException e) {
       log.error("Failed to write graph to file " + outputGraphFilename + " / e = " + e.getMessage(), e);
     }
   }
 
-  private void writeImages() throws IOException {
+  private void writeImages(DigitalTypes digitalTypes) throws IOException {
     for (DigitalType digitalType : digitalTypes) {
       if (!digitalType.isSpace()) {
         writeImage(digitalType);
@@ -72,7 +69,7 @@ public class GraphWriter {
     FileUtils.writeByteArrayToFile(new File(outImageName), matOfByte.toArray());
   }
 
-  private void writeGraphDot() throws IOException {
+  private void writeGraphDot(ClusteringGraph clusteringGraph) throws IOException {
     JGraphTBuilder jGraphTBuilder = new JGraphTBuilder();
     AbstractBaseGraph<GraphItem, JGraphEdge> graph = jGraphTBuilder.getJGraphTFrom(clusteringGraph);
     DOTExporter exporter = new DOTExporter(new IdProvider(), null, new EdgeLabelProvider(), new VertexAttributeProvider(imagesDir), null);
@@ -80,7 +77,7 @@ public class GraphWriter {
     exporter.export(writer, graph);
   }
 
-  private void buildPdf() {
+  private void buildPdf(String outputGraphFilename) {
     NativeInterface.launch(GraphvizPath.PATH + "sfdp " + graphDot + " | " + GraphvizPath.PATH + "gvmap -e | /opt/local/bin/neato -Ecolor='#55555522' -n2 -Tpdf", null, outputGraphFilename + ".pdf");
   }
 }

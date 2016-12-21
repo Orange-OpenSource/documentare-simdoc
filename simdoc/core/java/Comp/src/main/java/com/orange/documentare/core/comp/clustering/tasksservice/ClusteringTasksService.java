@@ -83,7 +83,7 @@ public class ClusteringTasksService {
   @Synchronized
   private void taskError(ClusteringTask task, IOException e) {
     String err = "TASK - Failed to build clustering for task: " + task + "/ exception: " + e.getMessage();
-    task.error(err);
+    task.taskError(err);
     errorTasks.add(task);
     runningTasks.remove(task.id());
     log.error(err, e);
@@ -109,7 +109,7 @@ public class ClusteringTasksService {
   @Synchronized
   public String taskError(String taskId) {
     if (errorTasks.containsKey(taskId)) {
-      return errorTasks.get(taskId).error();
+      return errorTasks.get(taskId).taskError();
     }
     return "TASK - not found: " + taskId;
   }
