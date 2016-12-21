@@ -10,13 +10,13 @@ package com.orange.documentare.core.comp.distance.computer.threads;
  */
 
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
+import com.orange.documentare.core.system.measure.Progress;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -26,7 +26,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class DistancesThreadsManager {
   private final DistancesComputer computer;
@@ -73,7 +73,7 @@ public class DistancesThreadsManager {
   }
 
   private void showFutureError(Exception e) {
-    log.fatal(String.format("Error while waiting for the future: '%s'", e.getMessage()));
+    log.error(String.format("Error while waiting for the future: '%s'", e.getMessage()));
     e.printStackTrace();
   }
 

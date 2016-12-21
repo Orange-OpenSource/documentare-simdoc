@@ -12,7 +12,7 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
 import lombok.Getter;
 import lombok.Synchronized;
 import lombok.experimental.Accessors;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
@@ -23,7 +23,7 @@ import java.io.IOException;
  * RxJava or Reactor
  */
 @Accessors(fluent = true)
-@Log4j2
+@Slf4j
 public class ClusteringTasksService {
 
   @Getter
@@ -83,7 +83,7 @@ public class ClusteringTasksService {
   @Synchronized
   private void taskError(ClusteringTask task, IOException e) {
     String err = "TASK - Failed to build clustering for task: " + task + "/ exception: " + e.getMessage();
-    task.error(err);
+    task.taskError(err);
     errorTasks.add(task);
     runningTasks.remove(task.id());
     log.error(err, e);
@@ -109,7 +109,7 @@ public class ClusteringTasksService {
   @Synchronized
   public String taskError(String taskId) {
     if (errorTasks.containsKey(taskId)) {
-      return errorTasks.get(taskId).error();
+      return errorTasks.get(taskId).taskError();
     }
     return "TASK - not found: " + taskId;
   }

@@ -10,15 +10,14 @@ package com.orange.documentare.core.model.alto;
  */
 
 import com.orange.documentare.core.model.alto.ref.page.PageRef;
-import lombok.extern.log4j.Log4j2;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 
-import lombok.Getter;
-
-@Log4j2
+@Slf4j
 @Getter
 public class Page {
   public static final String JSON_ENCODING = "UTF-8";
@@ -29,8 +28,8 @@ public class Page {
     try {
       initPageRef(file);
     } catch (IOException e) {
-      log.fatal(String.format("FAILED to load page %d", file.toString()), e);
-        throw e;
+      log.error(String.format("FAILED to load page %d", file.toString()), e);
+      throw e;
     }
   }
 
@@ -38,7 +37,7 @@ public class Page {
     try {
       savePageRef(file);
     } catch (IOException e) {
-      log.fatal(String.format("FAILED to save page %d", file.toString()), e);
+      log.error(String.format("FAILED to save page %d", file.toString()), e);
       throw e;
     }
   }

@@ -9,15 +9,13 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.ncd.memory.MemoryWatcher;
-import com.orange.documentare.app.ncd.thumbnail.Thumbnail;
 import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
-import com.orange.documentare.core.model.common.CommandLineException;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
+import com.orange.documentare.core.system.measure.MemoryWatcher;
 import org.apache.commons.cli.ParseException;
 
 import java.io.File;
@@ -29,6 +27,7 @@ public class NcdApp {
   private static final File REGULAR_FILES_EXPORT_FILE = new File("ncd_regular_files_model.json.gz");
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
+    System.out.println("\n[NCD - Start]");
     CommandLineOptions options;
     try {
       options = new CommandLineOptions(args);
@@ -38,6 +37,7 @@ public class NcdApp {
     }
     try {
       doTheJob(options);
+      System.out.println("[NCD - Done]");
     } catch (Exception e) {
       System.out.println(e.getMessage());
     }
@@ -49,27 +49,16 @@ public class NcdApp {
     } else {
       doTheJobForRegularFiles(commandLineOptions.getD1(), commandLineOptions.getD2());
     }
-    System.out.println("\n[Done]");
   }
 
   private static void doTheJobForRegularFiles(File file1, File file2) throws IOException {
-    FileToIdMapper fileToIdMapper = new FileToIdMapper();
-    FilesDistances filesDistances = new FilesDistances(fileToIdMapper);
-
+    FilesDistances filesDistances = new FilesDistances();
     RegularFilesDistances regularFilesDistances = filesDistances.handleDirectoriesDistanceMatrix(file1, file2);
 
     System.out.println("\n[Export regular files distances]");
     exportToJson(regularFilesDistances, REGULAR_FILES_EXPORT_FILE);
 
     MemoryWatcher.stopWatching();
-
-    boolean sameDirectories = file1.equals(file2);
-    if (sameDirectories) {
-      Thumbnail thumbnail = new Thumbnail(file1, fileToIdMapper);
-      thumbnail.createDirectoryFilesThumbnails();
-
-      fileToIdMapper.writeMappingCsv();
-    }
   }
 
   private static void doTheJobForSimDocInput(File simDocJsonGz) throws IOException {

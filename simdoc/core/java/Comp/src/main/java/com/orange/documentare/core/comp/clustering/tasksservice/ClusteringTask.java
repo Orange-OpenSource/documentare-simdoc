@@ -10,24 +10,35 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
  */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.documentare.core.comp.clustering.graph.jgrapht.graphwriter.GraphWriter;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
-import com.orange.documentare.core.comp.measure.Progress;
-import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.image.DigitalTypesClustering;
+import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
+import com.orange.documentare.core.system.measure.Progress;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 
 @Accessors(fluent = true)
 @RequiredArgsConstructor
 public class ClusteringTask implements ProgressListener {
+
+  private final String inputFilename;
+  private final String outputFilename;
+  private final ClusteringParameters clusteringParameters;
+
+  private final boolean clearBytes;
+  private final String outputGraphFilename;
+  private final String strippedOutputFilename;
+  private final GraphWriter graphWriter;
+  private final boolean prettyPrint;
 
   @RequiredArgsConstructor
   private class ClusteringResult {
@@ -35,29 +46,18 @@ public class ClusteringTask implements ProgressListener {
     final ClusteringGraph clusteringGraph;
   }
 
-  private final String inputFilename;
-  private final String outputFilename;
-  private final ClusteringParameters clusteringParameters;
-
-  @Setter
-  private boolean clearBytes = true;
-
-  private String outputGraphFilename;
-
-  @Setter
-  private String strippedOutputFilename;
-
-  @Setter
-  private boolean prettyPrint = true;
-
   @Getter
   private String progressString = "waiting";
 
   @Getter
   @Setter
-  private String error;
+  private String taskError;
 
   private long t0;
+
+  public static ClusteringTaskBuilder builder() {
+    return new ClusteringTaskBuilder();
+  }
 
   String id() {
     return outputFilename;
@@ -69,22 +69,17 @@ public class ClusteringTask implements ProgressListener {
 
   @Override
   public String toString() {
-    return "inputFilename: " + inputFilename + ", outputFilename: " + outputFilename + ", strippedOutputFilename: " + strippedOutputFilename + ", outputGraphFilename: " + outputGraphFilename + ", clusteringParameters: " + clusteringParameters + (error == null ? "" : ", ERROR: " + error);
-  }
-
-  public void saveGraphTo(String graphFileName) {
-    clearBytes = false;
-    outputGraphFilename = graphFileName;
+    return "inputFilename: " + inputFilename + ", outputFilename: " + outputFilename + ", strippedOutputFilename: " + strippedOutputFilename + ", outputGraphFilename: " + outputGraphFilename + ", clusteringParameters: " + clusteringParameters + (taskError != null ? "ERROR: " + taskError: "");
   }
 
   public void run() throws IOException {
     t0 = System.currentTimeMillis();
-    ClusteringResult clusteringResult = builClustering();
+    ClusteringResult clusteringResult = buildClustering();
     save(clusteringResult);
     progressString = "[DONE] in " + (System.currentTimeMillis() - t0) / 1000 + "s";
   }
 
-  private ClusteringResult builClustering() throws IOException {
+  private ClusteringResult buildClustering() throws IOException {
     DigitalTypesClustering clustering = new DigitalTypesClustering();
     clustering.setProgressListener(this);
     ObjectMapper mapper = new ObjectMapper();
@@ -114,9 +109,8 @@ public class ClusteringTask implements ProgressListener {
   }
 
   private void saveGraph(ClusteringResult clusteringResult) {
-    if (outputGraphFilename != null) {
-      GraphWriter graphWriter = new GraphWriter(outputGraphFilename, clusteringResult.clusteringGraph, clusteringResult.imageSegmentation.getDigitalTypes());
-      graphWriter.write();
+    if (outputGraphFilename != null && graphWriter != null) {
+      graphWriter.write(outputGraphFilename, clusteringResult.clusteringGraph, clusteringResult.imageSegmentation.getDigitalTypes());
     }
   }
 

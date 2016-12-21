@@ -39,7 +39,7 @@
                         <configuration>
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-                                    <mainClass>com.orange.documentare.app.prepclustering.PrepClusteringApp</mainClass>
+                                    <mainClass>com.orange.documentare.app.prepinputdir.PrepClusteringApp</mainClass>
                                 </transformer>
                             </transformers>
                         </configuration>

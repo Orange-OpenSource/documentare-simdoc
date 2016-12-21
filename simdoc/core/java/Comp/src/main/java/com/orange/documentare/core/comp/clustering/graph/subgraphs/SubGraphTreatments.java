@@ -9,19 +9,19 @@ package com.orange.documentare.core.comp.clustering.graph.subgraphs;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.scissors.nonminimaledges.NonMinimalEdgesScissor;
-import com.orange.documentare.core.comp.clustering.graph.scissors.longedges.LongEdgesScissor;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.scissors.longedges.LongEdgesScissor;
+import com.orange.documentare.core.comp.clustering.graph.scissors.nonminimaledges.NonMinimalEdgesScissor;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.Map;
 
 
 @RequiredArgsConstructor(suppressConstructorProperties = true)
-@Log4j2
+@Slf4j
 public class SubGraphTreatments {
   private final ClusteringGraph clusteringGraph;
   private final ClusteringParameters clusteringParameters;

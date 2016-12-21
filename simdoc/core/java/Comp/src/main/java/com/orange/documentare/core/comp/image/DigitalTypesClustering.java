@@ -13,7 +13,6 @@ import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
@@ -21,11 +20,12 @@ import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
+import com.orange.documentare.core.system.measure.Progress;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-@Log4j2
+@Slf4j
 public class DigitalTypesClustering implements ProgressListener {
 
   @Setter

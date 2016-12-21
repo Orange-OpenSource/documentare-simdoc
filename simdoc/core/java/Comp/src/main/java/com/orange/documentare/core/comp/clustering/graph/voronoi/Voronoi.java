@@ -16,13 +16,12 @@ import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphEdge;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.SameGroup;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.dotexport.DOT;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.dotexport.ExportVertexNameProvider;
-import com.orange.documentare.core.comp.nativeinterface.NativeInterface;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
-import com.orange.documentare.core.model.ref.clustering.graph.GraphCluster;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
+import com.orange.documentare.core.model.ref.clustering.graph.GraphCluster;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import lombok.Synchronized;
-import lombok.extern.log4j.Log4j2;
+import com.orange.documentare.core.system.nativeinterface.NativeInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graph;
 import org.jgrapht.ext.DOTExporter;
@@ -34,7 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-@Log4j2
+@Slf4j
 /**
  * Voronoi maps.
  * NB: concurrent access are handled with UUID.
@@ -73,7 +72,7 @@ public class Voronoi {
     try {
       dotExporter.export(new FileWriter(graphDotIn), graph);
     } catch (IOException e) {
-      log.fatal("Voronoi treatment failed", e);
+      log.error("Voronoi treatment failed", e);
       throw new VoronoiTreatmentException(e.getMessage());
     }
   }
@@ -200,7 +199,7 @@ public class Voronoi {
   }
 
   private void throwVoronoiException(Exception e) {
-    log.fatal("Voronoi treatment failed", e);
+    log.error("Voronoi treatment failed", e);
     throw new VoronoiTreatmentException(e.getMessage());
   }
 }

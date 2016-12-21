@@ -38,7 +38,12 @@ deploy:
 cache:
   directories: $HOME/.m2
 
+# say 'go to hell' when there is a pb
 notifications:
-  email:
+email:
+  on_success: change
+  on_failure: always
+  recipients:
     - christophe.maldivi@orange.com
+    - joel.gardes@orange.com
 

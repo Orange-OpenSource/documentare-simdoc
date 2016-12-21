@@ -14,13 +14,13 @@ import com.orange.documentare.core.comp.ncd.Ncd;
 import com.orange.documentare.core.comp.ncd.NcdInput;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class Distance {
 

@@ -16,11 +16,11 @@ import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
 import com.orange.documentare.core.model.alto.ref.page.PageRef;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-@Log4j2
+@Slf4j
 public final class JsonHelper {
 
   private JsonHelper() {
@@ -70,7 +70,7 @@ public final class JsonHelper {
     try {
       return mapper.readValue(json, PageRef.class);
     } catch (final JsonProcessingException e) {
-      log.fatal(String.format("[FATAL] getPageRef, failed to parse json string: %s", e.getMessage()));
+      log.error(String.format("[FATAL] getPageRef, failed to parse json string: %s", e.getMessage()));
       throw e;
     }
   }

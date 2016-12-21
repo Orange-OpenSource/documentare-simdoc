@@ -10,8 +10,7 @@ package com.orange.documentare.core.comp.clustering.tasksservice;
  */
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
-import com.orange.documentare.core.image.opencv.OpencvLoader;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
@@ -20,7 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
-@Log4j2
+@Slf4j
 public class ClusteringTasksServiceTest {
 
   private static final int NB_TASKS = 4 * 20;
@@ -48,17 +47,36 @@ public class ClusteringTasksServiceTest {
       outputFilenames[i] = CLUSTERING_TASK_FILE_PREFIX + i + ".json";
     }
     for (int i = 0; i < NB_TASKS/4; i++) {
-      clusteringTasks[i * 4]     = new ClusteringTask(segFile1.getAbsolutePath(), outputFilenames[i * 4], parameters);
-      clusteringTasks[i * 4 + 1] = new ClusteringTask(segFile2.getAbsolutePath(), outputFilenames[i * 4 + 1], parameters);
-      clusteringTasks[i * 4 + 2] = new ClusteringTask(segFile3.getAbsolutePath(), outputFilenames[i * 4 + 2], parameters);
-      clusteringTasks[i * 4 + 3] = new ClusteringTask(segFile4.getAbsolutePath(), outputFilenames[i * 4 + 3], parameters);
+      clusteringTasks[i * 4] = ClusteringTask.builder()
+        .inputFilename(segFile1.getAbsolutePath())
+        .outputFilename(outputFilenames[i * 4])
+        .clusteringParameters(parameters)
+        .build();
+
+      clusteringTasks[i * 4 + 1] = ClusteringTask.builder()
+        .inputFilename(segFile2.getAbsolutePath())
+        .outputFilename(outputFilenames[i * 4 + 1])
+        .clusteringParameters(parameters)
+        .build();
+
+      clusteringTasks[i * 4 + 2] = ClusteringTask.builder()
+        .inputFilename(segFile3.getAbsolutePath())
+        .outputFilename(outputFilenames[i * 4 + 2])
+        .clusteringParameters(parameters)
+        .build();
+
+      clusteringTasks[i * 4 + 3] = ClusteringTask.builder()
+        .inputFilename(segFile4.getAbsolutePath())
+        .outputFilename(outputFilenames[i * 4 + 3])
+        .clusteringParameters(parameters)
+        .build();
     }
 
     // when
     for (int i = 0; i < NB_TASKS; i++) {
       tasksHandler.addNewTask(clusteringTasks[i]);
       Thread.sleep(200);
-      log.info(tasksHandler.tasksDescription());
+      log.info(tasksHandler.tasksDescription().toString());
     }
     tasksHandler.waitForAllTasksDone();
 
@@ -80,33 +98,8 @@ public class ClusteringTasksServiceTest {
   }
 
   @Test
-  public void saveGraph() throws IOException, InterruptedException {
-    // given
-    OpencvLoader.load();
-
-    String filename = "my_graph";
-    File myGraphPdf = new File(filename + ".pdf");
-    myGraphPdf.delete();
-
-    File segFile = new File(getClass().getResource("/clusteringtasks/latin1_segmentation.json").getFile());
-    String outputFilename = "clustering_task_write_graph.json";
-    ClusteringTask clusteringTask = new ClusteringTask(segFile.getAbsolutePath(), outputFilename, parameters);
-    clusteringTask.saveGraphTo(filename);
-
-    // when
-    tasksHandler.addNewTask(clusteringTask);
-    tasksHandler.waitForAllTasksDone();
-
-    // then
-    Assertions.assertThat(myGraphPdf).exists();
-    Assertions.assertThat(myGraphPdf.length()).isGreaterThan(10000);
-  }
-
-  @Test
   public void saveStrippedOutput() throws IOException, InterruptedException {
     // given
-    OpencvLoader.load();
-
     File ref = new File(getClass().getResource("/clusteringtasks/stripped_clustering.ref.json").getFile());
     String jsonRef = FileUtils.readFileToString(ref);
 
@@ -116,9 +109,12 @@ public class ClusteringTasksServiceTest {
 
     File segFile = new File(getClass().getResource("/clusteringtasks/latin1_segmentation.json").getFile());
     String outputFilename = "not_stripped_clustering.json";
-    ClusteringTask task = new ClusteringTask(segFile.getAbsolutePath(), outputFilename, parameters);
-    task.strippedOutputFilename(strippedFilename);
-
+    ClusteringTask task = ClusteringTask.builder()
+      .inputFilename(segFile.getAbsolutePath())
+      .outputFilename(outputFilename)
+      .clusteringParameters(parameters)
+      .strippedOutputFilename(strippedFilename)
+      .build();
 
     // when
     tasksHandler.addNewTask(task);

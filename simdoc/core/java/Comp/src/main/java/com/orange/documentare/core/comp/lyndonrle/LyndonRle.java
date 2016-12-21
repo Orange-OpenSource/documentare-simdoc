@@ -11,6 +11,8 @@ package com.orange.documentare.core.comp.lyndonrle;
 
 import com.orange.documentare.core.comp.ncd.CompressedLength;
 
+// FIXME: remove?
+@Deprecated
 public class LyndonRle implements CompressedLength {
 
   @Override

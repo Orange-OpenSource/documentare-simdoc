@@ -17,11 +17,11 @@ import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor
 class LongEdgesTrigger implements ScissorTrigger {
 

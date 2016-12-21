@@ -10,16 +10,16 @@ package com.orange.documentare.core.comp.distance.computer.threads;
  */
 
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
+import com.orange.documentare.core.system.measure.Progress;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 class DistancesThreadRunnable implements Runnable {
   private final int[] itemIndices;
@@ -32,7 +32,7 @@ class DistancesThreadRunnable implements Runnable {
     try {
       doRun();
     } catch (IOException e) {
-      log.fatal(String.format("Fatal exception for input '%s': '%s'", items.toString(), e.getMessage()), e);
+      log.error(String.format("Fatal exception for input '%s': '%s'", items.toString(), e.getMessage()), e);
     }
   }
 

@@ -9,15 +9,14 @@ package com.orange.documentare.app.ncd.cmdline;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.model.common.CommandLineException;
+import com.orange.documentare.core.filesio.CommandLineException;
 import lombok.Getter;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.*;
 
 import java.io.File;
 
 @Getter
-@Log4j2
 public class CommandLineOptions {
 
   private static final Options options = new Options();
@@ -80,7 +79,7 @@ public class CommandLineOptions {
     if (error) {
       throw new CommandLineException("\nERROR: an input file is not accessible\n");
     } else if (file2Path == null) {
-      log.info("Assumes d2 = d1");
+      System.out.println("Assumes d2 = d1");
     }
   }
 

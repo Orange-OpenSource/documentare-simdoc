@@ -9,11 +9,13 @@ package com.orange.documentare.core.comp.nativeinterface;
  * the Free Software Foundation.
  */
 
-import lombok.extern.log4j.Log4j2;
+import com.orange.documentare.core.system.nativeinterface.NativeException;
+import com.orange.documentare.core.system.nativeinterface.NativeInterface;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Assert;
 import org.junit.Test;
 
-@Log4j2
+@Slf4j
 public class NativeInterfaceTest {
 
   @Test
@@ -24,7 +26,7 @@ public class NativeInterfaceTest {
     try {
       NativeInterface.launch(null, null, null);
     } catch(NullPointerException e) {
-      log.info(e);
+      log.info(e.getMessage(), e);
       gotException = true;
     }
     if (!gotException) {
@@ -41,7 +43,7 @@ public class NativeInterfaceTest {
     try {
       NativeInterface.launch(exe, null, null);
     } catch(NativeException e) {
-      log.info(e);
+      log.info(e.getMessage());
       gotException = true;
     }
     if (!gotException) {
@@ -58,7 +60,7 @@ public class NativeInterfaceTest {
     try {
       NativeInterface.launch(exe, null, null);
     } catch(NativeException e) {
-      log.info(e);
+      log.info(e.getMessage());
       gotException = true;
     }
     if (gotException) {
@@ -77,7 +79,7 @@ public class NativeInterfaceTest {
     try {
       NativeInterface.launch(exe, args, logPath);
     } catch(NativeException e) {
-      log.info(e);
+      log.info(e.getMessage(), e);
       gotException = true;
     }
     if (gotException) {

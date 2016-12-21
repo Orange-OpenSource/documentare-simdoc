@@ -9,13 +9,15 @@ package com.orange.documentare.core.comp.clustering.graph.jgrapht;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.model.ref.clustering.graph.*;
+import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
+import com.orange.documentare.core.model.ref.clustering.graph.GraphEdge;
+import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import lombok.extern.slf4j.Slf4j;
 
-import java.util.*;
+import java.util.List;
 
-@Log4j2
+@Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class JGraphTBuilder extends GraphBuilder {
   private final boolean notUsingEdgeFiltering;

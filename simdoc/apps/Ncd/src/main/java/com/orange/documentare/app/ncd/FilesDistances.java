@@ -9,15 +9,14 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.ncd.memory.MemoryWatcher;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
-import com.orange.documentare.core.comp.measure.Progress;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.log4j.Log4j2;
+import com.orange.documentare.core.system.measure.MemoryWatcher;
+import com.orange.documentare.core.system.measure.Progress;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -28,22 +27,15 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Log4j2
-@RequiredArgsConstructor
+@Slf4j
 class FilesDistances implements ProgressListener {
   private static final String IGNORE_FILE = ".ds_store";
-
-  private final FileToIdMapper fileToIdMapper;
-
-  public FilesDistances() {
-    this.fileToIdMapper = null;
-  }
 
   /** directory to directory comparison */
   public RegularFilesDistances handleDirectoriesDistanceMatrix(File directory1, File directory2) throws IOException {
     boolean sameDirectory = directory1.equals(directory2);
-    NcdItem[] items1 = getItemsFrom(directory1, sameDirectory);
-    NcdItem[] items2 = sameDirectory ? items1 : getItemsFrom(directory2, false);
+    NcdItem[] items1 = getItemsFrom(directory1);
+    NcdItem[] items2 = sameDirectory ? items1 : getItemsFrom(directory2);
     DistancesArray distancesArray = computeDistances(items1, items2);
 
     releaseFilesBytes(items1);
@@ -65,15 +57,13 @@ class FilesDistances implements ProgressListener {
     return computer.getDistancesArray();
   }
 
-  private NcdItem[] getItemsFrom(File directory, boolean remapFilenameToIntegerId) throws IOException {
+  private NcdItem[] getItemsFrom(File directory) throws IOException {
     String rootDirectoryPath = directory.getAbsolutePath();
     Collection<File> directoryFiles = listSortedDirectoryFilesRecursively(directory);
     List<DistanceItem> items = new ArrayList<>();
     for (File directoryFile : directoryFiles) {
       if (shouldNotIgnore(directoryFile)) {
-        items.add(remapFilenameToIntegerId ?
-                new NcdItem(directoryFile, fileToIdMapper.map(directoryFile)) :
-                new NcdItem(directoryFile, rootDirectoryPath));
+        items.add(new NcdItem(directoryFile, rootDirectoryPath));
       }
     }
     NcdItem[] array = new NcdItem[items.size()];
@@ -90,11 +80,8 @@ class FilesDistances implements ProgressListener {
   }
 
   private Collection<File> listSortedDirectoryFilesRecursively(File directory) {
-    String[] extensions = null;
-    boolean recursive = true;
-
-    return FileUtils.listFiles(directory, extensions, recursive).stream()
-            .sorted(new FilenameOrder())
+    return FileUtils.listFiles(directory, null, true).stream()
+            .sorted()
             .collect(Collectors.toList());
   }
 

@@ -9,6 +9,8 @@ package com.orange.documentare.core.comp.measure;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.system.measure.Progress;
+
 public interface ProgressListener {
   /**
    * @param step
