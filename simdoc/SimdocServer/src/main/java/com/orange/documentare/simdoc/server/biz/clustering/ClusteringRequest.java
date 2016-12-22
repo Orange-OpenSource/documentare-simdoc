@@ -1,5 +1,6 @@
 package com.orange.documentare.simdoc.server.biz.clustering;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -8,12 +9,13 @@ import java.io.File;
 
 @ToString
 @RequiredArgsConstructor
+@JsonIgnoreProperties(ignoreUnknown = false)
 public class ClusteringRequest {
   public final String inputDirectory;
   public final String outputDirectory;
   public final Parameters parameters;
 
-  public ValidRequest validate() {
+  public RequestValidation validate() {
     boolean valid = false;
     String error = null;
     if (inputDirectory == null) {
@@ -30,12 +32,10 @@ public class ClusteringRequest {
       error = "outputDirectory is not a directory: " + outputDirectory;
     } else if (!(new File(outputDirectory).canWrite())) {
       error = "outputDirectory is not writable: " + outputDirectory;
-    } else if (parameters == null) {
-      error = "parameters are missing";
     } else {
       valid = true;
     }
-    return new ValidRequest(valid, error);
+    return new RequestValidation(valid, error);
   }
 
   public static ClusteringRequestBuilder builder() {
@@ -43,8 +43,8 @@ public class ClusteringRequest {
   }
 
   @RequiredArgsConstructor
-  public static class ValidRequest {
-    public final boolean valid;
+  public static class RequestValidation {
+    public final boolean ok;
     public final String error;
   }
 

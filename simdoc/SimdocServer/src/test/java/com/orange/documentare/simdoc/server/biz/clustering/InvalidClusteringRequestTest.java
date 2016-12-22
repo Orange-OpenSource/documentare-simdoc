@@ -2,7 +2,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest;
+import com.orange.documentare.simdoc.server.biz.SimdocResult;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -51,106 +52,62 @@ public class InvalidClusteringRequestTest {
   @Test
   public void clustering_api_return_bad_request_if_body_is_empty() throws Exception {
     // Given
-    mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON))
-      // Then
-      .andExpect(status().isBadRequest());
+    String expectedMessage = "Request body not readable";
+    test(null, expectedMessage);
   }
 
   @Test
   public void clustering_api_return_bad_request_if_input_directory_is_missing() throws Exception {
     // Given
+    String expectedMessage = "inputDirectory is missing";
     ClusteringRequest req = ClusteringRequest.builder()
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isBadRequest())
-      .andReturn();
-
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("inputDirectory is missing");
+    test(req, expectedMessage);
   }
 
   @Test
   public void clustering_api_return_bad_request_if_input_directory_is_not_reachable() throws Exception {
     // Given
+    String expectedMessage = "inputDirectory can not be reached: /xxx";
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory("/xxx")
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isBadRequest())
-      .andReturn();
-
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("inputDirectory can not be reached: /xxx");
+    test(req, expectedMessage);
   }
 
   @Test
   public void clustering_api_return_bad_request_if_input_directory_is_not_a_directory() throws Exception {
     // Given
+    String expectedMessage = "inputDirectory is not a directory: in";
     FileUtils.writeStringToFile(new File(INPUT_DIRECTORY), "hi");
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isBadRequest())
-      .andReturn();
-
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("inputDirectory is not a directory: in");
+    test(req, expectedMessage);
   }
 
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_missing() throws Exception {
     // Given
+    String expectedMessage = "outputDirectory is missing";
     createInputDirectory();
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
       .build();
 
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isBadRequest())
-      .andReturn();
-
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("outputDirectory is missing");
+    test(req, expectedMessage);
   }
 
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_not_a_directory() throws Exception {
     // Given
+    String expectedMessage = "outputDirectory is not a directory: out";
     createInputDirectory();
     FileUtils.writeStringToFile(new File(OUTPUT_DIRECTORY), "hi");
     ClusteringRequest req = ClusteringRequest.builder()
@@ -158,54 +115,30 @@ public class InvalidClusteringRequestTest {
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isBadRequest())
-      .andReturn();
-
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("outputDirectory is not a directory: out");
+    test(req, expectedMessage);
   }
 
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_not_writable() throws Exception {
     // Given
+    String expectedMessage = "outputDirectory is not writable: /";
     createInputDirectory();
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
       .outputDirectory("/")
       .build();
 
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isBadRequest())
-      .andReturn();
-
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("outputDirectory is not writable: /");
+    test(req, expectedMessage);
   }
 
   @Test
-  public void clustering_api_return_bad_request_if_parameters_are_missing() throws Exception {
+  public void clustering_api_return_bad_request_if_request_contains_unknown_field() throws Exception {
     // Given
-    createInputDirectory();
-    createOutputDirectory();
-    ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
-      .outputDirectory(OUTPUT_DIRECTORY)
-      .parameters(null)
-      .build();
+    String expectedMessage = "Request JSON body contains an unknown property";
+    test(new InvalidRequest(), expectedMessage);
+  }
 
+  private void test(Object req, String expectedMessage) throws Exception {
     MvcResult result = mockMvc
       // When
       .perform(
@@ -216,18 +149,26 @@ public class InvalidClusteringRequestTest {
       .andExpect(status().isBadRequest())
       .andReturn();
 
-    String json = result.getResponse().getContentAsString();
-    Assertions.assertThat(json).contains("parameters are missing");
+    MockHttpServletResponse res = result.getResponse();
+    SimdocResult sim = toClusteringResult(res);
+    Assertions.assertThat(res.getErrorMessage()).contains(expectedMessage);
+    Assertions.assertThat(sim.error).isTrue();
+    Assertions.assertThat(sim.errorMessage).contains(expectedMessage);
   }
 
-  private String json(ClusteringRequest req) throws JsonProcessingException {
+  private String json(Object req) throws JsonProcessingException {
     return mapper.writeValueAsString(req);
+  }
+
+  private SimdocResult toClusteringResult(MockHttpServletResponse res) throws IOException {
+    return mapper.readValue(res.getContentAsString(), SimdocResult.class);
   }
 
   private void createInputDirectory() {
     (new File(INPUT_DIRECTORY)).mkdir();
   }
-  private void createOutputDirectory() {
-    (new File(OUTPUT_DIRECTORY)).mkdir();
+
+  private class InvalidRequest {
+    public int x;
   }
 }
