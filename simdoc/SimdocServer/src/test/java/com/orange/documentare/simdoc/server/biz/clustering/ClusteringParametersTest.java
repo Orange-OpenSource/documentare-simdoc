@@ -3,6 +3,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -32,6 +33,12 @@ public class ClusteringParametersTest {
 
   private final ObjectMapper mapper = new ObjectMapper();
 
+  @RequiredArgsConstructor
+  private class ExpectedParameters {
+    public final ClusteringParameters clusteringParameters;
+    public final boolean debug;
+  }
+
   @Autowired
   WebApplicationContext context;
 
@@ -54,59 +61,70 @@ public class ClusteringParametersTest {
   @Test
   public void call_service_with_default_parameters() throws Exception {
     // Given
-    createInputDirectory();
-    createOutputDirectory();
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isOk());
+    ExpectedParameters expectedParameters =
+      new ExpectedParameters(ClusteringParameters.builder().build(), false);
 
-    Mockito.verify(clusteringService).build(INPUT_DIRECTORY, OUTPUT_DIRECTORY, null, false);
+    // When/Then
+    test(req, expectedParameters);
   }
 
   @Test
   public void call_service_with_debug() throws Exception {
     // Given
-    createInputDirectory();
-    createOutputDirectory();
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
       .outputDirectory(OUTPUT_DIRECTORY)
       .debug()
       .build();
 
-    mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isOk());
+    ExpectedParameters expectedParameters =
+      new ExpectedParameters(ClusteringParameters.builder().build(), true);
 
-    Mockito.verify(clusteringService).build(INPUT_DIRECTORY, OUTPUT_DIRECTORY, null, true);
+    // When/Then
+    test(req, expectedParameters);
   }
 
   @Test
-  public void call_service_with_acut() throws Exception {
+  public void call_service_with_parameters() throws Exception {
     // Given
-    float acut = 2.1f;
-    createInputDirectory();
-    createOutputDirectory();
+    float acut = 1.1f;
+    float qcut = 2.1f;
+    float scut = 3.1f;
+    int ccut = 4;
+    int k = 6;
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
       .outputDirectory(OUTPUT_DIRECTORY)
       .acut(acut)
+      .qcut(qcut)
+      .scut(scut)
+      .ccut(ccut)
+      .wcut()
+      .k(k)
       .build();
+
+    ExpectedParameters expectedParameters = new ExpectedParameters(
+      ClusteringParameters.builder()
+        .acut(acut)
+        .qcut(qcut)
+        .scut(scut)
+        .ccut(ccut)
+        .wcut()
+        .knn(k)
+        .build(), false);
+
+    // When/Then
+    test(req, expectedParameters);
+  }
+
+  private void test(ClusteringRequest req, ExpectedParameters expectedParameters) throws Exception {
+    createInputDirectory();
+    createOutputDirectory();
 
     mockMvc
       // When
@@ -117,7 +135,11 @@ public class ClusteringParametersTest {
       // Then
       .andExpect(status().isOk());
 
-    Mockito.verify(clusteringService).build(INPUT_DIRECTORY, OUTPUT_DIRECTORY, ClusteringParameters.builder().acut(acut).build(), false);
+    Mockito.verify(clusteringService).build(
+      INPUT_DIRECTORY,
+      OUTPUT_DIRECTORY,
+      expectedParameters.clusteringParameters,
+      expectedParameters.debug);
   }
 
   private String json(Object req) throws JsonProcessingException {

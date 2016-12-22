@@ -1,6 +1,7 @@
 package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.ClusteringParametersBuilder;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -43,7 +44,26 @@ public class ClusteringRequest {
   }
 
   public ClusteringParameters clusteringParameters() {
-    return null;
+    ClusteringParametersBuilder builder = ClusteringParameters.builder();
+    if (acutSdFactor != null) {
+      builder.acut(acutSdFactor);
+    }
+    if (qcutSdFactor != null) {
+      builder.qcut(qcutSdFactor);
+    }
+    if (scutSdFactor != null) {
+      builder.scut(scutSdFactor);
+    }
+    if (ccutPercentile != null) {
+      builder.ccut(ccutPercentile);
+    }
+    if (wcut != null && wcut) {
+      builder.wcut();
+    }
+    if (kNearestNeighboursThreshold!= null) {
+      builder.knn(kNearestNeighboursThreshold);
+    }
+    return builder.build();
   }
 
   public boolean debug() {
