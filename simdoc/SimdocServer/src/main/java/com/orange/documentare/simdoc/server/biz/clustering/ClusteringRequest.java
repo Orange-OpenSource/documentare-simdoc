@@ -1,4 +1,4 @@
-package com.orange.documentare.simdoc.server;
+package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import lombok.RequiredArgsConstructor;
