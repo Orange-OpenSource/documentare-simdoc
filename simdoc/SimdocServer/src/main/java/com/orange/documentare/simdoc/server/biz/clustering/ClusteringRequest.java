@@ -2,6 +2,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.ClusteringParametersBuilder;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
@@ -10,14 +11,23 @@ import java.io.File;
 @ToString
 @RequiredArgsConstructor
 public class ClusteringRequest {
+  @ApiModelProperty(example = "/documents/user1/files", required = true)
   public final String inputDirectory;
+  @ApiModelProperty(example = "/documents/user1/tmp", required = true)
   public final String outputDirectory;
+  @ApiModelProperty(example = "true")
   public final Boolean debug;
+  @ApiModelProperty(example = "2.1")
   public final Float acutSdFactor;
+  @ApiModelProperty(example = "3.1")
   public final Float qcutSdFactor;
+  @ApiModelProperty(example = "1.5")
   public final Float scutSdFactor;
+  @ApiModelProperty(example = "75")
   public final Integer ccutPercentile;
+  @ApiModelProperty(example = "true")
   public final Boolean wcut;
+  @ApiModelProperty(example = "10")
   public final Integer kNearestNeighboursThreshold;
 
   public RequestValidation validate() {
