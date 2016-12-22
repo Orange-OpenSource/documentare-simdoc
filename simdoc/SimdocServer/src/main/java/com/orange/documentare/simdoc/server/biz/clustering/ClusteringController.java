@@ -1,8 +1,8 @@
 package com.orange.documentare.simdoc.server.biz.clustering;
 
-import com.orange.documentare.simdoc.server.biz.SimdocResult;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest.RequestValidation;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -17,18 +17,18 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 @RestController
 public class ClusteringController {
 
-  @RequestMapping(value = "/clustering", method = RequestMethod.POST)
-  public SimdocResult clustering(@RequestBody ClusteringRequest req, HttpServletResponse res) throws IOException {
-    log.info("[Clustering request] " + req);
+  @Autowired
+  ClusteringService clusteringService;
 
-    SimdocResult result;
+  @RequestMapping(value = "/clustering", method = RequestMethod.POST)
+  public ClusteringResult clustering(@RequestBody ClusteringRequest req, HttpServletResponse res) throws IOException {
+    log.info("[Clustering request] " + req);
     RequestValidation validation = req.validate();
     if (validation.ok) {
-      result = new ClusteringResult(false, null);
+      return clusteringService.build(req.inputDirectory, req.outputDirectory, req.clusteringParameters(), req.debug());
     } else {
       res.sendError(SC_BAD_REQUEST, validation.error);
-      result = SimdocResult.error(validation.error);
+      return ClusteringResult.error(validation.error);
     }
-    return result;
   }
 }

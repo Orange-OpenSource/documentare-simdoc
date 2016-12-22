@@ -2,7 +2,6 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.documentare.simdoc.server.biz.SimdocResult;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
@@ -21,9 +20,9 @@ import org.springframework.web.context.WebApplicationContext;
 import java.io.File;
 import java.io.IOException;
 
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -150,7 +149,7 @@ public class InvalidClusteringRequestTest {
       .andReturn();
 
     MockHttpServletResponse res = result.getResponse();
-    SimdocResult sim = toClusteringResult(res);
+    ClusteringResult sim = toClusteringResult(res);
     Assertions.assertThat(res.getErrorMessage()).contains(expectedMessage);
     Assertions.assertThat(sim.error).isTrue();
     Assertions.assertThat(sim.errorMessage).contains(expectedMessage);
@@ -160,8 +159,8 @@ public class InvalidClusteringRequestTest {
     return mapper.writeValueAsString(req);
   }
 
-  private SimdocResult toClusteringResult(MockHttpServletResponse res) throws IOException {
-    return mapper.readValue(res.getContentAsString(), SimdocResult.class);
+  private ClusteringResult toClusteringResult(MockHttpServletResponse res) throws IOException {
+    return mapper.readValue(res.getContentAsString(), ClusteringResult.class);
   }
 
   private void createInputDirectory() {

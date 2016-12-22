@@ -1,10 +1,13 @@
 package com.orange.documentare.simdoc.server.biz.clustering;
 
-import com.orange.documentare.simdoc.server.biz.SimdocResult;
+import lombok.RequiredArgsConstructor;
 
-public class ClusteringResult extends SimdocResult {
+@RequiredArgsConstructor
+public class ClusteringResult {
+  public final boolean error;
+  public final String errorMessage;
 
-  public ClusteringResult(boolean error, String errorMessage) {
-    super(error, errorMessage);
+  public static ClusteringResult error(String errorMessage) {
+    return new ClusteringResult(true, errorMessage);
   }
 }

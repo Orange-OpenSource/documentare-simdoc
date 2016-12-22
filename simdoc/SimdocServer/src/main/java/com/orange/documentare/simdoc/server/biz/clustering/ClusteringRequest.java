@@ -1,6 +1,5 @@
 package com.orange.documentare.simdoc.server.biz.clustering;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -9,11 +8,16 @@ import java.io.File;
 
 @ToString
 @RequiredArgsConstructor
-@JsonIgnoreProperties(ignoreUnknown = false)
 public class ClusteringRequest {
   public final String inputDirectory;
   public final String outputDirectory;
-  public final Parameters parameters;
+  public final Boolean debug;
+  public final Float acutSdFactor;
+  public final Float qcutSdFactor;
+  public final Float scutSdFactor;
+  public final Integer ccutPercentile;
+  public final Boolean wcut;
+  public final Integer kNearestNeighboursThreshold;
 
   public RequestValidation validate() {
     boolean valid = false;
@@ -38,6 +42,14 @@ public class ClusteringRequest {
     return new RequestValidation(valid, error);
   }
 
+  public ClusteringParameters clusteringParameters() {
+    return null;
+  }
+
+  public boolean debug() {
+    return debug != null && debug;
+  }
+
   public static ClusteringRequestBuilder builder() {
     return new ClusteringRequestBuilder();
   }
@@ -51,13 +63,19 @@ public class ClusteringRequest {
   public static class ClusteringRequestBuilder {
     private String inputDirectory;
     private String outputDirectory;
-    private Parameters parameters = Parameters.defaultParameters();
+    private Boolean debug;
+    private Float acutSdFactor;
+    private Float qcutSdFactor;
+    private Float scutSdFactor;
+    private Integer ccutPercentile;
+    private Boolean wcut;
+    private Integer kNearestNeighboursThreshold;
 
     private ClusteringRequestBuilder() {
     }
 
     public ClusteringRequest build() {
-      return new ClusteringRequest(inputDirectory, outputDirectory, parameters);
+      return new ClusteringRequest(inputDirectory, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
     }
 
 
@@ -71,26 +89,39 @@ public class ClusteringRequest {
       return this;
     }
 
-    public ClusteringRequestBuilder parameters(Parameters parameters) {
-      this.parameters = parameters;
+    public ClusteringRequestBuilder debug() {
+      debug = true;
       return this;
     }
-  }
 
-  @ToString
-  @RequiredArgsConstructor
-  public static class Parameters {
-    public final boolean debug;
-    public final float qcutSdFactor;
-    public final float acutSdFactor;
-    public final float scutSdFactor;
-    public final int ccutPercentile;
-    public final boolean wcut;
-    public final int kNearestNeighboursThreshold;
+    public ClusteringRequestBuilder acut(float acutSdFactor) {
+      this.acutSdFactor = acutSdFactor;
+      return this;
+    }
 
-    public static Parameters defaultParameters() {
-      ClusteringParameters def = ClusteringParameters.builder().build();
-      return new Parameters(false, def.qcutSdFactor, def.acutSdFactor, def.scutSdFactor, def.ccutPercentile, def.wcut, def.kNearestNeighboursThreshold);
+    public ClusteringRequestBuilder qcut(float qcutSdFactor) {
+      this.qcutSdFactor = qcutSdFactor;
+      return this;
+    }
+
+    public ClusteringRequestBuilder scut(float scutSdFactor) {
+      this.scutSdFactor = scutSdFactor;
+      return this;
+    }
+
+    public ClusteringRequestBuilder ccut(int ccutPercentile) {
+      this.ccutPercentile = ccutPercentile;
+      return this;
+    }
+
+    public ClusteringRequestBuilder wcut() {
+      wcut = true;
+      return this;
+    }
+
+    public ClusteringRequestBuilder k(int kNearestNeighboursThreshold) {
+      this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
+      return this;
     }
   }
 }
