@@ -46,6 +46,20 @@ public class TriangleVertices {
     init(vertex1Nearest, v2Nearest, kNearestNeighboursThreshold);
   }
 
+  public boolean getkNNSingleton() {
+    return kNNSingleton != null && kNNSingleton;
+  }
+
+  @JsonIgnore
+  public int getEdge12() {
+    return vertex2.getDistance();
+  }
+
+  @JsonIgnore
+  public int getEdge23() {
+    return vertex3.getDistance();
+  }
+
   private void init(NearestItem[] vertex1Nearest, NearestItem v2Nearest, int kNearestNeighboursThreshold) {
     NearestItem v1Nearest = vertex1Nearest[1];
     int edge13Candidate = searchEdge13(vertex1Nearest, v2Nearest.getIndex(), kNearestNeighboursThreshold);
@@ -57,15 +71,6 @@ public class TriangleVertices {
       this.vertex3 = v2Nearest;
       this.edge13 = edge13Candidate;
     }
-  }
-
-  @JsonIgnore
-  public int getEdge12() {
-    return vertex2.getDistance();
-  }
-  @JsonIgnore
-  public int getEdge23() {
-    return vertex3.getDistance();
   }
 
   private NearestItem searchVertex3(NearestItem[] vertex1Nearest, NearestItem[] vertex2Nearest) {
@@ -87,9 +92,5 @@ public class TriangleVertices {
             .findAny();
 
     return v3.isPresent() ? v3.get().getDistance() : -1;
-  }
-
-  public boolean getkNNSingleton() {
-    return kNNSingleton != null && kNNSingleton;
   }
 }

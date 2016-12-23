@@ -6,13 +6,10 @@ import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.core.io.Resource;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -78,8 +75,8 @@ public class ClusteringTest {
     ClusteringResult clusteringResult = toClusteringResult(res);
 
     Assertions.assertThat(clusteringResult).isEqualTo(expectedClusteringResult());
+    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult());
   }
-
 
   private String inputDirectory() throws IOException {
     return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
@@ -90,6 +87,13 @@ public class ClusteringTest {
        context.getResource("classpath:expected-clustering-result.json").getFile(),
        ClusteringResult.class
        );
+  }
+
+  private ClusteringResult readResultOnDisk() throws IOException {
+    return mapper.readValue(
+      new File(OUTPUT_DIRECTORY + "/clustering-result.json"),
+      ClusteringResult.class
+    );
   }
 
   private String json(Object req) throws JsonProcessingException {
