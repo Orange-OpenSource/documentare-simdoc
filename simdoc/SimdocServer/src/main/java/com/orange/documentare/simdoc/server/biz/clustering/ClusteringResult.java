@@ -9,11 +9,11 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class ClusteringResult {
-  @ApiModelProperty(example = "{ TODO }")
+  @ApiModelProperty(example = "{ 'clustering': [ {'filename': 'animals-dna/aardvark', 'clusterId': 1}, ... ], 'error': false }")
   public final ClusteringResultItem[] clustering;
-  @ApiModelProperty(example = "true", required = true)
+  @ApiModelProperty(example = "false", required = true)
   public final boolean error;
-  @ApiModelProperty(example = "inputDirectory is missing")
+  @ApiModelProperty()
   public final String errorMessage;
 
   public static ClusteringResult error(String errorMessage) {

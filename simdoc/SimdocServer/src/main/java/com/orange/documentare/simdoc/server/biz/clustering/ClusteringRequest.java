@@ -11,9 +11,9 @@ import java.io.File;
 @ToString
 @RequiredArgsConstructor
 public class ClusteringRequest {
-  @ApiModelProperty(example = "/documents/user1/files", required = true)
+  @ApiModelProperty(example = "user1/files", required = true)
   public final String inputDirectory;
-  @ApiModelProperty(example = "/documents/user1/tmp", required = true)
+  @ApiModelProperty(example = "user1/clustering_tmp", required = true)
   public final String outputDirectory;
   @ApiModelProperty(example = "true")
   public final Boolean debug;
