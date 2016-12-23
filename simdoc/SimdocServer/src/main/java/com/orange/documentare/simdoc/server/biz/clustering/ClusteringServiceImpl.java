@@ -27,10 +27,14 @@ public class ClusteringServiceImpl implements ClusteringService {
       safeInputDir.getAbsolutePath(),
       outputDirectoryAbsPath);
 
-    // Ncd
+    // Compute files distances
     FilesDistances filesDistances = FilesDistances.empty();
     filesDistances = filesDistances.compute(safeInputDir, safeInputDir, null);
 
+    // Prep data for SimClustering
+
+
+    // Prep output data
 
     return null;
   }
