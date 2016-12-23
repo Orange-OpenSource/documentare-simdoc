@@ -35,17 +35,17 @@ public class ClusteringRequest {
     String error = null;
     if (inputDirectory == null) {
       error = "inputDirectory is missing";
-    } else if (!(new File(inputDirectory).exists())) {
+    } else if (!inputDirectory().exists()) {
       error = "inputDirectory can not be reached: " + inputDirectory;
-    } else if (!(new File(inputDirectory).isDirectory())) {
+    } else if (!inputDirectory().isDirectory()) {
       error = "inputDirectory is not a directory: " + inputDirectory;
     } else if (outputDirectory == null) {
       error = "outputDirectory is missing";
-    } else if (!(new File(outputDirectory).exists())) {
+    } else if (!outputDirectory().exists()) {
       error = "outputDirectory can not be reached: " + outputDirectory;
-    } else if (!(new File(outputDirectory).isDirectory())) {
+    } else if (!outputDirectory().isDirectory()) {
       error = "outputDirectory is not a directory: " + outputDirectory;
-    } else if (!(new File(outputDirectory).canWrite())) {
+    } else if (!outputDirectory().canWrite()) {
       error = "outputDirectory is not writable: " + outputDirectory;
     } else {
       valid = true;
@@ -74,6 +74,14 @@ public class ClusteringRequest {
       builder.knn(kNearestNeighboursThreshold);
     }
     return builder.build();
+  }
+
+  public File inputDirectory() {
+    return new File(inputDirectory);
+  }
+
+  public File outputDirectory() {
+    return new File(outputDirectory);
   }
 
   public boolean debug() {

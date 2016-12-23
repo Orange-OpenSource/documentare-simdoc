@@ -6,6 +6,7 @@ import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,7 @@ public class ClusteringTest {
     FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
   }
 
+  @Ignore
   @Test
   public void build_animals_dna_clustering() throws Exception {
     // Given

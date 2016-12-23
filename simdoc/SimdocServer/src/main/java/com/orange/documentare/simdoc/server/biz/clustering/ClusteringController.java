@@ -29,7 +29,8 @@ public class ClusteringController implements ClusteringApi {
     log.info("[Clustering request] " + req);
     RequestValidation validation = req.validate();
     if (validation.ok) {
-      return clusteringService.build(req.inputDirectory, req.outputDirectory, req.clusteringParameters(), req.debug());
+      return clusteringService.build(
+        req.inputDirectory(), req.outputDirectory(), req.clusteringParameters(), req.debug());
     } else {
       res.sendError(SC_BAD_REQUEST, validation.error);
       return ClusteringResult.error(validation.error);

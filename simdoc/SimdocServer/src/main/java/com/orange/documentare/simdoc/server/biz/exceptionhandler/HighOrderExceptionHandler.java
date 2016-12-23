@@ -2,7 +2,6 @@ package com.orange.documentare.simdoc.server.biz.exceptionhandler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.exc.UnrecognizedPropertyException;
-import com.orange.documentare.simdoc.server.biz.SimdocResult;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
 import org.springframework.http.HttpStatus;
@@ -21,6 +20,6 @@ public class HighOrderExceptionHandler {
     ObjectMapper mapper = new ObjectMapper();
     String error = "Request JSON body contains an unknown property: " + e;
     res.sendError(HttpStatus.BAD_REQUEST.value(), error);
-    res.getWriter().write(mapper.writeValueAsString(SimdocResult.error(error)));
+    res.getWriter().write(mapper.writeValueAsString(ErrorResult.error(error)));
   }
 }
