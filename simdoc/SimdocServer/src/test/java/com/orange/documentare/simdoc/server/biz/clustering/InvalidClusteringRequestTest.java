@@ -149,10 +149,10 @@ public class InvalidClusteringRequestTest {
       .andReturn();
 
     MockHttpServletResponse res = result.getResponse();
-    ClusteringResult sim = toClusteringResult(res);
+    ClusteringResult clusteringResult = toClusteringResult(res);
     Assertions.assertThat(res.getErrorMessage()).contains(expectedMessage);
-    Assertions.assertThat(sim.error).isTrue();
-    Assertions.assertThat(sim.errorMessage).contains(expectedMessage);
+    Assertions.assertThat(clusteringResult.error).isTrue();
+    Assertions.assertThat(clusteringResult.errorMessage).contains(expectedMessage);
   }
 
   private String json(Object req) throws JsonProcessingException {
