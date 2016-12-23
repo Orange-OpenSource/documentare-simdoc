@@ -10,7 +10,7 @@ import java.io.File;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class ClusteringResultItem {
-  @ApiModelProperty(example = "user0/file/titi.pdf", required = true)
+  @ApiModelProperty(example = "/titi.pdf", required = true)
   public final String filename;
   @ApiModelProperty(example = "3", required = true)
   public final int clusterId;
