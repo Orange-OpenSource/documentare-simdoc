@@ -52,7 +52,7 @@ public class ClusteringServiceImpl implements ClusteringService {
 
     // Prep output data
     ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItems(filesIdBuilder, simClusteringItems, outputDirectoryAbsPath);
+      ClusteringResultItem.buildItems(inputDirectory, filesIdBuilder.readMapIn(outputDirectoryAbsPath), simClusteringItems);
 
     // Write to output directory
     ClusteringResult clusteringResult = ClusteringResult.with(clusteringResultItems);
