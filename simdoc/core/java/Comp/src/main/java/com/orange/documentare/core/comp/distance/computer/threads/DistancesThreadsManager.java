@@ -42,7 +42,9 @@ public class DistancesThreadsManager {
       startForNextBasketElement(itemIndicesToProcess);
     }
     waitTheEnd();
-    listener.onProgressUpdate(TreatmentStep.NCD, new Progress(100, computer.computeTimeSinceStartInSec()));
+    if (listener != null) {
+      listener.onProgressUpdate(TreatmentStep.NCD, new Progress(100, computer.computeTimeSinceStartInSec()));
+    }
   }
 
   private void startForNextBasketElement(int[] itemIndicesToProcess) {

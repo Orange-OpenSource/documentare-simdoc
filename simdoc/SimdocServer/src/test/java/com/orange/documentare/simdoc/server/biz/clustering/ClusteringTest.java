@@ -56,7 +56,6 @@ public class ClusteringTest {
     FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
   }
 
-  @Ignore
   @Test
   public void build_animals_dna_clustering() throws Exception {
     // Given

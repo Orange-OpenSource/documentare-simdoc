@@ -1,10 +1,12 @@
 package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.core.comp.distance.filesdistances.FilesDistances;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
@@ -13,20 +15,21 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
   public ClusteringResult build(
-    File inputDirectory, File outputDirectory, ClusteringParameters parameters, boolean debug) {
+    File inputDirectory, File outputDirectory, ClusteringParameters parameters, boolean debug) throws IOException {
 
     String outputDirectoryAbsPath = outputDirectory.getAbsolutePath();
-    String safeInputDirAbsPath = outputDirectoryAbsPath + SAFE_INPUT_DIR;
+    File safeInputDir = new File(outputDirectoryAbsPath + SAFE_INPUT_DIR);
 
     // Create safe input dir
     FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
     filesIdBuilder.createFilesIdDirectory(
       inputDirectory.getAbsolutePath(),
-      safeInputDirAbsPath,
+      safeInputDir.getAbsolutePath(),
       outputDirectoryAbsPath);
 
     // Ncd
-
+    FilesDistances filesDistances = FilesDistances.empty();
+    filesDistances = filesDistances.compute(safeInputDir, safeInputDir, null);
 
 
     return null;
