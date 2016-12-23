@@ -1,4 +1,4 @@
-package com.orange.documentare.app.ncd;
+package com.orange.documentare.core.comp.distance.filesdistances;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,14 +9,12 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
 import com.orange.documentare.core.comp.measure.ProgressListener;
-import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
-import com.orange.documentare.core.system.measure.MemoryWatcher;
-import com.orange.documentare.core.system.measure.Progress;
-import lombok.extern.slf4j.Slf4j;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -27,56 +25,55 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-@Slf4j
-class FilesDistances implements ProgressListener {
-  private static final String IGNORE_FILE = ".ds_store";
+@JsonInclude(JsonInclude.Include.NON_NULL)
+@RequiredArgsConstructor
+public class FilesDistances {
+  public final FileDistanceItem[] items1;
+  public final FileDistanceItem[] items2;
+  public final DistancesArray distancesArray;
 
-  /** directory to directory comparison */
-  public RegularFilesDistances handleDirectoriesDistanceMatrix(File directory1, File directory2) throws IOException {
+  public static FilesDistances empty() {
+    return new FilesDistances(null, null, null);
+  }
+
+  public FilesDistances compute(File directory1, File directory2, ProgressListener progressListener) throws IOException {
     boolean sameDirectory = directory1.equals(directory2);
-    NcdItem[] items1 = getItemsFrom(directory1);
-    NcdItem[] items2 = sameDirectory ? items1 : getItemsFrom(directory2);
-    DistancesArray distancesArray = computeDistances(items1, items2);
+    FileDistanceItem[] items1 = getItemsFrom(directory1);
+    FileDistanceItem[] items2 = sameDirectory ? items1 : getItemsFrom(directory2);
+    DistancesArray distancesArray = computeDistances(items1, items2, progressListener);
 
     releaseFilesBytes(items1);
     if (!sameDirectory) {
       releaseFilesBytes(items2);
     }
-    forceMemoryReleaseForMonitoringPurpose();
 
     return sameDirectory ?
-            new RegularFilesDistances(items1, distancesArray) :
-            new RegularFilesDistances(items1, items2, distancesArray);
+            new FilesDistances(items1, null, distancesArray) :
+            new FilesDistances(items1, items2, distancesArray);
   }
 
-  DistancesArray computeDistances(DistanceItem[] items1, DistanceItem[] items2) {
+  public DistancesArray computeDistances(DistanceItem[] items1, DistanceItem[] items2, ProgressListener progressListener) {
     DistancesComputer computer = new DistancesComputer(items1, items2);
-    computer.setProgressListener(this);
+    computer.setProgressListener(progressListener);
     computer.compute();
-    MemoryWatcher.watch();
     return computer.getDistancesArray();
   }
 
-  private NcdItem[] getItemsFrom(File directory) throws IOException {
+  private FileDistanceItem[] getItemsFrom(File directory) throws IOException {
     String rootDirectoryPath = directory.getAbsolutePath();
     Collection<File> directoryFiles = listSortedDirectoryFilesRecursively(directory);
     List<DistanceItem> items = new ArrayList<>();
     for (File directoryFile : directoryFiles) {
       if (shouldNotIgnore(directoryFile)) {
-        items.add(new NcdItem(directoryFile, rootDirectoryPath));
+        items.add(new FileDistanceItem(directoryFile, rootDirectoryPath));
       }
     }
-    NcdItem[] array = new NcdItem[items.size()];
+    FileDistanceItem[] array = new FileDistanceItem[items.size()];
     return items.toArray(array);
   }
 
   private boolean shouldNotIgnore(File directoryFile) {
-    return !directoryFile.getName().toLowerCase().contains(IGNORE_FILE);
-  }
-
-  @Override
-  public void onProgressUpdate(TreatmentStep step, Progress progress) {
-    System.out.print("\r" + progress.displayString(step.toString()));
+    return !directoryFile.isHidden();
   }
 
   private Collection<File> listSortedDirectoryFilesRecursively(File directory) {
@@ -85,11 +82,7 @@ class FilesDistances implements ProgressListener {
             .collect(Collectors.toList());
   }
 
-  private void releaseFilesBytes(NcdItem[] items) {
-    Arrays.asList(items).forEach(item -> item.setBytes(null));
-  }
-
-  private void forceMemoryReleaseForMonitoringPurpose() {
-    System.gc();
+  private void releaseFilesBytes(FileDistanceItem[] items) {
+    Arrays.stream(items).forEach(FileDistanceItem::releaseBytes);
   }
 }
