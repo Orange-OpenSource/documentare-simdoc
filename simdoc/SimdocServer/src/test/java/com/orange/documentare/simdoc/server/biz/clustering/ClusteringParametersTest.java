@@ -15,6 +15,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -59,13 +60,18 @@ public class ClusteringParametersTest {
 
   @Before
   public void setup() throws IOException {
-    FileUtils.deleteQuietly(new File(INPUT_DIRECTORY));
-    FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
+    cleanup();
 
     mockMvc = MockMvcBuilders
       .webAppContextSetup(context)
       .alwaysDo(print())
       .build();
+  }
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(INPUT_DIRECTORY));
+    FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
   }
 
   @Test
