@@ -23,10 +23,18 @@ import java.io.IOException;
 public class GlobalExceptionHandler {
 
   @ExceptionHandler(HttpMessageNotReadableException.class)
-  public void handleError(HttpServletResponse res, HttpMessageNotReadableException e) throws IOException {
+  public void requestNotReadable(HttpServletResponse res, HttpMessageNotReadableException e) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
     String error = "Request body not readable: " + e;
     res.sendError(HttpStatus.BAD_REQUEST.value(), error);
+    res.getWriter().write(mapper.writeValueAsString(ErrorResult.error(error)));
+  }
+
+  @ExceptionHandler(Exception.class)
+  public void internalError(HttpServletResponse res, Exception e) throws IOException {
+    ObjectMapper mapper = new ObjectMapper();
+    String error = "Internal error: " + e;
+    res.sendError(HttpStatus.INTERNAL_SERVER_ERROR.value(), error);
     res.getWriter().write(mapper.writeValueAsString(ErrorResult.error(error)));
   }
 }

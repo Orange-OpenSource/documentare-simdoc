@@ -19,7 +19,6 @@ import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -29,13 +28,6 @@ import java.util.List;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
-
-  @RequiredArgsConstructor
-  private class ClusteringOutput {
-    public final SimClusteringItem[] simClusteringItems;
-    public final ClusteringGraph graph;
-  }
-
   private static final String SAFE_INPUT_DIR = "/safe-input-dir";
   private static final String CLUSTERING_RESULT_FILE = "/clustering-result.json";
 
