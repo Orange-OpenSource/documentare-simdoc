@@ -165,18 +165,18 @@ public class InvalidClusteringRequestTest {
       .andReturn();
 
     MockHttpServletResponse res = result.getResponse();
-    ClusteringResult clusteringResult = toClusteringResult(res);
+    ClusteringRequestResult clusteringRequestResult = toClusteringResult(res);
     Assertions.assertThat(res.getErrorMessage()).contains(expectedMessage);
-    Assertions.assertThat(clusteringResult.error).isTrue();
-    Assertions.assertThat(clusteringResult.errorMessage).contains(expectedMessage);
+    Assertions.assertThat(clusteringRequestResult.error).isTrue();
+    Assertions.assertThat(clusteringRequestResult.errorMessage).contains(expectedMessage);
   }
 
   private String json(Object req) throws JsonProcessingException {
     return mapper.writeValueAsString(req);
   }
 
-  private ClusteringResult toClusteringResult(MockHttpServletResponse res) throws IOException {
-    return mapper.readValue(res.getContentAsString(), ClusteringResult.class);
+  private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
+    return mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
   }
 
   private void createInputDirectory() {

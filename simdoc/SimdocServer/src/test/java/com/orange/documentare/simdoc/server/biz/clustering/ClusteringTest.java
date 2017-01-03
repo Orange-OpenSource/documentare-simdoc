@@ -82,9 +82,9 @@ public class ClusteringTest {
       .andReturn();
 
     MockHttpServletResponse res = result.getResponse();
-    ClusteringResult clusteringResult = toClusteringResult(res);
+    ClusteringRequestResult clusteringRequestResult = toClusteringResult(res);
 
-    Assertions.assertThat(clusteringResult).isEqualTo(expectedClusteringResult());
+    Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult());
     Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult());
   }
 
@@ -92,17 +92,17 @@ public class ClusteringTest {
     return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
   }
 
-  private ClusteringResult expectedClusteringResult() throws IOException {
+  private ClusteringRequestResult expectedClusteringResult() throws IOException {
      return mapper.readValue(
        context.getResource("classpath:expected-clustering-result.json").getFile(),
-       ClusteringResult.class
+       ClusteringRequestResult.class
        );
   }
 
-  private ClusteringResult readResultOnDisk() throws IOException {
+  private ClusteringRequestResult readResultOnDisk() throws IOException {
     return mapper.readValue(
       new File(OUTPUT_DIRECTORY + "/clustering-result.json"),
-      ClusteringResult.class
+      ClusteringRequestResult.class
     );
   }
 
@@ -110,7 +110,7 @@ public class ClusteringTest {
     return mapper.writeValueAsString(req);
   }
 
-  private ClusteringResult toClusteringResult(MockHttpServletResponse res) throws IOException {
-    return mapper.readValue(res.getContentAsString(), ClusteringResult.class);
+  private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
+    return mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
   }
 }

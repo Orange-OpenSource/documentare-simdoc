@@ -16,6 +16,6 @@ import java.io.File;
 import java.io.IOException;
 
 interface ClusteringService {
-  ClusteringResult build(
+  ClusteringRequestResult build(
     File inputDirectory, File outputDirectory, ClusteringParameters parameters, boolean debug) throws IOException;
 }

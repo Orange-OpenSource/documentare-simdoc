@@ -18,7 +18,7 @@ import lombok.RequiredArgsConstructor;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @RequiredArgsConstructor
 @EqualsAndHashCode
-public class ClusteringResult {
+public class ClusteringRequestResult {
   @ApiModelProperty(example = "{ 'clustering': [ {'filename': '/titi.pdf', 'clusterId': 1}, ... ], 'error': false }")
   public final ClusteringResultItem[] clustering;
   @ApiModelProperty(example = "false", required = true)
@@ -26,11 +26,11 @@ public class ClusteringResult {
   @ApiModelProperty()
   public final String errorMessage;
 
-  public static ClusteringResult error(String errorMessage) {
-    return new ClusteringResult(null, true, errorMessage);
+  public static ClusteringRequestResult error(String errorMessage) {
+    return new ClusteringRequestResult(null, true, errorMessage);
   }
 
-  public static ClusteringResult with(ClusteringResultItem[] clusteringResultItems) {
-    return new ClusteringResult(clusteringResultItems, false, null);
+  public static ClusteringRequestResult with(ClusteringResultItem[] clusteringResultItems) {
+    return new ClusteringRequestResult(clusteringResultItems, false, null);
   }
 }

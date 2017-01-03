@@ -15,14 +15,11 @@ import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.filesdistances.FilesDistances;
-import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -33,47 +30,57 @@ import java.util.List;
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
 
+  @RequiredArgsConstructor
+  private class ClusteringOutput {
+    public final SimClusteringItem[] simClusteringItems;
+    public final ClusteringGraph graph;
+  }
+
   private static final String SAFE_INPUT_DIR = "/safe-input-dir";
   private static final String CLUSTERING_RESULT_FILE = "/clustering-result.json";
 
   // FIXME: REFACTORING NEEDED, DEBUG NOT IMPLEMENTED
   @Override
-  public ClusteringResult build(
+  public ClusteringRequestResult build(
     File inputDirectory, File outputDirectory, ClusteringParameters parameters, boolean debug) throws IOException {
 
-    String outputDirectoryAbsPath = outputDirectory.getAbsolutePath();
-    File safeInputDir = new File(outputDirectoryAbsPath + SAFE_INPUT_DIR);
+    createSafeInputDirectory(inputDirectory, outputDirectory);
+    ClusteringOutput clusteringOutput = buildClustering(inputDirectory, parameters);
+    ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(inputDirectory, outputDirectory, clusteringOutput);
+    writeResultOnDisk(outputDirectory, clusteringRequestResult);
 
-    // Create safe input dir
+    return clusteringRequestResult;
+  }
+
+  private void createSafeInputDirectory(File inputDirectory, File outputDirectory) {
     FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
     filesIdBuilder.createFilesIdDirectory(
       inputDirectory.getAbsolutePath(),
-      safeInputDir.getAbsolutePath(),
-      outputDirectoryAbsPath);
+      safeInputDir(inputDirectory).getAbsolutePath(),
+      outputDirectory.getAbsolutePath());
+  }
 
-    // Compute files distances
+  private ClusteringOutput buildClustering(File inputDirectory, ClusteringParameters parameters) throws IOException {
+    File safeInputDir = safeInputDir(inputDirectory);
     FilesDistances filesDistances = FilesDistances.empty();
     filesDistances = filesDistances.compute(safeInputDir, safeInputDir, null);
 
-    // Sim Clustering
     SimClusteringItem[] simClusteringItems = initClusteringItems(filesDistances, parameters);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     ClusteringGraph graph = clusteringGraphBuilder.build(simClusteringItems, parameters);
 
-    // Prep output data
-    ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItems(inputDirectory, filesIdBuilder.readMapIn(outputDirectoryAbsPath), simClusteringItems);
-
-    // Write to output directory
-    ClusteringResult clusteringResult = ClusteringResult.with(clusteringResultItems);
-    write(outputDirectoryAbsPath, clusteringResult);
-
-    return clusteringResult;
+    return new ClusteringOutput(simClusteringItems, graph);
   }
 
-  private void write(String outputDirectoryAbsPath, ClusteringResult clusteringResult) throws IOException {
+  private ClusteringRequestResult prepClusteringRequestResult(File inputDirectory, File outputDirectory, ClusteringOutput clusteringOutput) {
+    ClusteringResultItem[] clusteringResultItems =
+      ClusteringResultItem.buildItems(inputDirectory, outputDirectory, clusteringOutput.simClusteringItems);
+    return ClusteringRequestResult.with(clusteringResultItems);
+  }
+
+  private void writeResultOnDisk(File outputDirectory, ClusteringRequestResult clusteringRequestResult) throws IOException {
     ObjectMapper mapper = new ObjectMapper();
-    mapper.writeValue(new File(outputDirectoryAbsPath + CLUSTERING_RESULT_FILE), clusteringResult);
+    mapper.writeValue(new File(outputDirectory.getAbsolutePath() + CLUSTERING_RESULT_FILE), clusteringRequestResult);
   }
 
   private SimClusteringItem[] initClusteringItems(FilesDistances filesDistances, ClusteringParameters parameters) {
@@ -98,33 +105,7 @@ public class ClusteringServiceImpl implements ClusteringService {
     }
   }
 
-  @Getter
-  @Setter
-  public class SimClusteringItem implements ClusteringItem, DistanceItem {
-    /** Keep the relative path name, and useful for items comparison when distance are equal */
-    public final String humanReadableId;
-    public TriangleVertices triangleVertices;
-    public Integer clusterId;
-    public boolean clusterCenter;
-
-    private SimClusteringItem(String relativeFilename) {
-      // FIXME graphviz exception here: remove leading '/', graphviz hates it
-      humanReadableId = relativeFilename.substring(1);
-    }
-
-    @Override
-    public boolean triangleVerticesAvailable() {
-      return true;
-    }
-
-    /** Not used */
-    @Override
-    public NearestItem[] getNearestItems() {
-      return null;
-    }
-    @Override
-    public byte[] getBytes() {
-      return null;
-    }
+  private File safeInputDir(File inputDirectory) {
+    return new File(inputDirectory.getAbsolutePath() + SAFE_INPUT_DIR);
   }
 }

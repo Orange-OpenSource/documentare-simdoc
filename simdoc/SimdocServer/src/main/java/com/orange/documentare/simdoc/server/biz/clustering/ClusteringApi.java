@@ -21,15 +21,15 @@ import java.io.IOException;
 @Api(value = "Clustering", description = "Clustering API")
 public interface ClusteringApi {
 
-  @ApiOperation(value = "Build clustering", response = ClusteringResult.class)
+  @ApiOperation(value = "Build clustering", response = ClusteringRequestResult.class)
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "successful operation", response = ClusteringResult.class),
-    @ApiResponse(code = 400, message = "bad request, check response error message", response = ClusteringResult.class) })
+    @ApiResponse(code = 200, message = "successful operation", response = ClusteringRequestResult.class),
+    @ApiResponse(code = 400, message = "bad request, check response error message", response = ClusteringRequestResult.class) })
   @RequestMapping(
     value = "/clustering",
     produces =  "application/json",
     method = RequestMethod.POST)
-  ClusteringResult clustering(
+  ClusteringRequestResult clustering(
     @ApiParam(value = "Clustering request parameters", required=true)
     @RequestBody
       ClusteringRequest req, HttpServletResponse res) throws IOException;
