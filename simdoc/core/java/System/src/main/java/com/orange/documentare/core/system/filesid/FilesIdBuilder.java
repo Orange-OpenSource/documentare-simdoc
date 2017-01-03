@@ -16,7 +16,7 @@ import java.util.zip.GZIPOutputStream;
 @Slf4j
 public class FilesIdBuilder {
 
-  private static final String MAP_NAME = "map.json.gz";
+  public static final String MAP_NAME = "map.json.gz";
 
   public void createFilesIdDirectory(String srcDir, String destDir, String mapDir) {
     File src = new File(srcDir);

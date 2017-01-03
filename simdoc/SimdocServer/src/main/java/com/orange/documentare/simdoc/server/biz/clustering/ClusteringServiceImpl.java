@@ -10,7 +10,6 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.distance.DistancesArray;
@@ -19,6 +18,7 @@ import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
+import com.orange.documentare.simdoc.server.biz.FileIO;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -28,10 +28,7 @@ import java.util.List;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
-  private static final String SAFE_INPUT_DIR = "/safe-input-dir";
-  private static final String CLUSTERING_RESULT_FILE = "/clustering-result.json";
 
-  // FIXME: REFACTORING NEEDED, DEBUG NOT IMPLEMENTED
   @Override
   public ClusteringRequestResult build(
     File inputDirectory, File outputDirectory, ClusteringParameters parameters, boolean debug) throws IOException {
@@ -39,7 +36,13 @@ public class ClusteringServiceImpl implements ClusteringService {
     createSafeInputDirectory(inputDirectory, outputDirectory);
     ClusteringOutput clusteringOutput = buildClustering(inputDirectory, parameters);
     ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(inputDirectory, outputDirectory, clusteringOutput);
-    writeResultOnDisk(outputDirectory, clusteringRequestResult);
+
+    FileIO.writeClusteringRequestResult(outputDirectory, clusteringRequestResult);
+    if (debug) {
+      FileIO.writeClusteringGraph(outputDirectory, clusteringOutput.graph);
+    } else {
+      FileIO.cleanupClustering(inputDirectory, outputDirectory);
+    }
 
     return clusteringRequestResult;
   }
@@ -48,12 +51,12 @@ public class ClusteringServiceImpl implements ClusteringService {
     FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
     filesIdBuilder.createFilesIdDirectory(
       inputDirectory.getAbsolutePath(),
-      safeInputDir(inputDirectory).getAbsolutePath(),
+      FileIO.safeInputDir(inputDirectory).getAbsolutePath(),
       outputDirectory.getAbsolutePath());
   }
 
   private ClusteringOutput buildClustering(File inputDirectory, ClusteringParameters parameters) throws IOException {
-    File safeInputDir = safeInputDir(inputDirectory);
+    File safeInputDir = FileIO.safeInputDir(inputDirectory);
     FilesDistances filesDistances = FilesDistances.empty();
     filesDistances = filesDistances.compute(safeInputDir, safeInputDir, null);
 
@@ -68,11 +71,6 @@ public class ClusteringServiceImpl implements ClusteringService {
     ClusteringResultItem[] clusteringResultItems =
       ClusteringResultItem.buildItems(inputDirectory, outputDirectory, clusteringOutput.simClusteringItems);
     return ClusteringRequestResult.with(clusteringResultItems);
-  }
-
-  private void writeResultOnDisk(File outputDirectory, ClusteringRequestResult clusteringRequestResult) throws IOException {
-    ObjectMapper mapper = new ObjectMapper();
-    mapper.writeValue(new File(outputDirectory.getAbsolutePath() + CLUSTERING_RESULT_FILE), clusteringRequestResult);
   }
 
   private SimClusteringItem[] initClusteringItems(FilesDistances filesDistances, ClusteringParameters parameters) {
@@ -95,9 +93,5 @@ public class ClusteringServiceImpl implements ClusteringService {
       simClusteringItems[i].setTriangleVertices(
         new TriangleVertices(distancesArray.nearestItemsFor(itemsList, i), vertex3, k));
     }
-  }
-
-  private File safeInputDir(File inputDirectory) {
-    return new File(inputDirectory.getAbsolutePath() + SAFE_INPUT_DIR);
   }
 }

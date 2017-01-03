@@ -26,7 +26,7 @@ public class ClusteringRequest {
   @ApiModelProperty(example = "user1/clustering_tmp", required = true)
   public final String outputDirectory;
   @ApiModelProperty(example = "true")
-  public final Boolean debug;
+  public final Boolean debug; // FIXME: not used yet
   @ApiModelProperty(example = "2.1")
   public final Float acutSdFactor;
   @ApiModelProperty(example = "3.1")

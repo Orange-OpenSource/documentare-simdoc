@@ -12,6 +12,8 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.documentare.core.model.json.JsonGenericHandler;
+import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -86,6 +88,8 @@ public class ClusteringTest {
 
     Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult());
     Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult());
+    // only result is kept without debug
+    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(1);
   }
 
   private String inputDirectory() throws IOException {
@@ -100,9 +104,10 @@ public class ClusteringTest {
   }
 
   private ClusteringRequestResult readResultOnDisk() throws IOException {
-    return mapper.readValue(
-      new File(OUTPUT_DIRECTORY + "/clustering-result.json"),
-      ClusteringRequestResult.class
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+    return (ClusteringRequestResult) jsonGenericHandler.getObjectFromJsonGzipFile(
+      ClusteringRequestResult.class,
+      new File(OUTPUT_DIRECTORY + "/clustering-result.json.gz")
     );
   }
 
