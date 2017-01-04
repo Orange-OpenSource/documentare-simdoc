@@ -32,6 +32,8 @@ import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
@@ -73,6 +75,30 @@ public class ClusteringTest {
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
+    coreTest(req);
+
+    // only result is kept without debug
+    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(1);
+  }
+
+  @Test
+  public void build_animals_dna_clustering_in_debug_mode() throws Exception {
+    // Given
+    ClusteringRequest req = ClusteringRequest.builder()
+      .inputDirectory(inputDirectory())
+      .outputDirectory(OUTPUT_DIRECTORY)
+      .debug()
+      .build();
+
+    coreTest(req);
+
+    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
+    Assertions.assertThat(outputDirectoryList).contains("map.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
+  }
+
+  private void coreTest(ClusteringRequest req) throws Exception {
     MvcResult result = mockMvc
       // When
       .perform(
@@ -88,8 +114,6 @@ public class ClusteringTest {
 
     Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult());
     Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult());
-    // only result is kept without debug
-    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(1);
   }
 
   private String inputDirectory() throws IOException {
