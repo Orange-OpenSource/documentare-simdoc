@@ -27,7 +27,7 @@ public class FileDistanceItem implements DistanceItem {
   private byte[] bytes;
 
   FileDistanceItem(File file, String rootDirectoryPath) throws IOException {
-    relativeFilename = file.getAbsolutePath().replaceFirst(rootDirectoryPath, "");
+    relativeFilename = retrieveRelativeFilename(file, rootDirectoryPath);
     bytes = readBytes(file);
   }
 
@@ -40,6 +40,14 @@ public class FileDistanceItem implements DistanceItem {
   public boolean equals(Object obj) {
     FileDistanceItem otherItem = (FileDistanceItem) obj;
     return relativeFilename.equals(otherItem.relativeFilename);
+  }
+
+  private String retrieveRelativeFilename(File file, String rootDirectoryPath) {
+    String relativeFileName = file.getAbsolutePath().replace(rootDirectoryPath, "");
+    if (relativeFileName.startsWith(File.separator)) {
+      relativeFileName = relativeFileName.substring(1);
+    }
+    return relativeFileName;
   }
 
   private byte[] readBytes(File file) throws IOException {

@@ -19,7 +19,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class ClusteringRequestResult {
-  @ApiModelProperty(example = "{ 'clustering': [ {'filename': '/titi.pdf', 'clusterId': 1}, ... ], 'error': false }")
+  @ApiModelProperty(example = "{ 'clustering': [ {'filename': 'january/ticket-beijing.pdf', 'clusterId': 1}, ... ], 'error': false }")
   public final ClusteringResultItem[] clustering;
   @ApiModelProperty(example = "false", required = true)
   public final boolean error;

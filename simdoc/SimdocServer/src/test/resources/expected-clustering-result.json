@@ -1,1 +1,106 @@
-{"clustering":[{"filename":"/aardvark","clusterId":1},{"filename":"/armadillo","clusterId":2},{"filename":"/fatDormouse","clusterId":3},{"filename":"/finWhale","clusterId":2},{"filename":"/fruitBat","clusterId":2},{"filename":"/gibbon","clusterId":4},{"filename":"/gorilla","clusterId":4},{"filename":"/graySeal","clusterId":1},{"filename":"/guineaPig","clusterId":1},{"filename":"/harborSeal","clusterId":1},{"filename":"/hippopotamus","clusterId":3},{"filename":"/horse","clusterId":6},{"filename":"/baboon","clusterId":4},{"filename":"/human","clusterId":4},{"filename":"/indianRhinoceros","clusterId":6},{"filename":"/mouse","clusterId":3},{"filename":"/opossum","clusterId":5},{"filename":"/orangutan","clusterId":4},{"filename":"/pig","clusterId":2},{"filename":"/pigmyChimpanzee","clusterId":4},{"filename":"/platypus","clusterId":6},{"filename":"/rabbit","clusterId":2},{"filename":"/rat","clusterId":3},{"filename":"/blueWhale","clusterId":2},{"filename":"/sheep","clusterId":3},{"filename":"/squirrel","clusterId":5},{"filename":"/wallaroo","clusterId":5},{"filename":"/whiteRhinoceros","clusterId":6},{"filename":"/cat","clusterId":1},{"filename":"/chimpanzee","clusterId":4},{"filename":"/cow","clusterId":3},{"filename":"/dog","clusterId":1},{"filename":"/donkey","clusterId":6},{"filename":"/elephant","clusterId":6}],"error":false}
+{
+  "clustering" : [ {
+    "filename" : "aardvark",
+    "clusterId" : 1
+  }, {
+    "filename" : "armadillo",
+    "clusterId" : 2
+  }, {
+    "filename" : "fatDormouse",
+    "clusterId" : 3
+  }, {
+    "filename" : "finWhale",
+    "clusterId" : 2
+  }, {
+    "filename" : "fruitBat",
+    "clusterId" : 2
+  }, {
+    "filename" : "gibbon",
+    "clusterId" : 4
+  }, {
+    "filename" : "gorilla",
+    "clusterId" : 4
+  }, {
+    "filename" : "graySeal",
+    "clusterId" : 1
+  }, {
+    "filename" : "guineaPig",
+    "clusterId" : 1
+  }, {
+    "filename" : "harborSeal",
+    "clusterId" : 1
+  }, {
+    "filename" : "hippopotamus",
+    "clusterId" : 3
+  }, {
+    "filename" : "horse",
+    "clusterId" : 6
+  }, {
+    "filename" : "baboon",
+    "clusterId" : 4
+  }, {
+    "filename" : "human",
+    "clusterId" : 4
+  }, {
+    "filename" : "indianRhinoceros",
+    "clusterId" : 6
+  }, {
+    "filename" : "mouse",
+    "clusterId" : 3
+  }, {
+    "filename" : "opossum",
+    "clusterId" : 5
+  }, {
+    "filename" : "orangutan",
+    "clusterId" : 4
+  }, {
+    "filename" : "pig",
+    "clusterId" : 2
+  }, {
+    "filename" : "pigmyChimpanzee",
+    "clusterId" : 4
+  }, {
+    "filename" : "platypus",
+    "clusterId" : 6
+  }, {
+    "filename" : "rabbit",
+    "clusterId" : 2
+  }, {
+    "filename" : "rat",
+    "clusterId" : 3
+  }, {
+    "filename" : "blueWhale",
+    "clusterId" : 2
+  }, {
+    "filename" : "sheep",
+    "clusterId" : 3
+  }, {
+    "filename" : "squirrel",
+    "clusterId" : 5
+  }, {
+    "filename" : "wallaroo",
+    "clusterId" : 5
+  }, {
+    "filename" : "whiteRhinoceros",
+    "clusterId" : 6
+  }, {
+    "filename" : "cat",
+    "clusterId" : 1
+  }, {
+    "filename" : "chimpanzee",
+    "clusterId" : 4
+  }, {
+    "filename" : "cow",
+    "clusterId" : 3
+  }, {
+    "filename" : "dog",
+    "clusterId" : 1
+  }, {
+    "filename" : "donkey",
+    "clusterId" : 6
+  }, {
+    "filename" : "elephant",
+    "clusterId" : 6
+  } ],
+  "error" : false
+}

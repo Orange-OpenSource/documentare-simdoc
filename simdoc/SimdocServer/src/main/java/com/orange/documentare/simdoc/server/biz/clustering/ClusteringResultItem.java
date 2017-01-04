@@ -21,7 +21,7 @@ import java.io.File;
 @RequiredArgsConstructor
 @EqualsAndHashCode
 public class ClusteringResultItem {
-  @ApiModelProperty(example = "/titi.pdf", required = true)
+  @ApiModelProperty(example = "january/ticket-beijing.pdf", required = true)
   public final String filename;
   @ApiModelProperty(example = "3", required = true)
   public final int clusterId;
@@ -34,7 +34,8 @@ public class ClusteringResultItem {
     for (int i = 0; i < items.length; i++) {
       int fileId = Integer.valueOf(simClusteringItems[i].getHumanReadableId());
       String fileAbsPath = map.get(fileId);
-      String relPath = fileAbsPath.substring(inputDirectory.getAbsolutePath().length());
+      /* +1 to remove leading '/' */
+      String relPath = fileAbsPath.substring(inputDirectory.getAbsolutePath().length() + 1);
       items[i] = new ClusteringResultItem(relPath, simClusteringItems[i].getClusterId());
     }
     return items;
