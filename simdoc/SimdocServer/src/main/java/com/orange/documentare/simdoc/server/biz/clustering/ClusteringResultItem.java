@@ -12,6 +12,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import com.orange.documentare.core.system.filesid.FilesIdMap;
+import com.orange.documentare.simdoc.server.biz.FileIO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -26,16 +27,16 @@ public class ClusteringResultItem {
   @ApiModelProperty(example = "3", required = true)
   public final int clusterId;
 
-  static ClusteringResultItem[] buildItems(File inputDirectory, File outputDirectory, SimClusteringItem[] simClusteringItems) {
+  static ClusteringResultItem[] buildItems(FileIO fileIO, SimClusteringItem[] simClusteringItems) {
     FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
-    FilesIdMap map = filesIdBuilder.readMapIn(outputDirectory.getAbsolutePath());
+    FilesIdMap map = filesIdBuilder.readMapIn(fileIO.outPath());
     ClusteringResultItem[] items = new ClusteringResultItem[simClusteringItems.length];
 
     for (int i = 0; i < items.length; i++) {
       int fileId = Integer.valueOf(simClusteringItems[i].getHumanReadableId());
       String fileAbsPath = map.get(fileId);
       /* +1 to remove leading '/' */
-      String relPath = fileAbsPath.substring(inputDirectory.getAbsolutePath().length() + 1);
+      String relPath = fileAbsPath.substring(fileIO.inPath().length() + 1);
       items[i] = new ClusteringResultItem(relPath, simClusteringItems[i].getClusterId());
     }
     return items;

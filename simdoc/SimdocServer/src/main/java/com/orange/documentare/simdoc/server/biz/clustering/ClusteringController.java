@@ -10,6 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.simdoc.server.biz.FileIO;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest.RequestValidation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -37,7 +38,7 @@ public class ClusteringController implements ClusteringApi {
     RequestValidation validation = req.validate();
     if (validation.ok) {
       return clusteringService.build(
-        req.inputDirectory(), req.outputDirectory(), req.clusteringParameters(), req.debug());
+        new FileIO(req.inputDirectory(), req.outputDirectory()), req.clusteringParameters(), req.debug());
     } else {
       res.sendError(SC_BAD_REQUEST, validation.error);
       return ClusteringRequestResult.error(validation.error);

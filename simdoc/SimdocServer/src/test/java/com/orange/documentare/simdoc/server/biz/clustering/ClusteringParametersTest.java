@@ -13,6 +13,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.simdoc.server.biz.FileIO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -152,8 +153,8 @@ public class ClusteringParametersTest {
       .andExpect(status().isOk());
 
     Mockito.verify(clusteringService).build(
-      new File(INPUT_DIRECTORY),
-      new File(OUTPUT_DIRECTORY),
+      new FileIO(new File(INPUT_DIRECTORY),
+      new File(OUTPUT_DIRECTORY)),
       expectedParameters.clusteringParameters,
       expectedParameters.debug);
   }

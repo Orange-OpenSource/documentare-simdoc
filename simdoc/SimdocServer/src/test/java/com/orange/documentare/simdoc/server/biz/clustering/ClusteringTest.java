@@ -96,6 +96,7 @@ public class ClusteringTest {
     Assertions.assertThat(outputDirectoryList).contains("map.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("safe-input-dir");
   }
 
   private void coreTest(ClusteringRequest req) throws Exception {

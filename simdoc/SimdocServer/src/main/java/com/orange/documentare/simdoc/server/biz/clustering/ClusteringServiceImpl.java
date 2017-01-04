@@ -30,33 +30,31 @@ import java.util.List;
 public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
-  public ClusteringRequestResult build(
-    File inputDirectory, File outputDirectory, ClusteringParameters parameters, boolean debug) throws IOException {
+  public ClusteringRequestResult build(FileIO fileIO, ClusteringParameters parameters, boolean debug) throws IOException {
+    createSafeInputDirectory(fileIO);
+    ClusteringOutput clusteringOutput = buildClustering(fileIO, parameters);
+    ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(fileIO, clusteringOutput);
 
-    createSafeInputDirectory(inputDirectory, outputDirectory);
-    ClusteringOutput clusteringOutput = buildClustering(inputDirectory, parameters);
-    ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(inputDirectory, outputDirectory, clusteringOutput);
-
-    FileIO.writeClusteringRequestResult(outputDirectory, clusteringRequestResult);
+    fileIO.writeClusteringRequestResult(clusteringRequestResult);
     if (debug) {
-      FileIO.writeClusteringGraph(outputDirectory, clusteringOutput.graph);
+      fileIO.writeClusteringGraph(clusteringOutput.graph);
     } else {
-      FileIO.cleanupClustering(inputDirectory, outputDirectory);
+      fileIO.cleanupClustering();
     }
 
     return clusteringRequestResult;
   }
 
-  private void createSafeInputDirectory(File inputDirectory, File outputDirectory) {
+  private void createSafeInputDirectory(FileIO fileIO) {
     FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
     filesIdBuilder.createFilesIdDirectory(
-      inputDirectory.getAbsolutePath(),
-      FileIO.safeInputDir(inputDirectory).getAbsolutePath(),
-      outputDirectory.getAbsolutePath());
+      fileIO.inPath(),
+      fileIO.safeInputDir().getAbsolutePath(),
+      fileIO.outPath());
   }
 
-  private ClusteringOutput buildClustering(File inputDirectory, ClusteringParameters parameters) throws IOException {
-    File safeInputDir = FileIO.safeInputDir(inputDirectory);
+  private ClusteringOutput buildClustering(FileIO fileIO, ClusteringParameters parameters) throws IOException {
+    File safeInputDir = fileIO.safeInputDir();
     FilesDistances filesDistances = FilesDistances.empty();
     filesDistances = filesDistances.compute(safeInputDir, safeInputDir, null);
 
@@ -67,9 +65,9 @@ public class ClusteringServiceImpl implements ClusteringService {
     return new ClusteringOutput(simClusteringItems, graph);
   }
 
-  private ClusteringRequestResult prepClusteringRequestResult(File inputDirectory, File outputDirectory, ClusteringOutput clusteringOutput) {
+  private ClusteringRequestResult prepClusteringRequestResult(FileIO fileIO, ClusteringOutput clusteringOutput) {
     ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItems(inputDirectory, outputDirectory, clusteringOutput.simClusteringItems);
+      ClusteringResultItem.buildItems(fileIO, clusteringOutput.simClusteringItems);
     return ClusteringRequestResult.with(clusteringResultItems);
   }
 

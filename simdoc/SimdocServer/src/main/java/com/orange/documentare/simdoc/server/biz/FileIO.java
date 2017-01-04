@@ -16,36 +16,50 @@ import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import com.orange.documentare.core.system.filesid.FilesIdMap;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequestResult;
+import lombok.EqualsAndHashCode;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 
+@RequiredArgsConstructor
+@EqualsAndHashCode
 public class FileIO {
   public static final String SAFE_INPUT_DIR = "/safe-input-dir";
   public static final String CLUSTERING_RESULT_FILE = "/clustering-result.json.gz";
   public static final String CLUSTERING_GRAPH_FILE = "/clustering-graph.json.gz";
 
-  public static File safeInputDir(File inputDirectory) {
-    return new File(inputDirectory.getAbsolutePath() + SAFE_INPUT_DIR);
+  private final File inputDirectory;
+  private final File outputDirectory;
+
+  public File safeInputDir() {
+    return new File(outputDirectory.getAbsolutePath() + SAFE_INPUT_DIR);
   }
 
-  public static void writeClusteringRequestResult(File outputDirectory, ClusteringRequestResult clusteringRequestResult) throws IOException {
+  public void writeClusteringRequestResult(ClusteringRequestResult clusteringRequestResult) throws IOException {
     writeOnDisk(clusteringRequestResult, new File(outputDirectory.getAbsolutePath() + CLUSTERING_RESULT_FILE));
   }
 
-  public static void writeClusteringGraph(File outputDirectory, ClusteringGraph graph) throws IOException {
+  public void writeClusteringGraph(ClusteringGraph graph) throws IOException {
     writeOnDisk(graph, new File(outputDirectory.getAbsolutePath() + CLUSTERING_GRAPH_FILE));
   }
 
-  public static void cleanupClustering(File inputDirectory, File outputDirectory) {
-    FileUtils.deleteQuietly(safeInputDir(inputDirectory));
+  public void cleanupClustering() {
+    FileUtils.deleteQuietly(safeInputDir());
     FileUtils.deleteQuietly(new File(outputDirectory.getAbsolutePath() + "/" + FilesIdBuilder.MAP_NAME));
   }
 
-  private static void writeOnDisk(Object o, File file) throws IOException {
+  private void writeOnDisk(Object o, File file) throws IOException {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
     jsonGenericHandler.getMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
     jsonGenericHandler.writeObjectToJsonGzipFile(o, file);
+  }
+
+  public String inPath() {
+    return inputDirectory.getAbsolutePath();
+  }
+  public String outPath() {
+    return outputDirectory.getAbsolutePath();
   }
 }
