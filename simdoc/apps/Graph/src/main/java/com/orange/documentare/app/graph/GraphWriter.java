@@ -12,14 +12,17 @@ package com.orange.documentare.app.graph;
 import com.orange.documentare.app.graph.cmdline.CommandLineOptions;
 import com.orange.documentare.app.graph.importexport.EdgeLabelProvider;
 import com.orange.documentare.app.graph.importexport.IdProvider;
+import com.orange.documentare.app.graph.importexport.LabelProvider;
 import com.orange.documentare.app.graph.importexport.VertexAttributeProvider;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphEdge;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphTBuilder;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
+import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import org.apache.commons.cli.ParseException;
 import org.jgrapht.ext.DOTExporter;
+import org.jgrapht.ext.VertexNameProvider;
 import org.jgrapht.graph.AbstractBaseGraph;
 
 import java.io.File;
@@ -63,8 +66,14 @@ public class GraphWriter {
   }
 
   private static void export(AbstractBaseGraph<GraphItem, JGraphEdge> graph, String fileName) throws IOException {
-    DOTExporter exporter = new DOTExporter(new IdProvider(), null, new EdgeLabelProvider(), new VertexAttributeProvider(options), null);
+    DOTExporter exporter = new DOTExporter(new IdProvider(), labelProvider(), new EdgeLabelProvider(), new VertexAttributeProvider(options), null);
     FileWriter writer = new FileWriter(fileName);
     exporter.export(writer, graph);
+  }
+
+  private static VertexNameProvider labelProvider() {
+    return options.hasFilesIdMap() ?
+      new LabelProvider((new FilesIdBuilder()).readMapIn(options.getFilesIdMap().getAbsolutePath())) :
+      null;
   }
 }

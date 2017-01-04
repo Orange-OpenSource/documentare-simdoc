@@ -1,5 +1,5 @@
-
-package com.orange.documentare.core.model.alto;/*
+package com.orange.documentare.core.model.alto;
+/*
  * Copyright (c) 2016 Orange
  *
  * Authors: Christophe Maldivi & Joel Gardes
@@ -8,7 +8,6 @@ package com.orange.documentare.core.model.alto;/*
  * under the terms of the GNU General Public License version 2 as published by
  * the Free Software Foundation.
  */
-
 
 import com.fasterxml.jackson.annotation.JsonInclude.Include;
 import com.fasterxml.jackson.core.JsonProcessingException;
