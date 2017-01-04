@@ -27,7 +27,7 @@ public class CommandLineOptions {
 
   private File graphJsonFile;
   private File filesIdMap;
-  private String imageDirectory = ".";
+  private String imageDirectory;
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
@@ -35,6 +35,10 @@ public class CommandLineOptions {
 
   public boolean hasFilesIdMap() {
     return filesIdMap != null;
+  }
+
+  public boolean hasImageDirectory() {
+    return imageDirectory != null;
   }
 
   private void init(String[] args) throws ParseException {
@@ -48,9 +52,6 @@ public class CommandLineOptions {
   }
 
   private void initOptionsValues(CommandLine commandLine) {
-    if (commandLine.hasOption(IMAGE_DIRECTORY)) {
-      imageDirectory = commandLine.getOptionValue(IMAGE_DIRECTORY);
-    }
     checkInputFiles(commandLine);
   }
 
@@ -67,11 +68,11 @@ public class CommandLineOptions {
     if (trianglesJsonPath == null) {
       throw new CommandLineException("\nERROR: an input argument is invalid\n");
     } else {
-      doSetInputFiles(trianglesJsonPath, commandLine.getOptionValue(FILES_ID_MAP));
+      doSetInputFiles(trianglesJsonPath, commandLine.getOptionValue(FILES_ID_MAP), commandLine.getOptionValue(IMAGE_DIRECTORY));
     }
   }
 
-  private void doSetInputFiles(String trianglesJsonPath, String filesIdMapJsonPath) {
+  private void doSetInputFiles(String trianglesJsonPath, String filesIdMapJsonPath, String imageDirectoryPath) {
     boolean error = true;
     if (trianglesJsonPath != null) {
       graphJsonFile = new File(trianglesJsonPath);
@@ -84,6 +85,12 @@ public class CommandLineOptions {
       File file = new File(filesIdMapJsonPath);
       if (file.exists()) {
         filesIdMap = file;
+      }
+    }
+    if (imageDirectoryPath != null) {
+      File file = new File(imageDirectoryPath);
+      if (file.isDirectory()) {
+        imageDirectory = imageDirectoryPath;
       }
     }
   }

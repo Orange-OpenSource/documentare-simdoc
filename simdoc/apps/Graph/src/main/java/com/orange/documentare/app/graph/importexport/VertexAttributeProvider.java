@@ -30,13 +30,15 @@ public class VertexAttributeProvider implements ComponentAttributeProvider<Graph
   public Map<String, String> getComponentAttributes(GraphItem graphItem) {
     Map<String, String> attrs = new HashMap<>();
     addColorAttr(attrs, graphItem);
-    addImageAttr(attrs, graphItem);
+    if (options.hasImageDirectory()) {
+      addImageAttr(attrs, graphItem);
+    }
     return attrs;
   }
 
   private void addImageAttr(Map<String, String> attrs, GraphItem graphItem) {
-    String verticeFileName = String.format("%s/%s", options.getImageDirectory(), graphItem.getVertexName());
-    attrs.put("image", verticeFileName + ".png");
+    String vertexImageFileName = String.format("%s/%s.png", options.getImageDirectory(), graphItem.getVertexName());
+    attrs.put("image", vertexImageFileName);
   }
 
   private void addColorAttr(Map<String, String> attrs, GraphItem graphItem) {
