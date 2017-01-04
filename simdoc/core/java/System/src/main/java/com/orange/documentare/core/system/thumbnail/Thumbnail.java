@@ -30,7 +30,7 @@ public class Thumbnail {
     "-thumbnail", "x300", "-background white", "-alpha remove", "-polaroid -0"
   };
   private static final String[] SUPPORT_THUMBNAILS = {
-          ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".pdf"
+          ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".pdf"
   };
 
   private final File directory;
