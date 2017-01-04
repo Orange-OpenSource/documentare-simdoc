@@ -71,7 +71,7 @@ public class Thumbnail {
   private void createThumbnail(File file, ThumbnailProgress thumbnailProgress) {
     List<String> options = new ArrayList<>(Arrays.asList(ARGS));
     String thumbnailPath = THUMBNAILS_DIR.getAbsolutePath() + "/" + file.getName() + ".png";
-    options.add(0, file.getAbsolutePath() + "[0]");
+    options.add(0, file.getAbsolutePath() + "\\[0\\]");
     options.add(thumbnailPath);
     NativeInterface.launch(
             CMD, options.toArray(new String[options.size()]), thumbnailPath + ".log");
