@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
+import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -49,6 +50,9 @@ public class ClusteringTest {
   @Autowired
   WebApplicationContext context;
 
+  @Autowired
+  SharedDirectory sharedDirectory;
+
   MockMvc mockMvc;
 
   @Before
@@ -60,6 +64,10 @@ public class ClusteringTest {
       .webAppContextSetup(context)
       .alwaysDo(print())
       .build();
+
+    // Since during test shared directory is not available
+    String invalidPath = "/titi/toto/tata/tutu/abcdefghijklmnopqrstuvwxyz";
+    sharedDirectory.updateSharedDirectory(invalidPath);
   }
 
   @After

@@ -11,6 +11,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  */
 
 import com.orange.documentare.simdoc.server.biz.FileIO;
+import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest.RequestValidation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,10 @@ public class ClusteringController implements ClusteringApi {
   @Autowired
   ClusteringService clusteringService;
 
+  @Autowired
+  private SharedDirectory sharedDirectory;
+
+
   public ClusteringRequestResult clustering(
     @ApiParam(value = "Clustering request parameters", required=true)
     @RequestBody
@@ -38,10 +43,14 @@ public class ClusteringController implements ClusteringApi {
     RequestValidation validation = req.validate();
     if (validation.ok) {
       return clusteringService.build(
-        new FileIO(req.inputDirectory(), req.outputDirectory()), req.clusteringParameters(), req.debug());
+        buildFileIO(req), req.clusteringParameters(), req.debug());
     } else {
       res.sendError(SC_BAD_REQUEST, validation.error);
       return ClusteringRequestResult.error(validation.error);
     }
+  }
+
+  private FileIO buildFileIO(ClusteringRequest req) {
+    return new FileIO(sharedDirectory, req.inputDirectory, req.outputDirectory);
   }
 }

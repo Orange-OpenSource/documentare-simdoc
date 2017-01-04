@@ -14,6 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.simdoc.server.biz.FileIO;
+import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.junit.After;
@@ -53,6 +54,9 @@ public class ClusteringParametersTest {
 
   @Autowired
   WebApplicationContext context;
+
+  @Autowired
+  SharedDirectory sharedDirectory;
 
   @MockBean
   ClusteringService clusteringService;
@@ -153,8 +157,7 @@ public class ClusteringParametersTest {
       .andExpect(status().isOk());
 
     Mockito.verify(clusteringService).build(
-      new FileIO(new File(INPUT_DIRECTORY),
-      new File(OUTPUT_DIRECTORY)),
+      new FileIO(sharedDirectory, INPUT_DIRECTORY, OUTPUT_DIRECTORY),
       expectedParameters.clusteringParameters,
       expectedParameters.debug);
   }
