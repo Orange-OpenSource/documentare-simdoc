@@ -17,8 +17,6 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
-import java.io.File;
-
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
@@ -47,18 +45,8 @@ public class ClusteringRequest {
     String error = null;
     if (inputDirectory == null) {
       error = "inputDirectory is missing";
-    } else if (!inputDirectory().exists()) {
-      error = "inputDirectory can not be reached: " + inputDirectory;
-    } else if (!inputDirectory().isDirectory()) {
-      error = "inputDirectory is not a directory: " + inputDirectory;
     } else if (outputDirectory == null) {
       error = "outputDirectory is missing";
-    } else if (!outputDirectory().exists()) {
-      error = "outputDirectory can not be reached: " + outputDirectory;
-    } else if (!outputDirectory().isDirectory()) {
-      error = "outputDirectory is not a directory: " + outputDirectory;
-    } else if (!outputDirectory().canWrite()) {
-      error = "outputDirectory is not writable: " + outputDirectory;
     } else {
       valid = true;
     }
@@ -88,26 +76,12 @@ public class ClusteringRequest {
     return builder.build();
   }
 
-  public File inputDirectory() {
-    return new File(inputDirectory);
-  }
-
-  public File outputDirectory() {
-    return new File(outputDirectory);
-  }
-
   public boolean debug() {
     return debug != null && debug;
   }
 
   public static ClusteringRequestBuilder builder() {
     return new ClusteringRequestBuilder();
-  }
-
-  @RequiredArgsConstructor
-  public static class RequestValidation {
-    public final boolean ok;
-    public final String error;
   }
 
   public static class ClusteringRequestBuilder {

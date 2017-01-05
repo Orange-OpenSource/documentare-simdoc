@@ -12,7 +12,6 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import com.orange.documentare.simdoc.server.biz.SharedDirectory;
-import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest.RequestValidation;
 import io.swagger.annotations.ApiParam;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,22 +36,32 @@ public class ClusteringController implements ClusteringApi {
 
   public ClusteringRequestResult clustering(
     @ApiParam(value = "Clustering request parameters", required=true)
-    @RequestBody
-      ClusteringRequest req, HttpServletResponse res) throws IOException {
+    @RequestBody ClusteringRequest req, HttpServletResponse res) throws IOException {
+
     log.info("[Clustering request] " + req);
+
     RequestValidation validation = req.validate();
-    if (validation.ok) {
-      return doClustering(req);
-    } else {
-      res.sendError(SC_BAD_REQUEST, validation.error);
-      return ClusteringRequestResult.error(validation.error);
+    if (!validation.ok) {
+      return error(res, validation.error);
     }
+
+    FileIO fileIO = new FileIO(sharedDirectory, req);
+    validation = fileIO.validate();
+    if (!validation.ok) {
+      return error(res, validation.error);
+    }
+
+    return doClustering(fileIO, req);
   }
 
-  private ClusteringRequestResult doClustering(ClusteringRequest req) throws IOException {
-    FileIO fileIO = new FileIO(sharedDirectory, req);
+  private ClusteringRequestResult doClustering(FileIO fileIO, ClusteringRequest req) throws IOException {
     fileIO.deleteAllClusteringFiles();
     fileIO.writeRequest(req);
     return clusteringService.build(fileIO, req.clusteringParameters(), req.debug());
+  }
+
+  private ClusteringRequestResult error(HttpServletResponse res, String error) throws IOException {
+    res.sendError(SC_BAD_REQUEST, error);
+    return ClusteringRequestResult.error(error);
   }
 }

@@ -97,7 +97,7 @@ public class InvalidClusteringRequestTest {
   @Test
   public void clustering_api_return_bad_request_if_input_directory_is_not_a_directory() throws Exception {
     // Given
-    String expectedMessage = "inputDirectory is not a directory: in";
+    String expectedMessage = "inputDirectory is not a directory: ";
     FileUtils.writeStringToFile(new File(INPUT_DIRECTORY), "hi");
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)
@@ -122,7 +122,7 @@ public class InvalidClusteringRequestTest {
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_not_a_directory() throws Exception {
     // Given
-    String expectedMessage = "outputDirectory is not a directory: out";
+    String expectedMessage = "outputDirectory is not a directory: ";
     createInputDirectory();
     FileUtils.writeStringToFile(new File(OUTPUT_DIRECTORY), "hi");
     ClusteringRequest req = ClusteringRequest.builder()

@@ -16,8 +16,8 @@ import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequestResult;
+import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;
 import lombok.EqualsAndHashCode;
-import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -41,6 +41,25 @@ public class FileIO {
     String outPrefixedPath = prefix + req.outputDirectory;
     inputDirectoryAbsPath = new File(inPrefixedPath).getAbsolutePath();
     outputDirectoryAbsPath = new File(outPrefixedPath).getAbsolutePath();
+  }
+
+  public RequestValidation validate() {
+    boolean valid = false;
+    String error = null;
+     if (!inputDirectory().exists()) {
+      error = "inputDirectory can not be reached: " + inputDirectoryAbsPath;
+    } else if (!inputDirectory().isDirectory()) {
+      error = "inputDirectory is not a directory: " + inputDirectoryAbsPath;
+    } else if (!outputDirectory().exists()) {
+      error = "outputDirectory can not be reached: " + outputDirectoryAbsPath;
+    } else if (!outputDirectory().isDirectory()) {
+      error = "outputDirectory is not a directory: " + outputDirectoryAbsPath;
+    } else if (!outputDirectory().canWrite()) {
+      error = "outputDirectory is not writable: " + outputDirectoryAbsPath;
+    } else {
+      valid = true;
+    }
+    return new RequestValidation(valid, error);
   }
 
   public void writeClusteringRequestResult(ClusteringRequestResult clusteringRequestResult) throws IOException {
@@ -77,6 +96,14 @@ public class FileIO {
   }
   public String outPath() {
     return outputDirectoryAbsPath;
+  }
+
+  private File inputDirectory() {
+    return new File(inputDirectoryAbsPath);
+  }
+
+  private File outputDirectory() {
+    return new File(outputDirectoryAbsPath);
   }
 
   private void writeOnDisk(Object o, File file) throws IOException {
