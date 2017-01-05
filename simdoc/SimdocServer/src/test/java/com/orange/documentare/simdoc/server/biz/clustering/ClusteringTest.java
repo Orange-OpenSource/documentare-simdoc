@@ -64,10 +64,6 @@ public class ClusteringTest {
       .webAppContextSetup(context)
       .alwaysDo(print())
       .build();
-
-    // Since during test shared directory is not available
-    String invalidPath = "/titi/toto/tata/tutu/abcdefghijklmnopqrstuvwxyz";
-    sharedDirectory.updateSharedDirectory(invalidPath);
   }
 
   @After

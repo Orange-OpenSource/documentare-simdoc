@@ -41,21 +41,35 @@ public class FileIO {
     outputDirectoryAbsPath = new File(outPrefixedPath).getAbsolutePath();
   }
 
-  public File safeInputDir() {
-    return new File(outputDirectoryAbsPath + SAFE_INPUT_DIR);
-  }
-
   public void writeClusteringRequestResult(ClusteringRequestResult clusteringRequestResult) throws IOException {
-    writeOnDisk(clusteringRequestResult, new File(outputDirectoryAbsPath + CLUSTERING_RESULT_FILE));
+    writeOnDisk(clusteringRequestResult, clusteringResultFile());
   }
 
   public void writeClusteringGraph(ClusteringGraph graph) throws IOException {
-    writeOnDisk(graph, new File(outputDirectoryAbsPath + CLUSTERING_GRAPH_FILE));
+    writeOnDisk(graph, clusteringGraphFile());
+  }
+
+  public void deleteAllClusteringFiles() {
+    cleanupClustering();
+    FileUtils.deleteQuietly(clusteringResultFile());
+    FileUtils.deleteQuietly(clusteringGraphFile());
   }
 
   public void cleanupClustering() {
     FileUtils.deleteQuietly(safeInputDir());
-    FileUtils.deleteQuietly(new File(outputDirectoryAbsPath + "/" + FilesIdBuilder.MAP_NAME));
+    FileUtils.deleteQuietly(mapFile());
+  }
+
+
+  public File safeInputDir() {
+    return new File(outputDirectoryAbsPath + SAFE_INPUT_DIR);
+  }
+
+  public String inPath() {
+    return inputDirectoryAbsPath;
+  }
+  public String outPath() {
+    return outputDirectoryAbsPath;
   }
 
   private void writeOnDisk(Object o, File file) throws IOException {
@@ -64,10 +78,15 @@ public class FileIO {
     jsonGenericHandler.writeObjectToJsonGzipFile(o, file);
   }
 
-  public String inPath() {
-    return inputDirectoryAbsPath;
+  private File clusteringGraphFile() {
+    return new File(outputDirectoryAbsPath + CLUSTERING_GRAPH_FILE);
   }
-  public String outPath() {
-    return outputDirectoryAbsPath;
+
+  private File mapFile() {
+    return new File(outputDirectoryAbsPath + "/" + FilesIdBuilder.MAP_NAME);
+  }
+
+  private File clusteringResultFile() {
+    return new File(outputDirectoryAbsPath + CLUSTERING_RESULT_FILE);
   }
 }
