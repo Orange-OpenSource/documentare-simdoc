@@ -157,7 +157,7 @@ public class ClusteringParametersTest {
       .andExpect(status().isOk());
 
     Mockito.verify(clusteringService).build(
-      new FileIO(sharedDirectory, INPUT_DIRECTORY, OUTPUT_DIRECTORY),
+      new FileIO(sharedDirectory, req),
       expectedParameters.clusteringParameters,
       expectedParameters.debug);
   }

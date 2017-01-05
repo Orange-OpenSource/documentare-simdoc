@@ -42,15 +42,17 @@ public class ClusteringController implements ClusteringApi {
     log.info("[Clustering request] " + req);
     RequestValidation validation = req.validate();
     if (validation.ok) {
-      return clusteringService.build(
-        buildFileIO(req), req.clusteringParameters(), req.debug());
+      return doClustering(req);
     } else {
       res.sendError(SC_BAD_REQUEST, validation.error);
       return ClusteringRequestResult.error(validation.error);
     }
   }
 
-  private FileIO buildFileIO(ClusteringRequest req) {
-    return new FileIO(sharedDirectory, req.inputDirectory, req.outputDirectory);
+  private ClusteringRequestResult doClustering(ClusteringRequest req) throws IOException {
+    FileIO fileIO = new FileIO(sharedDirectory, req);
+    fileIO.deleteAllClusteringFiles();
+    fileIO.writeRequest(req);
+    return clusteringService.build(fileIO, req.clusteringParameters(), req.debug());
   }
 }

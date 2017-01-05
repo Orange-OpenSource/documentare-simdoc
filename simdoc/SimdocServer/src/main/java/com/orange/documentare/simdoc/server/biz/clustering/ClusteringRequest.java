@@ -13,12 +13,14 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.ClusteringParametersBuilder;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
 import java.io.File;
 
 @ToString
+@EqualsAndHashCode
 @RequiredArgsConstructor
 public class ClusteringRequest {
   @ApiModelProperty(example = "user1/files", required = true)

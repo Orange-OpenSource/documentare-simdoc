@@ -34,7 +34,6 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringParameters parameters, boolean debug) throws IOException {
-    fileIO.deleteAllClusteringFiles();
     createSafeInputDirectory(fileIO);
     ClusteringOutput clusteringOutput = buildClustering(fileIO, parameters);
     ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(fileIO, clusteringOutput);

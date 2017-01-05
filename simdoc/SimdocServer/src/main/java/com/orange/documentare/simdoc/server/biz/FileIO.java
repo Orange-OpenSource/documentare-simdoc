@@ -14,6 +14,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
+import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequestResult;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -24,19 +25,20 @@ import java.io.IOException;
 
 @EqualsAndHashCode
 public class FileIO {
-  public static final String SAFE_INPUT_DIR = "/safe-input-dir";
-  public static final String CLUSTERING_RESULT_FILE = "/clustering-result.json.gz";
-  public static final String CLUSTERING_GRAPH_FILE = "/clustering-graph.json.gz";
+  private static final String SAFE_INPUT_DIR = "/safe-input-dir";
+  private static final String CLUSTERING_REQUEST_FILE = "/clustering-request.json.gz";
+  private static final String CLUSTERING_RESULT_FILE = "/clustering-result.json.gz";
+  private static final String CLUSTERING_GRAPH_FILE = "/clustering-graph.json.gz";
 
   private final String inputDirectoryAbsPath;
   private final String outputDirectoryAbsPath;
 
-  public FileIO(SharedDirectory sharedDirectory, String inputDirectory, String outputDirectory) {
+  public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
       sharedDirectory.sharedDirectoryRootPath() :
       "";
-    String inPrefixedPath = prefix + inputDirectory;
-    String outPrefixedPath = prefix + outputDirectory;
+    String inPrefixedPath = prefix + req.inputDirectory;
+    String outPrefixedPath = prefix + req.outputDirectory;
     inputDirectoryAbsPath = new File(inPrefixedPath).getAbsolutePath();
     outputDirectoryAbsPath = new File(outPrefixedPath).getAbsolutePath();
   }
@@ -49,8 +51,13 @@ public class FileIO {
     writeOnDisk(graph, clusteringGraphFile());
   }
 
+  public void writeRequest(ClusteringRequest req) throws IOException {
+    writeOnDisk(req, clusteringRequestFile());
+  }
+
   public void deleteAllClusteringFiles() {
     cleanupClustering();
+    FileUtils.deleteQuietly(clusteringRequestFile());
     FileUtils.deleteQuietly(clusteringResultFile());
     FileUtils.deleteQuietly(clusteringGraphFile());
   }
@@ -76,6 +83,10 @@ public class FileIO {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
     jsonGenericHandler.getMapper().setSerializationInclusion(JsonInclude.Include.NON_NULL);
     jsonGenericHandler.writeObjectToJsonGzipFile(o, file);
+  }
+
+  private File clusteringRequestFile() {
+    return new File(outputDirectoryAbsPath + CLUSTERING_REQUEST_FILE);
   }
 
   private File clusteringGraphFile() {

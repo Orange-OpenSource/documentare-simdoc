@@ -82,7 +82,7 @@ public class ClusteringTest {
     coreTest(req);
 
     // only result is kept without debug
-    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(1);
+    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(2);
   }
 
   @Test
@@ -98,6 +98,7 @@ public class ClusteringTest {
 
     List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
     Assertions.assertThat(outputDirectoryList).contains("map.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("safe-input-dir");

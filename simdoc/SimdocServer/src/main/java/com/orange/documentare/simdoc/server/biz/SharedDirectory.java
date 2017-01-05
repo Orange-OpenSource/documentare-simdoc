@@ -2,6 +2,7 @@ package com.orange.documentare.simdoc.server.biz;
 
 import lombok.Getter;
 import lombok.experimental.Accessors;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,6 +12,7 @@ import java.io.IOException;
 
 @Getter
 @Accessors(fluent = true)
+@Slf4j
 @Component
 public class SharedDirectory {
 
@@ -30,5 +32,6 @@ public class SharedDirectory {
         throw new IOException("Shared directory is not accessible: '" + sharedDirectoryRootPath + "'");
       }
     }
+    log.info("Shared directory, available = {}, path = {}", sharedDirectoryAvailable, sharedDirectoryRootPath);
   }
 }
