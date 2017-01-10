@@ -13,6 +13,7 @@ cp simdoc/apps/PrepClustering/target/Prep*.jar PrepClustering-$TAG.jar && \
 cp simdoc/apps/SimClustering/target/Sim*.jar SimClustering-$TAG.jar && \
 cp simdoc/apps/Thumbnails/target/Thumbnails*.jar Thumbnails-$TAG.jar && \
 cp simdoc/apps/Graph/target/Graph*.jar Graph-$TAG.jar && \
+cp simdoc/SimdocServer/target/SimdocServer*.jar SimdocServer-$TAG.jar && \
 echo Create tarball && \
 tar cvjf documentare-simdoc-$TAG.tar.bz2 *.jar && \
 echo && \
