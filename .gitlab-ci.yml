@@ -5,8 +5,13 @@ cache:
   paths:
     - /root/.m2/repository/
 
+variables:
+  - JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
+
 default-job:
   script:
+      - locale -a
+      - locale
       - ./.ci.sh
   artifacts:
      paths:
