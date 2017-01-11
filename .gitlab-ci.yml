@@ -10,6 +10,7 @@ variables:
 
 default-job:
   script:
+      - id
       - locale -a
       - locale
       - ./.ci.sh
