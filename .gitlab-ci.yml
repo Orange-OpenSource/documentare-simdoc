@@ -1,3 +1,5 @@
+image: registry.gitlab.com/orange-opensource/documentare-simdoc-ci-docker:master
+
 cache:
   paths:
     - /root/.m2/repository/
@@ -7,9 +9,6 @@ variables:
 
 default-job:
   script:
-      - id
-      - locale -a
-      - locale
       - ./.ci.sh
   artifacts:
      paths:
