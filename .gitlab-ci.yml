@@ -1,12 +1,9 @@
-image: registry.gitlab.com/orange-opensource/documentare-simdoc-ci-docker:master
-
-# Cache downloaded dependencies and plugins between builds.
 cache:
   paths:
     - /root/.m2/repository/
 
 variables:
-  - JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
+  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
 
 default-job:
   script:
@@ -31,4 +28,3 @@ release-job:
        - ./*.jar
   only:
      - tags
-
