@@ -1,0 +1,28 @@
+image: gitlab.com:4567/Orange-Opensource/documentare-simdoc-ci-docker
+
+# Cache downloaded dependencies and plugins between builds.
+cache:
+  paths:
+    - /root/.m2/repository/
+
+default-job:
+  script:
+      - ./.ci.sh
+  artifacts:
+     paths:
+       - ./CHANGELOG.html
+       - ./*.jar
+     expire_in: 5 mins
+  except:
+      - tags
+
+release-job:
+  script:
+      - ./.ci.sh
+  artifacts:
+     paths:
+       - ./CHANGELOG.html
+       - ./*.jar
+  only:
+     - tags
+
