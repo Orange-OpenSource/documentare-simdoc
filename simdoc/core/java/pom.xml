@@ -28,7 +28,9 @@
     <fastassert.version>1.4</fastassert.version>
     <slf4j.version>1.7.22</slf4j.version>
     <compiler.version>1.8</compiler.version>
+
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
   </properties>
 
 
@@ -129,52 +131,22 @@
     <plugins>
       <plugin>
         <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.1</version>
+        <version>3.6.0</version>
         <configuration>
           <source>${compiler.version}</source>
           <target>${compiler.version}</target>
+          <encoding>${project.build.sourceEncoding}</encoding>
           <optimize>true</optimize>
         </configuration>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.1</version>
+        <artifactId>maven-resources-plugin</artifactId>
+        <version>3.0.2</version>
+        <configuration>
+          <encoding>${project.build.sourceEncoding}</encoding>
+        </configuration>
       </plugin>
-      <!--
-                  <plugin>
-                      <groupId>org.codehaus.mojo</groupId>
-                      <artifactId>license-maven-plugin</artifactId>
-                      <version>1.8</version>
-                      <configuration>
-                          <outputDirectory>.</outputDirectory>
-                          <excludedScopes>test</excludedScopes>
-                          <includeTransitiveDependencies>true</includeTransitiveDependencies>
-                          <inceptionYear>2016</inceptionYear>
-                          <organizationName>Orange</organizationName>
-                          <projectName>Simdoc</projectName>
-                          <addJavaLicenseAfterPackage>true</addJavaLicenseAfterPackage>
-                          <projectName>Simdoc</projectName>
-                          <licenseName>gpl_v2</licenseName>
-                      </configuration>
-                      <executions>
-                          <execution>
-                              <id>first</id>
-                              <goals>
-                                  <goal>update-file-header</goal>
-                              </goals>
-                              <phase>process-sources</phase>
-                              <configuration>
-                                  <licenseName>gpl_v2</licenseName>
-                                  <roots>
-                                      <root>src/main/java</root>
-                                      <root>src/test/java</root>
-                                  </roots>
-                              </configuration>
-                          </execution>
-                      </executions>
-                  </plugin>
-      -->
     </plugins>
   </build>
 
