@@ -9,6 +9,8 @@ variables:
 
 default-job:
   script:
+      - export LANG=C.UTF-8
+      - locale
       - ./.ci.sh
   artifacts:
      paths:
