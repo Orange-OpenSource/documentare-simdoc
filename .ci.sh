@@ -3,7 +3,6 @@
 TAG=`git describe`
 
 (cd simdoc && ./prep-simdoc.sh) && \
-rm -f /tmp/tmp_graph* && \
 (cd simdoc/SimdocServer && ./mvnw clean install) && \
 (cd simdoc/apps && ./refIntegrationTest.sh) && \
 cp simdoc/SimdocServer/target/SimdocServer-1.0.0-SNAPSHOT.jar SimdocServer-$TAG.jar && \
@@ -19,11 +18,5 @@ echo Create tarball && \
 tar cvjf documentare-simdoc-$TAG.tar.bz2 *.jar && \
 echo && \
 echo OK && exit 0
-
-for i in `ls /tmp/tmp_graph*`
-do
- echo $i
- cat $i
-done
 
 echo [FAILED] && exit 1
