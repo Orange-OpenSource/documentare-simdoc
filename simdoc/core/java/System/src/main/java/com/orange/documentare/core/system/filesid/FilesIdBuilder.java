@@ -1,4 +1,13 @@
 package com.orange.documentare.core.system.filesid;
+/*
+ * Copyright (c) 2016 Orange
+ *
+ * Authors: Christophe Maldivi & Joel Gardes
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published by
+ * the Free Software Foundation.
+ */
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -16,7 +25,7 @@ import java.util.zip.GZIPOutputStream;
 @Slf4j
 public class FilesIdBuilder {
 
-  private static final String MAP_NAME = "map.json.gz";
+  public static final String MAP_NAME = "map.json.gz";
 
   public void createFilesIdDirectory(String srcDir, String destDir, String mapDir) {
     File src = new File(srcDir);

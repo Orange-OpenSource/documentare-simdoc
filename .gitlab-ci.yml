@@ -1,0 +1,31 @@
+image: registry.gitlab.com/orange-opensource/documentare-simdoc-ci-docker:master
+
+cache:
+  paths:
+    - /root/.m2/repository/
+
+variables:
+  JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
+
+default-job:
+  script:
+      - export LANG=C.UTF-8
+      - locale
+      - ./.ci.sh
+  artifacts:
+     paths:
+       - ./CHANGELOG.html
+       - ./*.jar
+     expire_in: 5 mins
+  except:
+      - tags
+
+release-job:
+  script:
+      - ./.ci.sh
+  artifacts:
+     paths:
+       - ./CHANGELOG.html
+       - ./*.jar
+  only:
+     - tags

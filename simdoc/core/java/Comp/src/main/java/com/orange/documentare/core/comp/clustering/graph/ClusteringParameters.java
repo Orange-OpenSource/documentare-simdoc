@@ -9,7 +9,10 @@ package com.orange.documentare.core.comp.clustering.graph;
  * the Free Software Foundation.
  */
 
-public class ClusteringParameters {
+import lombok.EqualsAndHashCode;
+
+@EqualsAndHashCode
+public final class ClusteringParameters {
   public static final float A_DEFAULT_SD_FACTOR = 2;
   public static final float Q_DEFAULT_SD_FACTOR = 2;
   public static final float SCUT_DEFAULT_SD_FACTOR = 2;

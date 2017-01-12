@@ -22,7 +22,7 @@ import java.util.Arrays;
 @Slf4j
 public class ClusteringTasksServiceTest {
 
-  private static final int NB_TASKS = 4 * 20;
+  private static final int NB_TASKS = 4 * 10;
   private static final String CLUSTERING_TASK_FILE_PREFIX = "clustering_tasks_";
 
   private final ClusteringTasksService tasksHandler = ClusteringTasksService.instance();

@@ -30,7 +30,7 @@ public class Thumbnail {
     "-thumbnail", "x300", "-background white", "-alpha remove", "-polaroid -0"
   };
   private static final String[] SUPPORT_THUMBNAILS = {
-          ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".pdf"
+          ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".pdf"
   };
 
   private final File directory;
@@ -71,7 +71,7 @@ public class Thumbnail {
   private void createThumbnail(File file, ThumbnailProgress thumbnailProgress) {
     List<String> options = new ArrayList<>(Arrays.asList(ARGS));
     String thumbnailPath = THUMBNAILS_DIR.getAbsolutePath() + "/" + file.getName() + ".png";
-    options.add(0, file.getAbsolutePath() + "[0]");
+    options.add(0, file.getAbsolutePath() + "\\[0\\]");
     options.add(thumbnailPath);
     NativeInterface.launch(
             CMD, options.toArray(new String[options.size()]), thumbnailPath + ".log");
