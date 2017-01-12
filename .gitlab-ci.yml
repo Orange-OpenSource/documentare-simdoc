@@ -2,7 +2,7 @@ image: registry.gitlab.com/orange-opensource/documentare-simdoc-ci-docker:master
 
 cache:
   paths:
-    - /root/.m2/repository/
+    - ~/.m2
 
 variables:
   JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
@@ -10,7 +10,6 @@ variables:
 default-job:
   script:
       - export LANG=C.UTF-8
-      - locale
       - ./.ci.sh
   artifacts:
      paths:
