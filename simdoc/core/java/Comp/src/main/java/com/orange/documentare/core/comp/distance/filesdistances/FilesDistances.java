@@ -19,6 +19,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,9 +29,6 @@ import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @RequiredArgsConstructor
-
-// FIXME: DistanceComputerFunctionalTest should use FilesDistances
-
 public class FilesDistances {
   public final FileDistanceItem[] items1;
   public final FileDistanceItem[] items2;
@@ -75,7 +74,7 @@ public class FilesDistances {
     return items.toArray(array);
   }
 
-  private boolean shouldNotIgnore(File directoryFile) {
+  private boolean shouldNotIgnore(File directoryFile) throws IOException {
     return !directoryFile.isHidden();
   }
 

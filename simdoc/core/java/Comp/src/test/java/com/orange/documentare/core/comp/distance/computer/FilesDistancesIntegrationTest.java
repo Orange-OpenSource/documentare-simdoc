@@ -9,11 +9,14 @@ package com.orange.documentare.core.comp.distance.computer;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.measure.ProgressListener;
+import com.orange.documentare.core.comp.distance.filesdistances.FilesDistances;
 import com.orange.documentare.core.comp.distance.matrix.DistancesMatrixCsvGzipWriter;
+import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.io.Gzip;
 import com.orange.documentare.core.system.measure.Progress;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,8 +24,7 @@ import org.junit.runner.RunWith;
 import java.io.File;
 import java.io.IOException;
 
-@RunWith(MultiThreadedRunner.class)
-public class DistanceComputerFunctionalTest implements ProgressListener {
+public class FilesDistancesIntegrationTest {
 
   private static final String TEST_DIRECTORY_A = "/bestioles";
   private static final String TEST_DIRECTORY_B = "/comp_dir";
@@ -32,14 +34,20 @@ public class DistanceComputerFunctionalTest implements ProgressListener {
   private static final String TEST_REFERENCE_AB_NEARESTS = "/a2b_nearests.reference.gz";
   private static final String TEST_REFERENCE_BA_NEARESTS = "/b2a_nearests.reference.gz";
 
-  private static final String TEST_REFERENCE_AA_NEARESTS = "/a2a_nearests.reference.gz";
-
   private static final File TEST_MATRIX_OUTPUT = new File("matrix.csv.gz");
   private static final File TEST_NEARESTS_OUTPUT = new File("nearests.csv.gz");
 
   private static final File TEST_MATRIX_OUTPUT_SAME_ARRAY = new File("matrix_same_array.csv.gz");
   private static final File TEST_NEARESTS_OUTPUT_SAME_ARRAY = new File("nearests_same_array.csv.gz");
 
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(TEST_MATRIX_OUTPUT);
+    FileUtils.deleteQuietly(TEST_NEARESTS_OUTPUT);
+    FileUtils.deleteQuietly(TEST_MATRIX_OUTPUT_SAME_ARRAY);
+    FileUtils.deleteQuietly(TEST_NEARESTS_OUTPUT_SAME_ARRAY);
+  }
 
   @Test
   public void shouldComputeSelfMatrix() throws IOException {
@@ -68,45 +76,19 @@ public class DistanceComputerFunctionalTest implements ProgressListener {
 
   void shouldCompute(String dir1, String dir2, String ref, boolean nearestsMode) throws IOException {
     // given
-    DirectoryItems directoryItemsA = new DirectoryItems(new File(getClass().getResource(dir1).getFile()));
-    DirectoryItems directoryItemsB = new DirectoryItems(new File(getClass().getResource(dir2).getFile()));
-    TestItem[] itemsA = directoryItemsA.getItems();
-    TestItem[] itemsB = directoryItemsB.getItems();
-    DistancesComputer computer = new DistancesComputer(itemsA, itemsB);
-    computer.setProgressListener(this);
+    FilesDistances filesDistances = FilesDistances.empty();
+    boolean sameArray = dir1.equals(dir2);
+    File directory1 = new File(getClass().getResource(dir1).getFile());
+    File directory2 = new File(getClass().getResource(dir2).getFile());
     String refFileResource = Gzip.getStringFromGzipFile(new File(getClass().getResource(ref).getFile()));
+
     // do
-    computer.compute();
-    DistancesMatrixCsvGzipWriter writer = new DistancesMatrixCsvGzipWriter(itemsA, itemsB, computer.getDistancesArray());
+    FilesDistances fd = filesDistances.compute(directory1, directory2, null);
+    DistancesMatrixCsvGzipWriter writer = new DistancesMatrixCsvGzipWriter(fd.items1, sameArray ? fd.items1 : fd.items2, fd.distancesArray);
     writer.writeTo(nearestsMode ? TEST_NEARESTS_OUTPUT : TEST_MATRIX_OUTPUT, nearestsMode);
     String out = Gzip.getStringFromGzipFile(nearestsMode ? TEST_NEARESTS_OUTPUT : TEST_MATRIX_OUTPUT);
+
     // then
     Assert.assertEquals(refFileResource, out);
-  }
-
-  @Test
-  public void shouldComputeOnSameArray() throws IOException {
-    // given
-    DirectoryItems directoryItems = new DirectoryItems(new File(getClass().getResource(TEST_DIRECTORY_A).getFile()));
-    TestItem[] items = directoryItems.getItems();
-    DistancesComputer computer = new DistancesComputer(items, items);
-    computer.setProgressListener(this);
-    String refMatrixResource = Gzip.getStringFromGzipFile(new File(getClass().getResource(TEST_REFERENCE_AA).getFile()));
-    String refNearestsResource = Gzip.getStringFromGzipFile((new File(getClass().getResource(TEST_REFERENCE_AA_NEARESTS).getFile())));
-    // do
-    computer.compute();
-    DistancesMatrixCsvGzipWriter writer = new DistancesMatrixCsvGzipWriter(items, items, computer.getDistancesArray());
-    writer.writeTo(TEST_MATRIX_OUTPUT_SAME_ARRAY, false);
-    writer.writeTo(TEST_NEARESTS_OUTPUT_SAME_ARRAY, true);
-    String outMatrix = Gzip.getStringFromGzipFile((TEST_MATRIX_OUTPUT_SAME_ARRAY));
-    String outNearests = Gzip.getStringFromGzipFile((TEST_NEARESTS_OUTPUT_SAME_ARRAY));
-    // then
-    Assert.assertEquals(refMatrixResource, outMatrix);
-    Assert.assertEquals(refNearestsResource, outNearests);
-  }
-
-  @Override
-  public void onProgressUpdate(TreatmentStep step, Progress progress) {
-    System.out.print("\r" + progress.displayString(step.toString()));
   }
 }
