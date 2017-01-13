@@ -8,14 +8,22 @@ import org.junit.Test;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class FilesIdBuilderTest {
 
   private final static String[] TEST_FILES = {
+    ".DS_STORE",
     "a_1& é ~ # { à \" weird file name . point.dïû",
     "b_pretty-file-name",
     "subdir/garfield",
-    "w_abcd"
+    "w_abcd",
+    ".hidden-file"
   };
 
   private final static String SRC_DIR = "test_tmp/files_id_src";
@@ -34,15 +42,33 @@ public class FilesIdBuilderTest {
     // Given
     FilesIdBuilder builder = new FilesIdBuilder();
     buildSourceDir(SRC_DIR, TEST_FILES);
+    List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
     builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
 
     // Then
-    for (int index = 0; index < TEST_FILES.length; index++) {
-      File srcFile = new File(SRC_DIR + "/" + TEST_FILES[index]);
+    for (int index = 0; index < nonHiddenSourceFiles.size(); index++) {
+      File srcFile = nonHiddenSourceFiles.get(index);
       File destFile = new File(DEST_DIR + "/" + index);
       Assertions.assertThat(FileUtils.readFileToString(destFile)).isEqualTo(FileUtils.readFileToString(srcFile));
+    }
+  }
+
+  @Test
+  public void skip_hidden_files_in_dest_directory() throws IOException {
+    // Given
+    FilesIdBuilder builder = new FilesIdBuilder();
+    buildSourceDir(SRC_DIR, TEST_FILES);
+
+    // When
+    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
+    Collection<File> destFiles = FileUtils.listFiles(new File(DEST_DIR), null, true);
+
+    // Then
+    for (File file : destFiles) {
+      File target = Files.readSymbolicLink(file.toPath()).toFile();
+      Assertions.assertThat(target.isHidden()).isFalse();
     }
   }
 
@@ -51,6 +77,7 @@ public class FilesIdBuilderTest {
     // Given
     FilesIdBuilder builder = new FilesIdBuilder();
     buildSourceDir(SRC_DIR, TEST_FILES);
+    List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
     builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
@@ -58,7 +85,7 @@ public class FilesIdBuilderTest {
 
     // Then
     map.keySet().forEach(index -> {
-      File srcFile = new File(SRC_DIR + "/" + TEST_FILES[index]);
+      File srcFile = nonHiddenSourceFiles.get(index);
       Assertions.assertThat(map.get(index)).isEqualTo(srcFile.getAbsolutePath());
     });
   }
@@ -67,5 +94,19 @@ public class FilesIdBuilderTest {
     for (String filename : filenames) {
       FileUtils.writeStringToFile(new File(srcDir + "/" + filename), filename);
     }
+  }
+
+  private List<File> nonHiddenSourceFiles(String[] sourceFiles) {
+    return Arrays.stream(sourceFiles)
+      .map(filename -> new File(SRC_DIR + File.separator + filename))
+      .filter(file -> !file.isHidden())
+      .collect(Collectors.toList());
+  }
+
+  private List<File> hiddenSourceFiles(String[] sourceFiles) {
+    return Arrays.stream(sourceFiles)
+      .map(filename -> new File(SRC_DIR + File.separator + filename))
+      .filter(File::isHidden)
+      .collect(Collectors.toList());
   }
 }

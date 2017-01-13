@@ -17,8 +17,8 @@ import org.apache.commons.io.FileUtils;
 import java.io.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.List;
+import java.util.stream.Collectors;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
@@ -35,7 +35,7 @@ public class FilesIdBuilder {
 
     File dest = createDestination(destDir);
 
-    File[] srcFiles = createFilesId(src, dest);
+    List<File> srcFiles = createFilesId(src, dest);
     createMap(srcFiles, new File(mapDir));
   }
 
@@ -52,12 +52,14 @@ public class FilesIdBuilder {
     }
   }
 
-  private File[] createFilesId(File src, File dest) {
-    Collection<File> files = FileUtils.listFiles(src, null, true);
-    File[] srcFiles = files.toArray(new File[files.size()]);
-    Arrays.sort(srcFiles);
-    for (int id = 0; id < srcFiles.length; id++) {
-      Path srcPath = srcFiles[id].toPath().toAbsolutePath();
+  private List<File> createFilesId(File src, File dest) {
+    List<File> files =
+      FileUtils.listFiles(src, null, true).stream()
+      .filter(file -> !file.isHidden())
+      .sorted()
+      .collect(Collectors.toList());
+    for (int id = 0; id < files.size(); id++) {
+      Path srcPath = files.get(id).toPath().toAbsolutePath();
       Path destPath = (new File(dest.getAbsolutePath() + "/" + id)).toPath().toAbsolutePath();
       try {
         Files.createSymbolicLink(destPath, srcPath);
@@ -65,13 +67,13 @@ public class FilesIdBuilder {
         throw new FilesIdException(String.format("[FilesIdBuilder] failed to create symbolic link: %s, %s -> %s", e.getMessage(), srcPath, destPath));
       }
     }
-    return srcFiles;
+    return files;
   }
 
-  private void createMap(File[] srcFiles, File mapDir) {
+  private void createMap(List<File> srcFiles, File mapDir) {
     FilesIdMap map = new FilesIdMap();
-    for (int id = 0; id < srcFiles.length; id++) {
-      map.put(id, srcFiles[id].getAbsolutePath());
+    for (int id = 0; id < srcFiles.size(); id++) {
+      map.put(id, srcFiles.get(id).getAbsolutePath());
     }
 
     ObjectMapper mapper = new ObjectMapper();

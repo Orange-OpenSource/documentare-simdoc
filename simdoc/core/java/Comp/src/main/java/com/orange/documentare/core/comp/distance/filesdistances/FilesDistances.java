@@ -27,6 +27,9 @@ import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @RequiredArgsConstructor
+
+// FIXME: DistanceComputerFunctionalTest should use FilesDistances
+
 public class FilesDistances {
   public final FileDistanceItem[] items1;
   public final FileDistanceItem[] items2;
