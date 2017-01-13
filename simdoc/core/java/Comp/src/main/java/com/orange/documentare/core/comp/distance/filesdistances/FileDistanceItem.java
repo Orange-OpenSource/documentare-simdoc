@@ -62,8 +62,7 @@ public class FileDistanceItem implements DistanceItem {
   @Override
   @JsonIgnore
   public String getHumanReadableId() {
-    // FIXME: to remove after simdoc mode review?
-    return null;
+    return relativeFilename;
   }
 
   @Override
