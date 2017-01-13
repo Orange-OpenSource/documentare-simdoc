@@ -102,11 +102,4 @@ public class FilesIdBuilderTest {
       .filter(file -> !file.isHidden())
       .collect(Collectors.toList());
   }
-
-  private List<File> hiddenSourceFiles(String[] sourceFiles) {
-    return Arrays.stream(sourceFiles)
-      .map(filename -> new File(SRC_DIR + File.separator + filename))
-      .filter(File::isHidden)
-      .collect(Collectors.toList());
-  }
 }
