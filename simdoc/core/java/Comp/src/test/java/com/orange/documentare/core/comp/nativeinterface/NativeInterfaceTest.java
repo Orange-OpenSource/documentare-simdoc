@@ -12,11 +12,21 @@ package com.orange.documentare.core.comp.nativeinterface;
 import com.orange.documentare.core.system.nativeinterface.NativeException;
 import com.orange.documentare.core.system.nativeinterface.NativeInterface;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
+import java.io.File;
+
 @Slf4j
 public class NativeInterfaceTest {
+  private static final String CMD_LOG = "cmd.log";
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(CMD_LOG));
+  }
 
   @Test
   public void shouldRaiseNonNullExceptionOnNullExe() {
@@ -73,7 +83,7 @@ public class NativeInterfaceTest {
     // given
     String exe = "ls";
     String[] args = new String[] { ".", ".." };
-    String logPath = "cmd.log";
+    String logPath = CMD_LOG;
     boolean gotException = false;
     // then
     try {

@@ -12,6 +12,8 @@ package com.orange.documentare.core.comp.clustering.graph;
 import com.orange.documentare.core.model.io.Gzip;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -22,6 +24,11 @@ public class ClusteringGraphBuilderIntegrationScalpelTest {
   private static final String CLUSTERING_INPUT = "/bestioles_nearests_for_clustering.json.gz";
   private static final String GRAPH_OUTPUT_REF = "/bestioles_graph_scalpel_ref.json.gz";
   private static final String GRAPH_OUTPUT = "bestioles_graph_scalpel.json.gz";
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(GRAPH_OUTPUT));
+  }
 
   @Test
   public void shouldBuildGraphFromClusteringItemsInput() throws IOException {

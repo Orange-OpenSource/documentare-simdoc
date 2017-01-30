@@ -16,7 +16,9 @@ import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.image.test.TestDrawer;
 import com.orange.documentare.core.model.io.Gzip;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
+import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
+import org.junit.After;
 import org.junit.runner.RunWith;
 
 import java.io.File;
@@ -27,6 +29,12 @@ public class LineDetectionTest {
 
   static {
     OpencvLoader.load();
+  }
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File("latin_line_detection.json.gz"));
+    FileUtils.deleteQuietly(new File("latin_line_detection.png"));
   }
 
   @TestWith({
