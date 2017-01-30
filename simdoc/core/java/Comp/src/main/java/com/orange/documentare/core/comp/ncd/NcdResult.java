@@ -10,14 +10,17 @@ package com.orange.documentare.core.comp.ncd;
  */
 
 
-import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-@Getter
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class NcdResult {
-  private final float ncd;
-  private final int xLen;
-  private final int yLen;
-  private final int xyLen;
+  public final float ncd;
+
+  /**
+   * compressed lengths are here for optimization purpose,
+   * since NcdInput is immutable, we will use these results to
+   * update data structures which may hold NcdInput for cache optimization
+   */
+  public final int input1CompressedLength;
+  public final int input2CompressedLength;
 }

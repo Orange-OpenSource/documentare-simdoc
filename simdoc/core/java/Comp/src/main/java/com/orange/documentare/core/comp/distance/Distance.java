@@ -57,11 +57,13 @@ public class Distance {
   public int get(DistanceItem item1, DistanceItem item2) throws IOException {
     NcdInput input1 = getNcdInput(item1);
     NcdInput input2 = getNcdInput(item2);
-    float distance = ncd.getNcdDistance(input1, input2).getNcd();
+    // FIXME OPTIMIZATION: ncdInput is immutable and compressedLength should be updated in retained Map or array
+    float distance = ncd.computeNcd(input1, input2).ncd;
     return (int) (distance * DISTANCE_INT_CONV_FACTOR);
   }
 
   private synchronized NcdInput getNcdInput(DistanceItem item) {
+    // FIXME: should use getOrDefault
     NcdInput ncdInput = inputsMap.get(item);
     if (ncdInput == null) {
       ncdInput = new NcdInput(item.getBytes());

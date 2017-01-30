@@ -9,20 +9,35 @@ package com.orange.documentare.core.comp.ncd;
  * the Free Software Foundation.
  */
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-
-@Getter
-@RequiredArgsConstructor(suppressConstructorProperties = true)
-/** Input for the NCD algo, contains data to be compressed, plus the compression result of already computed */
+/** Input for the NCD algorithm: contains data to be compressed and the data compressed length if already computed */
 public class NcdInput {
-  private final byte[] bytes;
+  /** input data bytes */
+  public final byte[] bytes;
 
-  private int compLength;
-  private boolean compLengthAvailable;
+  /** compressedLength result (length of the compressed data), if available */
+  public final int compressedLength;
 
-  public synchronized void setCompLength(int length) {
-    compLength = length;
-    compLengthAvailable = true;
+  public final boolean compressedLengthAvailable;
+
+  /**
+   * Build an instance with data but without an existing compressedLength result
+   * @param bytes
+   */
+  public NcdInput(byte[] bytes) {
+    this(bytes, 0, false);
+  }
+
+  /**
+   * @param compressedLength
+   * @return instance with data and data compressed length
+   */
+  public NcdInput withCompression(int compressedLength) {
+    return new NcdInput(bytes, compressedLength, true);
+  }
+
+  private NcdInput(byte[] bytes, int compressedLength, boolean compressedLengthAvailable) {
+    this.bytes = bytes;
+    this.compressedLength = compressedLength;
+    this.compressedLengthAvailable = compressedLengthAvailable;
   }
 }

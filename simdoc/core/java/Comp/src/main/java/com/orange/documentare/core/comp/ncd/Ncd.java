@@ -10,58 +10,51 @@ package com.orange.documentare.core.comp.ncd;
  */
 
 import com.orange.documentare.core.comp.bwt.SaisBwt;
-import com.orange.documentare.core.comp.lyndonrle.LyndonRle;
 import com.orange.documentare.core.comp.rle.RunLength;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class Ncd {
   private final SaisBwt bwt = new SaisBwt();
-  private final CompressedLength compressedLength = new RunLength();
+  private final CompressedLengthMethod compressedLengthMethod = new RunLength();
 
-  public NcdResult getNcdDistance(NcdInput x, NcdInput y) {
-    byte[] mergedXY = getMergedXY(x.getBytes(), y.getBytes());
-    int xLen = getCompLengthOf(x);
-    int yLen = getCompLengthOf(y);
-    int xyLen = getCompLengthOf(mergedXY);
-    float ncd = getNcdDistance(xLen, yLen, xyLen);
-    return new NcdResult(ncd, xLen, yLen, xyLen);
+  public NcdResult computeNcd(NcdInput input1, NcdInput input2) {
+    int input1CompressedLength = computeCompressedLengthOf(input1);
+    int input2CompressedLength = computeCompressedLengthOf(input2);
+
+    // 'input1 == input2' optimization is done outside when we do not want to check the compression method symmetry
+    byte[] mergedInputs = mergeInputs(input1.bytes, input2.bytes);
+    int mergedInputsCompressedLength = computeCompressedLengthOf(mergedInputs);
+    float ncd = computeNcd(input1CompressedLength, input2CompressedLength, mergedInputsCompressedLength);
+
+    return new NcdResult(ncd, input1CompressedLength, input2CompressedLength);
   }
 
-  private byte[] getMergedXY(byte[] xBytes, byte[] yBytes) {
-    int xLen = xBytes.length;
-    int yLen = yBytes.length;
-    byte[] mergedXY = new byte[xLen+yLen];
-    System.arraycopy(xBytes, 0, mergedXY, 0, xLen);
+  private byte[] mergeInputs(byte[] input1, byte[] input2) {
+    int input1Len = input1.length;
+    int input2Len = input2.length;
+    byte[] mergedInputs = new byte[input1Len+input2Len];
+    System.arraycopy(input1, 0, mergedInputs, 0, input1Len);
     try {
-      System.arraycopy(yBytes, 0, mergedXY, xLen, yLen);
+      System.arraycopy(input2, 0, mergedInputs, input1Len, input2Len);
     } catch (ArrayIndexOutOfBoundsException e) {
-      log.error(String.format("%d %d", xLen, yLen));
+      log.error(String.format("Ncd merge inputs, arrays length error: %d %d", input1Len, input2Len));
     }
-    return mergedXY;
+    return mergedInputs;
   }
 
-  private int getCompLengthOf(NcdInput input) {
-    if (input.isCompLengthAvailable()) {
-      return input.getCompLength();
-    } else {
-      return doGetCompLengthOf(input);
-    }
+  private int computeCompressedLengthOf(NcdInput input) {
+    return input.compressedLengthAvailable ?
+      input.compressedLength :
+      computeCompressedLengthOf(input.bytes);
   }
 
-  private int doGetCompLengthOf(NcdInput input) {
-    int length = getCompLengthOf(input.getBytes());
-    input.setCompLength(length);
-    return length;
-  }
-
-  private int getCompLengthOf(byte[] bytes) {
+  private int computeCompressedLengthOf(byte[] bytes) {
     byte[] bwtResult = bwt.getBwt(bytes);
-    return compressedLength.getCompressedLengthOf(bwtResult);
+    return compressedLengthMethod.computeCompressedLengthOf(bwtResult);
   }
 
-  private float getNcdDistance(int xLen, int yLen, int xyLen) {
+  private float computeNcd(int xLen, int yLen, int xyLen) {
     return (float)(xyLen - Math.min(xLen, yLen)) / Math.max(xLen, yLen);
   }
 }

@@ -22,7 +22,6 @@ import com.orange.documentare.core.model.ref.text.ImageText;
 import com.orange.documentare.core.model.ref.text.TextElementType;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -91,7 +90,8 @@ public class OCR {
   }
 
   private OcrNcdResult getNcdDistanceFor(OcrNcdInput ncdInput, NcdInput digitalTypeNcdInput) {
-    NcdResult result = ncd.getNcdDistance(ncdInput, digitalTypeNcdInput);
-    return new OcrNcdResult(result.getNcd(), new DigitalTypeClass(ncdInput.clazz, result.getNcd()));
+    // FIXME OPTIMIZATION: ncdInput is immutable and compressedLength should be updated in retained Map or array
+    NcdResult result = ncd.computeNcd(ncdInput, digitalTypeNcdInput);
+    return new OcrNcdResult(result.ncd, new DigitalTypeClass(ncdInput.clazz, result.ncd));
   }
 }
