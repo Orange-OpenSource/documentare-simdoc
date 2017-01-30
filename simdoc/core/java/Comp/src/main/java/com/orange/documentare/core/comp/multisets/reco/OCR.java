@@ -12,6 +12,7 @@ package com.orange.documentare.core.comp.multisets.reco;
 import com.orange.documentare.core.comp.ncd.Ncd;
 import com.orange.documentare.core.comp.ncd.NcdInput;
 import com.orange.documentare.core.comp.ncd.NcdResult;
+import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.multisets.DigitalTypeClass;
 import com.orange.documentare.core.model.ref.multisets.DigitalTypesClasses;
 import com.orange.documentare.core.model.ref.multisets.MultiSet;
@@ -22,17 +23,27 @@ import com.orange.documentare.core.model.ref.text.ImageText;
 import com.orange.documentare.core.model.ref.text.TextElementType;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OCR {
 
-  private class OcrNcdInput extends NcdInput {
+  class OcrNcdInput extends NcdInput {
     private final String clazz;
 
     public OcrNcdInput(byte[] bytes, String clazz) {
-      super(bytes);
+      this(clazz, bytes, 0, false);
+    }
+
+    private OcrNcdInput(String clazz, byte[] bytes, int compressedLength, boolean compressedLengthAvailable) {
+      super(bytes, compressedLength, compressedLengthAvailable);
       this.clazz = clazz;
+    }
+
+    @Override
+    public OcrNcdInput withCompression(int compressedLength) {
+      return new OcrNcdInput(clazz, bytes, compressedLength, true);
     }
   }
 
@@ -46,8 +57,9 @@ public class OCR {
     }
   }
 
-  private final List<OcrNcdInput> multiSetNcdInputs;
   private final Ncd ncd = new Ncd();
+
+  final List<OcrNcdInput> multiSetNcdInputs;
 
   public OCR(MultiSets multiSets) {
     multiSetNcdInputs = multiSets.stream()
@@ -82,16 +94,22 @@ public class OCR {
       return new DigitalTypeClass(" ", 0);
     }
     NcdInput digitalTypeNcdInput = new NcdInput(digitalType.getBytes());
-    return multiSetNcdInputs.stream()
-            .map(ncdInput -> getNcdDistanceFor(ncdInput, digitalTypeNcdInput))
+    List<OcrNcdInput> multiSetClone = new ArrayList<>(multiSetNcdInputs);
+    return multiSetClone.stream()
+            .map(multisetNcdInput -> getNcdDistanceFor(multisetNcdInput, digitalTypeNcdInput))
             .min(OcrNcdResult::compare)
             .get()
             .digitalTypeClass;
   }
 
-  private OcrNcdResult getNcdDistanceFor(OcrNcdInput ncdInput, NcdInput digitalTypeNcdInput) {
-    // FIXME OPTIMIZATION: ncdInput is immutable and compressedLength should be updated in retained Map or array
-    NcdResult result = ncd.computeNcd(ncdInput, digitalTypeNcdInput);
-    return new OcrNcdResult(result.ncd, new DigitalTypeClass(ncdInput.clazz, result.ncd));
+  private OcrNcdResult getNcdDistanceFor(OcrNcdInput multisetNcdInput, NcdInput digitalTypeNcdInput) {
+    NcdResult result = ncd.computeNcd(multisetNcdInput, digitalTypeNcdInput);
+    updateMultisetCache(multisetNcdInput, result.input1CompressedLength);
+    return new OcrNcdResult(result.ncd, new DigitalTypeClass(multisetNcdInput.clazz, result.ncd));
+  }
+
+  private synchronized void updateMultisetCache(OcrNcdInput multisetNcdInput, int compressedLength) {
+    multiSetNcdInputs.remove(multisetNcdInput);
+    multiSetNcdInputs.add(multisetNcdInput.withCompression(compressedLength));
   }
 }

@@ -35,7 +35,7 @@ public class NcdInput {
     return new NcdInput(bytes, compressedLength, true);
   }
 
-  private NcdInput(byte[] bytes, int compressedLength, boolean compressedLengthAvailable) {
+  protected NcdInput(byte[] bytes, int compressedLength, boolean compressedLengthAvailable) {
     this.bytes = bytes;
     this.compressedLength = compressedLength;
     this.compressedLengthAvailable = compressedLengthAvailable;
