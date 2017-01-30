@@ -21,23 +21,23 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ClusteringRequest {
-  @ApiModelProperty(example = "user1/files", required = true)
+  @ApiModelProperty(example = "myDocuments", required = true)
   public final String inputDirectory;
-  @ApiModelProperty(example = "user1/clustering_tmp", required = true)
+  @ApiModelProperty(example = "clusteringOutput", required = true)
   public final String outputDirectory;
   @ApiModelProperty(example = "true")
-  public final Boolean debug; // FIXME: not used yet
-  @ApiModelProperty(example = "2.1")
+  public final Boolean debug;
+  @ApiModelProperty(example = "2")
   public final Float acutSdFactor;
-  @ApiModelProperty(example = "3.1")
+  @ApiModelProperty(example = "2")
   public final Float qcutSdFactor;
-  @ApiModelProperty(example = "1.5")
+  @ApiModelProperty(example = "2")
   public final Float scutSdFactor;
   @ApiModelProperty(example = "75")
   public final Integer ccutPercentile;
-  @ApiModelProperty(example = "true")
+  @ApiModelProperty(example = "false")
   public final Boolean wcut;
-  @ApiModelProperty(example = "10")
+  @ApiModelProperty(example = "5")
   public final Integer kNearestNeighboursThreshold;
 
   public RequestValidation validate() {
