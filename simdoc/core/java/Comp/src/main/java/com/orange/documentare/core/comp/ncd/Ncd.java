@@ -13,43 +13,57 @@ import com.orange.documentare.core.comp.bwt.SaisBwt;
 import com.orange.documentare.core.comp.rle.RunLength;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Slf4j
 public class Ncd {
   private final SaisBwt bwt = new SaisBwt();
   private final CompressedLengthMethod compressedLengthMethod = new RunLength();
 
-  public NcdResult computeNcd(NcdInput input1, NcdInput input2) {
-    int input1CompressedLength = computeCompressedLengthOf(input1);
-    int input2CompressedLength = computeCompressedLengthOf(input2);
+  final Map<byte[], Integer> compressedLengthCache = new HashMap<>();
 
-    // 'input1 == input2' optimization is done outside when we do not want to check the compression method symmetry
-    byte[] mergedInputs = mergeInputs(input1.bytes, input2.bytes);
-    int mergedInputsCompressedLength = computeCompressedLengthOf(mergedInputs);
-    float ncd = computeNcd(input1CompressedLength, input2CompressedLength, mergedInputsCompressedLength);
+  public float computeNcd(byte[] x, byte[] y) {
+    int xCompressedLength = computeCompressedLengthOf(x);
+    int yCompressedLength = computeCompressedLengthOf(y);
 
-    return new NcdResult(ncd, input1CompressedLength, input2CompressedLength);
+    // 'x == y' optimization is done outside when we do not want to check the compression method symmetry
+    byte[] xy = mergeXY(x, y);
+    // no cache optimization for xy since outside optimization should avoid computing both ncd(x, y) and ncd(y, x)
+    int xyCompressedLength = doComputeCompressedLengthOf(xy);
+    float ncd = computeNcd(xCompressedLength, yCompressedLength, xyCompressedLength);
+
+    return ncd;
   }
 
-  private byte[] mergeInputs(byte[] input1, byte[] input2) {
-    int input1Len = input1.length;
-    int input2Len = input2.length;
-    byte[] mergedInputs = new byte[input1Len+input2Len];
-    System.arraycopy(input1, 0, mergedInputs, 0, input1Len);
+  private byte[] mergeXY(byte[] x, byte[] y) {
+    int xLen = x.length;
+    int yLen = y.length;
+    byte[] xy = new byte[xLen+yLen];
+    System.arraycopy(x, 0, xy, 0, xLen);
     try {
-      System.arraycopy(input2, 0, mergedInputs, input1Len, input2Len);
+      System.arraycopy(y, 0, xy, xLen, yLen);
     } catch (ArrayIndexOutOfBoundsException e) {
-      log.error(String.format("Ncd merge inputs, arrays length error: %d %d", input1Len, input2Len));
+      log.error(String.format("Ncd merge xy, arrays length error: %d %d", xLen, yLen));
     }
-    return mergedInputs;
-  }
-
-  private int computeCompressedLengthOf(NcdInput input) {
-    return input.compressedLengthAvailable ?
-      input.compressedLength :
-      computeCompressedLengthOf(input.bytes);
+    return xy;
   }
 
   private int computeCompressedLengthOf(byte[] bytes) {
+    Integer cacheCompressedLength = compressedLengthCache.get(bytes);
+    if (cacheCompressedLength == null) {
+      cacheCompressedLength = doComputeCompressedLengthOf(bytes);
+      updateCompressedLengthCache(bytes, cacheCompressedLength);
+    }
+    return cacheCompressedLength;
+  }
+
+  // synchronized to make sure map access are atomic
+  private synchronized void updateCompressedLengthCache(byte[] bytes, Integer cacheCompressedLength) {
+    compressedLengthCache.put(bytes, cacheCompressedLength);
+  }
+
+  private int doComputeCompressedLengthOf(byte[] bytes) {
     byte[] bwtResult = bwt.getBwt(bytes);
     return compressedLengthMethod.computeCompressedLengthOf(bwtResult);
   }

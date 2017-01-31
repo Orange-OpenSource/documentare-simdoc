@@ -31,10 +31,6 @@ public class DistanceComputeTest {
     int ncdResult = distance.compute(item1, item2);
     // then
     Assertions.assertThat(ncdResult).isEqualTo(expected);
-
-    // make sure inputs map is updated correctly for optimization purpose
-    Assertions.assertThat(distance.inputsMap.get(item1).compressedLengthAvailable).isTrue();
-    Assertions.assertThat(distance.inputsMap.get(item2).compressedLengthAvailable).isTrue();
   }
 
   @Test
@@ -70,10 +66,5 @@ public class DistanceComputeTest {
     // then
     Assertions.assertThat(distances[0]).isEqualTo(expected1);
     Assertions.assertThat(distances[1]).isEqualTo(expected2);
-
-    // make sure internal map has been updated
-    Assertions.assertThat(distance.inputsMap.get(item1).compressedLengthAvailable).isTrue();
-    Assertions.assertThat(distance.inputsMap.get(item2).compressedLengthAvailable).isTrue();
-    Assertions.assertThat(distance.inputsMap.get(item3).compressedLengthAvailable).isTrue();
   }
 }

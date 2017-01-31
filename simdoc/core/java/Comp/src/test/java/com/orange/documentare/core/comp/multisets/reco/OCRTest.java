@@ -52,11 +52,6 @@ public class OCRTest {
     // then
     Json.toFile(digitalTypesClasses, OUTPUT_OCR_CLASSES);
     filesAssertThat.theyAreEqual(OUTPUT_OCR_CLASSES, "/ocr_classes_ref.json");
-
-    // Make sure we cache the compressed length for optimization purpose
-    ocr.multiSetNcdInputs.stream().forEach( multisetNcdInput ->
-      Assertions.assertThat(multisetNcdInput.compressedLengthAvailable).isTrue()
-    );
   }
 
   @Test
