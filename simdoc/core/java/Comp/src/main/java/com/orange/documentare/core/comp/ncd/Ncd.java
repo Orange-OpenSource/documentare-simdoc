@@ -61,7 +61,7 @@ public class Ncd {
   }
 
   private int computeCompressedLengthOf(byte[] tagged, byte[] vanilla) {
-    Integer cacheCompressedLength = compressedLengthCache.get(tagged);
+    Integer cacheCompressedLength = compressedLengthCache.get(vanilla);
     if (cacheCompressedLength == null) {
       cacheCompressedLength = doComputeCompressedLengthOf(tagged);
       updateCompressedLengthCache(vanilla, cacheCompressedLength);
