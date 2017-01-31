@@ -129,7 +129,7 @@
   }, {
     "type" : "C",
     "digitalTypeIndices" : [ 31 ],
-    "chars" : "n"
+    "chars" : "v"
   }, {
     "type" : "C",
     "digitalTypeIndices" : [ 32 ],
@@ -243,7 +243,7 @@
   }, {
     "type" : "C",
     "digitalTypeIndices" : [ 58 ],
-    "chars" : "e"
+    "chars" : "a"
   }, {
     "type" : "C",
     "digitalTypeIndices" : [ 59 ],
@@ -251,7 +251,7 @@
   }, {
     "type" : "C",
     "digitalTypeIndices" : [ 60 ],
-    "chars" : "e"
+    "chars" : "a"
   }, {
     "type" : "C",
     "digitalTypeIndices" : [ 61 ],

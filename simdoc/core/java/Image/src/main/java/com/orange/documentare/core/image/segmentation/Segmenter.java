@@ -18,7 +18,6 @@ import com.orange.documentare.core.image.opencv.OpenCvImage;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.log4j.Log4j2;
 import org.opencv.core.Mat;
 
 import java.io.File;
@@ -49,7 +48,7 @@ public class Segmenter {
     this.imageFile = imageFile;
     debug = new SegmentationDebug(imageFile);
     debug.log("Load image");
-    imageMat = OpenCvImage.getMat(imageFile);
+    imageMat = OpenCvImage.loadMat(imageFile);
     debug.log("Binarize image");
     binaryImageMat = Binarization.getFrom(imageMat);
   }

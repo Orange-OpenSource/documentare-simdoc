@@ -9,17 +9,16 @@ package com.orange.documentare.core.image.opencv;
  * the Free Software Foundation.
  */
 
-import org.junit.Assert;
-import org.junit.Before;
+import org.fest.assertions.Assertions;
 import org.junit.Test;
 import org.opencv.core.Mat;
 
-public class OpenCvImageBytesGetRawOfTest {
+public class OpenCvImageBytesToRawTest {
 
   /** 2 x 3 image */
-  private static final byte[] IMAGE_BYTES = {
-          12, 34, 56,
-          21, 43, 65
+  private static final byte[] RAW_IMAGE_BYTES = {
+          12, 34, 56, '\n',
+          21, 43, 65, '\n'
   };
 
   static {
@@ -27,16 +26,12 @@ public class OpenCvImageBytesGetRawOfTest {
   }
 
   @Test
-  public void shouldGetRawBytesOf() {
+  public void convert_from_raw_image_bytes_to_open_cv_mat() {
     // given
-    Mat mat = getTestMat();
+    Mat mat = OpenCvImage.rawToMat(RAW_IMAGE_BYTES);
     // do
-    byte[] bytes = OpenCvImage.getRawBytesOf(mat);
+    byte[] bytes = OpenCvImage.matToRaw(mat);
     // then
-    Assert.assertArrayEquals(IMAGE_BYTES, bytes);
-  }
-
-  private Mat getTestMat() {
-    return OpenCvImage.getMatFromBinaryDat(IMAGE_BYTES, 2, 3);
+    Assertions.assertThat(bytes).isEqualTo(RAW_IMAGE_BYTES);
   }
 }

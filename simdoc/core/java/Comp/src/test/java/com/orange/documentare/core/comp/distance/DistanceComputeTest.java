@@ -26,7 +26,7 @@ public class DistanceComputeTest {
     TestItem item1 = new TestItem(bytes1, 1);
     TestItem item2 = new TestItem(bytes2, 2);
     Distance distance = new Distance();
-    int expected = 666666;
+    int expected = 307692;
     // do
     int ncdResult = distance.compute(item1, item2);
     // then
@@ -59,8 +59,8 @@ public class DistanceComputeTest {
     TestItem item3 = new TestItem(bytes3, 3);
     DistanceItem[] items = new DistanceItem[] { item2, item3 };
     Distance distance = new Distance();
-    int expected1 = 666666;
-    int expected2 = 750000;
+    int expected1 = 307692;
+    int expected2 = 400000;
     // do
     int[] distances = distance.compute(item1, items);
     // then

@@ -18,22 +18,33 @@ import java.util.Map;
 
 @Slf4j
 public class Ncd {
+  private static final byte[] SIMDOC_MAGIC_NUMBER = "JoTOphe".getBytes();
+
   private final SaisBwt bwt = new SaisBwt();
   private final CompressedLengthMethod compressedLengthMethod = new RunLength();
 
   final Map<byte[], Integer> compressedLengthCache = new HashMap<>();
 
-  public float computeNcd(byte[] x, byte[] y) {
-    int xCompressedLength = computeCompressedLengthOf(x);
-    int yCompressedLength = computeCompressedLengthOf(y);
+  public float computeNcd(byte[] vanillaX, byte[] vanillaY) {
+    byte[] taggedX = buildTaggedArray(vanillaX);
+    byte[] taggedY = buildTaggedArray(vanillaY);
+
+    int xCompressedLength = computeCompressedLengthOf(taggedX, vanillaX);
+    int yCompressedLength = computeCompressedLengthOf(taggedY, vanillaY);
 
     // 'x == y' optimization is done outside when we do not want to check the compression method symmetry
-    byte[] xy = mergeXY(x, y);
+    byte[] xy = mergeXY(taggedX, taggedY);
     // no cache optimization for xy since outside optimization should avoid computing both ncd(x, y) and ncd(y, x)
     int xyCompressedLength = doComputeCompressedLengthOf(xy);
     float ncd = computeNcd(xCompressedLength, yCompressedLength, xyCompressedLength);
 
-    return ncd;
+    return ncd;  }
+
+  private byte[] buildTaggedArray(byte[] vanilla) {
+    byte[] taggedVanilla = new byte[vanilla.length + SIMDOC_MAGIC_NUMBER.length];
+    System.arraycopy(SIMDOC_MAGIC_NUMBER, 0, taggedVanilla, 0, SIMDOC_MAGIC_NUMBER.length);
+    System.arraycopy(vanilla, 0, taggedVanilla, SIMDOC_MAGIC_NUMBER.length, vanilla.length);
+    return taggedVanilla;
   }
 
   private byte[] mergeXY(byte[] x, byte[] y) {
@@ -49,11 +60,11 @@ public class Ncd {
     return xy;
   }
 
-  private int computeCompressedLengthOf(byte[] bytes) {
-    Integer cacheCompressedLength = compressedLengthCache.get(bytes);
+  private int computeCompressedLengthOf(byte[] tagged, byte[] vanilla) {
+    Integer cacheCompressedLength = compressedLengthCache.get(tagged);
     if (cacheCompressedLength == null) {
-      cacheCompressedLength = doComputeCompressedLengthOf(bytes);
-      updateCompressedLengthCache(bytes, cacheCompressedLength);
+      cacheCompressedLength = doComputeCompressedLengthOf(tagged);
+      updateCompressedLengthCache(vanilla, cacheCompressedLength);
     }
     return cacheCompressedLength;
   }

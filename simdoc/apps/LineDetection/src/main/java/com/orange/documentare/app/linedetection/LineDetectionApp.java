@@ -72,7 +72,7 @@ public class LineDetectionApp {
   }
 
   private static void exportDigitalType(DigitalType digitalType) throws IOException {
-    Mat mat = OpenCvImage.getMatFromSimDocBinaryDat(digitalType.getBytes());
+    Mat mat = OpenCvImage.rawToMat(digitalType.getBytes());
     MatOfByte matOfByte = new MatOfByte();
     Highgui.imencode(".png", mat, matOfByte, new MatOfInt(Highgui.CV_IMWRITE_PNG_COMPRESSION, 0));
     String outImageName = String.format("%s/%d_%d.png", DEBUG_OUT_DIR, digitalType.y(), digitalType.x());
