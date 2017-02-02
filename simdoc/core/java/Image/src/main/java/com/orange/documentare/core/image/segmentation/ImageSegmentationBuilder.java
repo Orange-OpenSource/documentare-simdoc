@@ -141,7 +141,7 @@ public class ImageSegmentationBuilder {
 
   private byte[] getBytesFor(SegmentationRect rect) {
     Mat crop = new Mat(binaryImageMat, new Rect(rect.x(), rect.y(), rect.width(), rect.height()));
-    return OpenCvImage.getSimDocBytesOf(crop);
+    return OpenCvImage.matToRaw(crop);
   }
 
   private int getNewId() {

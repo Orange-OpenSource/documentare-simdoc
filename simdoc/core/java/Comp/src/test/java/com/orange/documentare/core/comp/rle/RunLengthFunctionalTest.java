@@ -30,8 +30,8 @@ public class RunLengthFunctionalTest {
     // do
     List<Byte> bytes1 = runLength.encode(INPUT_STRING_1.getBytes());
     List<Byte> bytes2 = runLength.encode(INPUT_STRING_2.getBytes());
-    int bytesCount1 = runLength.getCompressedLengthOf(INPUT_STRING_1.getBytes());
-    int bytesCount2 = runLength.getCompressedLengthOf(INPUT_STRING_2.getBytes());
+    int bytesCount1 = runLength.computeCompressedLengthOf(INPUT_STRING_1.getBytes());
+    int bytesCount2 = runLength.computeCompressedLengthOf(INPUT_STRING_2.getBytes());
 
     // then
     Assert.assertArrayEquals(ENCODED_BYTES_1, getByteArrayFromList(bytes1));

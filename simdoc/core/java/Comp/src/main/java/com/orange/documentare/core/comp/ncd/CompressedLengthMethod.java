@@ -9,6 +9,6 @@ package com.orange.documentare.core.comp.ncd;
  * the Free Software Foundation.
  */
 
-public interface CompressedLength {
-  int getCompressedLengthOf(byte[] inputArray);
+public interface CompressedLengthMethod {
+  int computeCompressedLengthOf(byte[] inputArray);
 }

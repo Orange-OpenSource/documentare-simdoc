@@ -19,7 +19,9 @@ import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import com.orange.documentare.core.system.measure.Progress;
+import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
+import org.junit.After;
 import org.junit.runner.RunWith;
 
 import java.io.File;
@@ -29,6 +31,12 @@ import java.io.IOException;
 public class DigitalTypesClusteringTest implements ProgressListener {
 
   private final JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File("latin_segmentation_distances_built_with_cluster_id.json.gz"));
+    FileUtils.deleteQuietly(new File("latin_segmentation_with_cluster_id.json.gz"));
+  }
 
   @TestWith({
           "/latin_segmentation.reference.json.gz, /latin_segmentation_with_cluster_id.reference.json.gz, latin_segmentation_distances_built_with_cluster_id.json.gz, false, false",

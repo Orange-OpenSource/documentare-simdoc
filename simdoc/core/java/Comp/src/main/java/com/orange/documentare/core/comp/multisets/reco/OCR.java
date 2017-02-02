@@ -10,8 +10,6 @@ package com.orange.documentare.core.comp.multisets.reco;
  */
 
 import com.orange.documentare.core.comp.ncd.Ncd;
-import com.orange.documentare.core.comp.ncd.NcdInput;
-import com.orange.documentare.core.comp.ncd.NcdResult;
 import com.orange.documentare.core.model.ref.multisets.DigitalTypeClass;
 import com.orange.documentare.core.model.ref.multisets.DigitalTypesClasses;
 import com.orange.documentare.core.model.ref.multisets.MultiSet;
@@ -22,19 +20,16 @@ import com.orange.documentare.core.model.ref.text.ImageText;
 import com.orange.documentare.core.model.ref.text.TextElementType;
 import lombok.RequiredArgsConstructor;
 
-import java.util.Comparator;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class OCR {
 
-  private class OcrNcdInput extends NcdInput {
+  @RequiredArgsConstructor
+  class OcrNcdInput {
+    private final byte[] bytes;
     private final String clazz;
-
-    public OcrNcdInput(byte[] bytes, String clazz) {
-      super(bytes);
-      this.clazz = clazz;
-    }
   }
 
   @RequiredArgsConstructor
@@ -47,8 +42,9 @@ public class OCR {
     }
   }
 
-  private final List<OcrNcdInput> multiSetNcdInputs;
   private final Ncd ncd = new Ncd();
+
+  final List<OcrNcdInput> multiSetNcdInputs;
 
   public OCR(MultiSets multiSets) {
     multiSetNcdInputs = multiSets.stream()
@@ -82,16 +78,16 @@ public class OCR {
     if (digitalType.isSpace()) {
       return new DigitalTypeClass(" ", 0);
     }
-    NcdInput digitalTypeNcdInput = new NcdInput(digitalType.getBytes());
-    return multiSetNcdInputs.stream()
-            .map(ncdInput -> getNcdDistanceFor(ncdInput, digitalTypeNcdInput))
+    List<OcrNcdInput> multiSetClone = new ArrayList<>(multiSetNcdInputs);
+    return multiSetClone.stream()
+            .map(multisetNcdInput -> getNcdDistanceFor(multisetNcdInput, digitalType.getBytes()))
             .min(OcrNcdResult::compare)
             .get()
             .digitalTypeClass;
   }
 
-  private OcrNcdResult getNcdDistanceFor(OcrNcdInput ncdInput, NcdInput digitalTypeNcdInput) {
-    NcdResult result = ncd.getNcdDistance(ncdInput, digitalTypeNcdInput);
-    return new OcrNcdResult(result.getNcd(), new DigitalTypeClass(ncdInput.clazz, result.getNcd()));
+  private OcrNcdResult getNcdDistanceFor(OcrNcdInput multisetNcdInput, byte[] digitalTypeBytes) {
+    float result = ncd.computeNcd(multisetNcdInput.bytes, digitalTypeBytes);
+    return new OcrNcdResult(result, new DigitalTypeClass(multisetNcdInput.clazz, result));
   }
 }

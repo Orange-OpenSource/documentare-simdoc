@@ -13,6 +13,7 @@ import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
@@ -21,6 +22,11 @@ import java.io.IOException;
 public class InitTextFromSegTest {
 
   private static final String OUTPUT = "init-image-text.json";
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(OUTPUT));
+  }
 
   @Test
   public void should_init_imageText_from_segmentation() throws IOException {

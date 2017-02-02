@@ -16,8 +16,12 @@ import com.orange.documentare.core.model.ref.multisets.DigitalTypesClasses;
 import com.orange.documentare.core.model.ref.multisets.MultiSets;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import com.orange.documentare.core.model.ref.text.ImageText;
+import org.apache.commons.io.FileUtils;
+import org.fest.assertions.Assertions;
+import org.junit.After;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 public class OCRTest {
@@ -27,6 +31,12 @@ public class OCRTest {
 
   private final Res res = new Res(this);
   private final FilesAssertThat filesAssertThat = new FilesAssertThat(this);
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(OUTPUT_OCR_CLASSES));
+    FileUtils.deleteQuietly(new File(OUTPUT_OCR_IMAGE_TEXT));
+  }
 
   @Test
   public void ocr() throws IOException {

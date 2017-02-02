@@ -13,6 +13,7 @@ import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
@@ -24,9 +25,17 @@ public class ClusteringTasksServiceTest {
 
   private static final int NB_TASKS = 4 * 10;
   private static final String CLUSTERING_TASK_FILE_PREFIX = "clustering_tasks_";
+  private static final String STRIPPED_CLUSTERING_JSON = "stripped_clustering.json";
+  private static final String NOT_STRIPPED_CLUSTERING_JSON = "not_stripped_clustering.json";
 
   private final ClusteringTasksService tasksHandler = ClusteringTasksService.instance();
   private final ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
+
+  //@After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(STRIPPED_CLUSTERING_JSON));
+    FileUtils.deleteQuietly(new File(NOT_STRIPPED_CLUSTERING_JSON));
+  }
 
   @Test
   public void runSeveralDistinctTasks() throws IOException, InterruptedException {
@@ -103,12 +112,12 @@ public class ClusteringTasksServiceTest {
     File ref = new File(getClass().getResource("/clusteringtasks/stripped_clustering.ref.json").getFile());
     String jsonRef = FileUtils.readFileToString(ref);
 
-    String strippedFilename = "stripped_clustering.json";
+    String strippedFilename = STRIPPED_CLUSTERING_JSON;
     File strippedFile = new File(strippedFilename);
     strippedFile.delete();
 
     File segFile = new File(getClass().getResource("/clusteringtasks/latin1_segmentation.json").getFile());
-    String outputFilename = "not_stripped_clustering.json";
+    String outputFilename = NOT_STRIPPED_CLUSTERING_JSON;
     ClusteringTask task = ClusteringTask.builder()
       .inputFilename(segFile.getAbsolutePath())
       .outputFilename(outputFilename)

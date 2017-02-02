@@ -47,7 +47,7 @@ class DistancesThreadRunnable implements Runnable {
 
   private void computeDistancesFor(int index) throws IOException {
     int startIndex = computer.isWorkingOnSameArray() ? itemIndices[index] + 1 : 0;
-    int[] distancesToItem = computer.getDistance().get(items[index], computer.getItemsToCompareTo(), startIndex);
+    int[] distancesToItem = computer.getDistance().compute(items[index], computer.getItemsToCompareTo(), startIndex);
     computer.putResult(itemIndices[index], distancesToItem);
     onTaskFinishedEvent();
   }

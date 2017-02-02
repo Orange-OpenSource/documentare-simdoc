@@ -10,58 +10,76 @@ package com.orange.documentare.core.comp.ncd;
  */
 
 import com.orange.documentare.core.comp.bwt.SaisBwt;
-import com.orange.documentare.core.comp.lyndonrle.LyndonRle;
 import com.orange.documentare.core.comp.rle.RunLength;
-import lombok.extern.log4j.Log4j2;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 public class Ncd {
+  private static final byte[] SIMDOC_MAGIC_NUMBER = "JoTOphe".getBytes();
+
   private final SaisBwt bwt = new SaisBwt();
-  private final CompressedLength compressedLength = new RunLength();
+  private final CompressedLengthMethod compressedLengthMethod = new RunLength();
 
-  public NcdResult getNcdDistance(NcdInput x, NcdInput y) {
-    byte[] mergedXY = getMergedXY(x.getBytes(), y.getBytes());
-    int xLen = getCompLengthOf(x);
-    int yLen = getCompLengthOf(y);
-    int xyLen = getCompLengthOf(mergedXY);
-    float ncd = getNcdDistance(xLen, yLen, xyLen);
-    return new NcdResult(ncd, xLen, yLen, xyLen);
+  final Map<byte[], Integer> compressedLengthCache = new HashMap<>();
+
+  public float computeNcd(byte[] vanillaX, byte[] vanillaY) {
+    byte[] taggedX = buildTaggedArray(vanillaX);
+    byte[] taggedY = buildTaggedArray(vanillaY);
+
+    int xCompressedLength = computeCompressedLengthOf(taggedX, vanillaX);
+    int yCompressedLength = computeCompressedLengthOf(taggedY, vanillaY);
+
+    // 'x == y' optimization is done outside when we do not want to check the compression method symmetry
+    byte[] xy = mergeXY(taggedX, taggedY);
+    // no cache optimization for xy since outside optimization should avoid computing both ncd(x, y) and ncd(y, x)
+    int xyCompressedLength = doComputeCompressedLengthOf(xy);
+    float ncd = computeNcd(xCompressedLength, yCompressedLength, xyCompressedLength);
+
+    return ncd;  }
+
+  private byte[] buildTaggedArray(byte[] vanilla) {
+    byte[] taggedVanilla = new byte[vanilla.length + SIMDOC_MAGIC_NUMBER.length];
+    System.arraycopy(SIMDOC_MAGIC_NUMBER, 0, taggedVanilla, 0, SIMDOC_MAGIC_NUMBER.length);
+    System.arraycopy(vanilla, 0, taggedVanilla, SIMDOC_MAGIC_NUMBER.length, vanilla.length);
+    return taggedVanilla;
   }
 
-  private byte[] getMergedXY(byte[] xBytes, byte[] yBytes) {
-    int xLen = xBytes.length;
-    int yLen = yBytes.length;
-    byte[] mergedXY = new byte[xLen+yLen];
-    System.arraycopy(xBytes, 0, mergedXY, 0, xLen);
+  private byte[] mergeXY(byte[] x, byte[] y) {
+    int xLen = x.length;
+    int yLen = y.length;
+    byte[] xy = new byte[xLen+yLen];
+    System.arraycopy(x, 0, xy, 0, xLen);
     try {
-      System.arraycopy(yBytes, 0, mergedXY, xLen, yLen);
+      System.arraycopy(y, 0, xy, xLen, yLen);
     } catch (ArrayIndexOutOfBoundsException e) {
-      log.error(String.format("%d %d", xLen, yLen));
+      log.error(String.format("Ncd merge xy, arrays length error: %d %d", xLen, yLen));
     }
-    return mergedXY;
+    return xy;
   }
 
-  private int getCompLengthOf(NcdInput input) {
-    if (input.isCompLengthAvailable()) {
-      return input.getCompLength();
-    } else {
-      return doGetCompLengthOf(input);
+  private int computeCompressedLengthOf(byte[] tagged, byte[] vanilla) {
+    Integer cacheCompressedLength = compressedLengthCache.get(vanilla);
+    if (cacheCompressedLength == null) {
+      cacheCompressedLength = doComputeCompressedLengthOf(tagged);
+      updateCompressedLengthCache(vanilla, cacheCompressedLength);
     }
+    return cacheCompressedLength;
   }
 
-  private int doGetCompLengthOf(NcdInput input) {
-    int length = getCompLengthOf(input.getBytes());
-    input.setCompLength(length);
-    return length;
+  // synchronized to make sure map access are atomic
+  private synchronized void updateCompressedLengthCache(byte[] bytes, Integer cacheCompressedLength) {
+    compressedLengthCache.put(bytes, cacheCompressedLength);
   }
 
-  private int getCompLengthOf(byte[] bytes) {
+  private int doComputeCompressedLengthOf(byte[] bytes) {
     byte[] bwtResult = bwt.getBwt(bytes);
-    return compressedLength.getCompressedLengthOf(bwtResult);
+    return compressedLengthMethod.computeCompressedLengthOf(bwtResult);
   }
 
-  private float getNcdDistance(int xLen, int yLen, int xyLen) {
+  private float computeNcd(int xLen, int yLen, int xyLen) {
     return (float)(xyLen - Math.min(xLen, yLen)) / Math.max(xLen, yLen);
   }
 }

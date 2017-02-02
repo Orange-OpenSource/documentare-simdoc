@@ -15,8 +15,11 @@ import com.orange.documentare.core.comp.Res;
 import com.orange.documentare.core.model.ref.multisets.MultiSets;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import com.orange.documentare.core.model.ref.text.ImageText;
+import org.apache.commons.io.FileUtils;
+import org.junit.After;
 import org.junit.Test;
 
+import java.io.File;
 import java.io.IOException;
 
 public class MultiSetsBuilderIntegrationTest {
@@ -26,6 +29,12 @@ public class MultiSetsBuilderIntegrationTest {
 
   private final Res res = new Res(this);
   private final FilesAssertThat filesAssertThat = new FilesAssertThat(this);
+
+  @After
+  public void cleanup() {
+    FileUtils.deleteQuietly(new File(OUTPUT_FILENAME));
+    FileUtils.deleteQuietly(new File(OUTPUT_BYTES_FILENAME));
+  }
 
   @Test
   public void build() throws IOException {

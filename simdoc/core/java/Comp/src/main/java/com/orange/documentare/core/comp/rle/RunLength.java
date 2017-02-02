@@ -9,14 +9,14 @@ package com.orange.documentare.core.comp.rle;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.ncd.CompressedLength;
+import com.orange.documentare.core.comp.ncd.CompressedLengthMethod;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class RunLength implements CompressedLength {
+public class RunLength implements CompressedLengthMethod {
 
-  public int getCompressedLengthOf(byte[] inputArray) {
+  public int computeCompressedLengthOf(byte[] inputArray) {
     int encodedLength = 0;
     for (int i = 0; i < inputArray.length; i++) {
       while (isElementEqualToNextOne(inputArray, i)) {

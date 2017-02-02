@@ -9,14 +9,14 @@ package com.orange.documentare.core.comp.lyndonrle;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.ncd.CompressedLength;
+import com.orange.documentare.core.comp.ncd.CompressedLengthMethod;
 
 // FIXME: remove?
 @Deprecated
-public class LyndonRle implements CompressedLength {
+public class LyndonRle implements CompressedLengthMethod {
 
   @Override
-  public int getCompressedLengthOf(byte[] inputArray) {
+  public int computeCompressedLengthOf(byte[] inputArray) {
     return compress(inputArray).length;
   }
 

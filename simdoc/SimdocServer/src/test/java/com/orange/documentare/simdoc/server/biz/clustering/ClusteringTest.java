@@ -50,9 +50,6 @@ public class ClusteringTest {
   @Autowired
   WebApplicationContext context;
 
-  @Autowired
-  SharedDirectory sharedDirectory;
-
   MockMvc mockMvc;
 
   @Before

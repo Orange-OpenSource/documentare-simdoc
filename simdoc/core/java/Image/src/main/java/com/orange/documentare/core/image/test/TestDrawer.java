@@ -10,11 +10,9 @@ package com.orange.documentare.core.image.test;
  */
 
 import com.orange.documentare.core.image.connectedcomponents.ConnectedComponents;
-import com.orange.documentare.core.image.glyphs.Glyphs;
 import com.orange.documentare.core.image.linedetection.Line;
 import com.orange.documentare.core.image.linedetection.Lines;
 import com.orange.documentare.core.image.opencv.OpenCvImage;
-import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.model.ref.segmentation.SegmentationRect;
 import org.apache.commons.io.FileUtils;
 import org.opencv.core.*;
@@ -38,7 +36,7 @@ public class TestDrawer {
   }
 
   public static void draw(File inputFile, File outputFile, Lines lines, List<? extends SegmentationRect> rects) throws IOException {
-    Mat imageMat = OpenCvImage.getMat(inputFile);
+    Mat imageMat = OpenCvImage.loadMat(inputFile);
     for (SegmentationRect r : lines) {
       Core.rectangle(imageMat, new Point(r.x(), r.y() - 1), new Point(r.x() + r.width(), r.y() + r.height() + 1), linesCol, 1);
     }
