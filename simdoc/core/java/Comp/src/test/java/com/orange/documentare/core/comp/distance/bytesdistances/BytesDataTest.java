@@ -12,6 +12,7 @@ package com.orange.documentare.core.comp.distance.bytesdistances;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
+import org.junit.After;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,6 +26,12 @@ public class BytesDataTest {
   public static final String BYTES_DATA_JSON = "byteData.json";
 
   private JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
+
+  @After
+  public void cleanUp() {
+    FileUtils.deleteQuietly(new File(JSON_FILE_PATH));
+    FileUtils.deleteQuietly(new File(BYTES_DATA_JSON));
+  }
 
   @Test
   public void write_file_data_as_json_and_reload_it_from_json() throws IOException {
