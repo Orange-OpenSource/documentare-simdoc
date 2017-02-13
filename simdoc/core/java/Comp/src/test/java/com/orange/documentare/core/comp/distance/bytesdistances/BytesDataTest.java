@@ -20,10 +20,13 @@ import java.io.IOException;
 
 public class BytesDataTest {
 
-  public static final String FILE_PATH = "titi";
-  public static final String FILE_CONTENT = "tata";
-  public static final String JSON_FILE_PATH = "fileBytesData.json";
-  public static final String BYTES_DATA_JSON = "byteData.json";
+  private static final String FILE_PATH = "titi";
+  private static final String FILE_CONTENT = "tata";
+  private static final String JSON_FILE_PATH = "fileBytesData.json";
+  private static final String BYTES_DATA_JSON = "byteData.json";
+
+  private static final String DIR_1 = "/bestioles";
+
 
   private JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
 
@@ -75,5 +78,17 @@ public class BytesDataTest {
     // when
     new BytesData(id1, "/pouet-pouet");
     // then
+  }
+
+  @Test
+  public void build_data_array_from_directory_content() {
+    // Given
+    File directory = new File(getClass().getResource(DIR_1).getFile());
+
+    // When
+    BytesData[] bytesDataArray = BytesData.loadFromDirectory(directory);
+
+    // Then
+    Assertions.assertThat(bytesDataArray).hasSize(34);
   }
 }

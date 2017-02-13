@@ -12,6 +12,7 @@ package com.orange.documentare.core.comp.distance;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.segmentation.NearestItemsProvider;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,7 +22,8 @@ import java.util.List;
 
 @NoArgsConstructor
 @Getter
-public class DistancesArray implements NearestItemsProvider {
+@EqualsAndHashCode
+public final class DistancesArray implements NearestItemsProvider {
 
   /** we expose these data in order to be able to serialize it in NCD */
   private int[][] distancesArray;

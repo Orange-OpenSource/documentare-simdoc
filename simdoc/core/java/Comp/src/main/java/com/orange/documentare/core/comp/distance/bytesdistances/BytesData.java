@@ -16,6 +16,9 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 public class BytesData implements DistanceItem {
@@ -44,6 +47,18 @@ public class BytesData implements DistanceItem {
     this.id = id;
     this.filepath = null;
     this.bytes = bytes;
+  }
+
+  public static BytesData[] loadFromDirectory(File directory) {
+    if (!directory.isDirectory()) {
+      throw new IllegalStateException(String.format("Failed to load data from invalid directory '%s': not a directory", directory.getAbsolutePath()));
+    }
+
+    List<BytesData> list = Arrays.stream(directory.listFiles())
+      .map(file -> new BytesData(file.getAbsolutePath(), file.getAbsolutePath()))
+      .collect(Collectors.toList());
+
+    return list.toArray(new BytesData[list.size()]);
   }
 
   // required by jackson to deserialize the object
