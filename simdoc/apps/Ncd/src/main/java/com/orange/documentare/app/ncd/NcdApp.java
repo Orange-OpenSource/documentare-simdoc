@@ -11,19 +11,29 @@ package com.orange.documentare.app.ncd;
 
 import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
-import com.orange.documentare.core.comp.distance.filesdistances.FilesDistances;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
 import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import com.orange.documentare.core.system.measure.MemoryWatcher;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.function.Function;
 
 public class NcdApp {
+
+  @RequiredArgsConstructor
+  static class ResultToExport {
+    final Object o;
+    final File file;
+  }
 
   private static final File SIMDOC_EXPORT_FILE = new File("ncd_simdoc_model_ready_for_clustering.json.gz");
   private static final File FILES_DISTANCES_EXPORT_FILE = new File("ncd_regular_files_model.json.gz");
@@ -51,31 +61,54 @@ public class NcdApp {
 
   private static void doTheJob(CommandLineOptions commandLineOptions) throws IOException {
     MemoryWatcher.watch();
+    ResultToExport resultToExport;
     if (commandLineOptions.getSimdoc() != null) {
-      doTheJobForSimDocInput(commandLineOptions.getSimdoc());
+      resultToExport = doTheJobForSimDocInput(commandLineOptions.getSimdoc());
     } else {
-      doTheJobForRegularFiles(commandLineOptions.getD1(), commandLineOptions.getD2());
+      resultToExport = doTheJobForRegularFiles(commandLineOptions.getD1(), commandLineOptions.getD2());
     }
+
+    System.out.println("\n[Export model]");
+    // Optim: bytes allocated in do* functions are available for the garbage collector now!
+    exportToJson(resultToExport);
+
     MemoryWatcher.stopWatching();
   }
 
-  private static void doTheJobForRegularFiles(File file1, File file2) throws IOException {
-    FilesDistances filesDistances = FilesDistances.empty();
-    filesDistances = filesDistances.compute(file1, file2, progressListener);
+  private static ResultToExport doTheJobForRegularFiles(File directory1, File directory2) throws IOException {
+    Function<File, BytesData.FileIdProvider> providerBuilder = directory -> file -> {
+      String filepath = file.getAbsolutePath();
+      String relativeFileName = filepath.replace(directory.getAbsolutePath(), "");
+      if (relativeFileName.startsWith(File.separator)) {
+        relativeFileName = relativeFileName.substring(1);
+      }
+      return relativeFileName;
+    };
 
-    System.out.println("\n[Export files distances]");
-    exportToJson(filesDistances, FILES_DISTANCES_EXPORT_FILE);
+    BytesData[] bytesData1 = BytesData.loadFromDirectory(directory1, providerBuilder.apply(directory1));
+    BytesData[] bytesData2 = directory1.equals(directory2) ?
+      bytesData1 : BytesData.loadFromDirectory(directory2, providerBuilder.apply(directory2));
+
+    BytesDistances bytesDistances = new BytesDistances(progressListener);
+    DistancesArray distancesArray = bytesDistances.computeDistancesBetweenCollections(bytesData1, bytesData2);
+
+    ExportModel exportModel = new ExportModel(bytesData1, bytesData2, distancesArray);
+    return new ResultToExport(exportModel, FILES_DISTANCES_EXPORT_FILE);
   }
 
-  private static void doTheJobForSimDocInput(File simDocJsonGz) throws IOException {
+  private static ResultToExport doTheJobForSimDocInput(File simDocJsonGz) throws IOException {
     ImageSegmentation imageSegmentation = segmentationOf(simDocJsonGz);
     DigitalTypes digitalTypes = imageSegmentation.getDigitalTypes();
 
     DigitalTypes copyWithoutSpaces = digitalTypes.copyWithoutSpaces();
     DigitalType[] items = copyWithoutSpaces.toArray(new DigitalType[copyWithoutSpaces.size()]);
 
-    FilesDistances filesDistances = FilesDistances.empty();
-    DistancesArray distancesArray = filesDistances.computeDistances(items, items, progressListener);
+    BytesData[] bytesDataArray = Arrays.stream(items)
+      .map(item -> new BytesData(item.getHumanReadableId(), item.getBytes()))
+      .toArray(size -> new BytesData[size]);
+
+    BytesDistances bytesDistances = new BytesDistances(progressListener);
+    DistancesArray distancesArray = bytesDistances.computeDistancesBetweenCollections(bytesDataArray, bytesDataArray);
 
     for (int i = 0; i < copyWithoutSpaces.size(); i++) {
       DigitalType digitalType = copyWithoutSpaces.get(i);
@@ -83,8 +116,7 @@ public class NcdApp {
       digitalType.setBytes(null);
     }
 
-    System.out.println("\n[Export Simdoc model]");
-    exportToJson(imageSegmentation, SIMDOC_EXPORT_FILE);
+    return new ResultToExport(imageSegmentation, SIMDOC_EXPORT_FILE);
   }
 
   private static ImageSegmentation segmentationOf(File simDocJsonGz) throws IOException {
@@ -92,8 +124,8 @@ public class NcdApp {
     return (ImageSegmentation) jsonHandler.getObjectFromJsonGzipFile(ImageSegmentation.class, simDocJsonGz);
   }
 
-  private static void exportToJson(Object object, File file) throws IOException {
+  private static void exportToJson(ResultToExport resultToExport) throws IOException {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
-    jsonGenericHandler.writeObjectToJsonGzipFile(object, file);
+    jsonGenericHandler.writeObjectToJsonGzipFile(resultToExport.o, resultToExport.file);
   }
 }

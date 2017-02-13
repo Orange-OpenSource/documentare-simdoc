@@ -12,6 +12,7 @@ package com.orange.documentare.core.comp.distance.bytesdistances;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
+import lombok.EqualsAndHashCode;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
@@ -21,15 +22,22 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BytesData implements DistanceItem {
+@EqualsAndHashCode
+public final class BytesData implements DistanceItem {
+
+  public interface FileIdProvider {
+    String idFor(File file);
+  }
+
   public final String id;
   public final String filepath;
+
   public final byte[] bytes;
 
   @Override
   @JsonIgnore
   public String getHumanReadableId() {
-    return "id: " + id + ", filepath: " + filepath;
+    return id;
   }
 
   @Override
@@ -49,16 +57,22 @@ public class BytesData implements DistanceItem {
     this.bytes = bytes;
   }
 
-  public static BytesData[] loadFromDirectory(File directory) {
+
+  public static BytesData[] loadFromDirectory(File directory, FileIdProvider fileIdProvider) {
     if (!directory.isDirectory()) {
       throw new IllegalStateException(String.format("Failed to load data from invalid directory '%s': not a directory", directory.getAbsolutePath()));
     }
 
-    List<BytesData> list = Arrays.stream(directory.listFiles())
-      .map(file -> new BytesData(file.getAbsolutePath(), file.getAbsolutePath()))
-      .collect(Collectors.toList());
+    FileIdProvider idProvider = fileIdProvider == null ? file -> file.getAbsolutePath() : fileIdProvider;
+    return Arrays.stream(directory.listFiles())
+      .filter(file -> !file.isHidden())
+      .sorted() // For the sake of tests: it is mandatory to keep same order across different test platform...
+      .map(file -> new BytesData(idProvider.idFor(file), file.getAbsolutePath()))
+      .toArray(size -> new BytesData[size]);
+  }
 
-    return list.toArray(new BytesData[list.size()]);
+  public static BytesData[] loadFromDirectory(File directory) {
+    return loadFromDirectory(directory, null);
   }
 
   // required by jackson to deserialize the object

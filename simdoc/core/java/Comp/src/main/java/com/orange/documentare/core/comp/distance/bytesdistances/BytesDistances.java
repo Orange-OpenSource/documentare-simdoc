@@ -11,8 +11,18 @@ package com.orange.documentare.core.comp.distance.bytesdistances;
 
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.computer.DistancesComputer;
+import com.orange.documentare.core.comp.measure.ProgressListener;
 
 public class BytesDistances {
+
+  private final ProgressListener progressListener;
+
+  public BytesDistances() {
+    this(null);
+  }
+  public BytesDistances(ProgressListener progressListener) {
+    this.progressListener = progressListener;
+  }
 
   public DistancesArray computeDistancesBetweenCollections(BytesData[] bytesDataArray1, BytesData[] bytesDataArray2) {
     return compute(bytesDataArray1, bytesDataArray2);
@@ -24,6 +34,7 @@ public class BytesDistances {
 
   private DistancesArray compute(BytesData[] bytesDataArray1, BytesData[] bytesDataArray2) {
     DistancesComputer computer = new DistancesComputer(bytesDataArray1, bytesDataArray2);
+    computer.setProgressListener(progressListener);
     computer.compute();
     return computer.getDistancesArray();
   }
