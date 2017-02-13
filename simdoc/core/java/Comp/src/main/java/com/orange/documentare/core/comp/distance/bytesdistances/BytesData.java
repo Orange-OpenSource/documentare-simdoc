@@ -75,6 +75,17 @@ public final class BytesData implements DistanceItem {
     return loadFromDirectory(directory, null);
   }
 
+  public static FileIdProvider relativePathIdProvider(File rootDirectory) {
+    return file -> {
+      String filepath = file.getAbsolutePath();
+      String relativeFileName = filepath.replace(rootDirectory.getAbsolutePath(), "");
+      if (relativeFileName.startsWith(File.separator)) {
+        relativeFileName = relativeFileName.substring(1);
+      }
+      return relativeFileName;
+    };
+  }
+
   // required by jackson to deserialize the object
   public BytesData() {
     this.id = null;

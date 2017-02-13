@@ -76,18 +76,9 @@ public class NcdApp {
   }
 
   private static ResultToExport doTheJobForRegularFiles(File directory1, File directory2) throws IOException {
-    Function<File, BytesData.FileIdProvider> providerBuilder = directory -> file -> {
-      String filepath = file.getAbsolutePath();
-      String relativeFileName = filepath.replace(directory.getAbsolutePath(), "");
-      if (relativeFileName.startsWith(File.separator)) {
-        relativeFileName = relativeFileName.substring(1);
-      }
-      return relativeFileName;
-    };
-
-    BytesData[] bytesData1 = BytesData.loadFromDirectory(directory1, providerBuilder.apply(directory1));
+    BytesData[] bytesData1 = BytesData.loadFromDirectory(directory1, BytesData.relativePathIdProvider(directory1));
     BytesData[] bytesData2 = directory1.equals(directory2) ?
-      bytesData1 : BytesData.loadFromDirectory(directory2, providerBuilder.apply(directory2));
+      bytesData1 : BytesData.loadFromDirectory(directory2, BytesData.relativePathIdProvider(directory2));
 
     BytesDistances bytesDistances = new BytesDistances(progressListener);
     DistancesArray distancesArray = bytesDistances.computeDistancesBetweenCollections(bytesData1, bytesData2);

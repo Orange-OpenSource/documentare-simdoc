@@ -13,24 +13,31 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.distance.DistancesArray;
-import com.orange.documentare.core.comp.distance.filesdistances.FilesDistances;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
+import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import com.orange.documentare.simdoc.server.biz.FileIO;
-import com.orange.documentare.simdoc.server.biz.SharedDirectory;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
+
+  @RequiredArgsConstructor
+  private class DistancesComputationResult {
+    public final String[] ids;
+    public final DistancesArray distancesArray;
+  }
 
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringParameters parameters, boolean debug) throws IOException {
@@ -58,14 +65,23 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   private ClusteringOutput buildClustering(FileIO fileIO, ClusteringParameters parameters) throws IOException {
     File safeInputDir = fileIO.safeInputDir();
-    FilesDistances filesDistances = FilesDistances.empty();
-    filesDistances = filesDistances.compute(safeInputDir, safeInputDir, null);
+    DistancesComputationResult distancesComputationResult = computeDistances(safeInputDir);
 
-    SimClusteringItem[] simClusteringItems = initClusteringItems(filesDistances, parameters);
+    SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, parameters);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     ClusteringGraph graph = clusteringGraphBuilder.build(simClusteringItems, parameters);
 
     return new ClusteringOutput(simClusteringItems, graph);
+  }
+
+  private DistancesComputationResult computeDistances(File safeInputDir) {
+    BytesData[] bytesDataArray = BytesData.loadFromDirectory(safeInputDir, BytesData.relativePathIdProvider(safeInputDir));
+    BytesDistances bytesDistances = new BytesDistances();
+    DistancesArray distanceArray = bytesDistances.computeDistancesInCollection(bytesDataArray);
+    String[] ids = Arrays.stream(bytesDataArray)
+      .map(bytesData -> bytesData.id)
+      .toArray(String[]::new);
+    return new DistancesComputationResult(ids, distanceArray);
   }
 
   private ClusteringRequestResult prepClusteringRequestResult(FileIO fileIO, ClusteringOutput clusteringOutput) {
@@ -74,14 +90,16 @@ public class ClusteringServiceImpl implements ClusteringService {
     return ClusteringRequestResult.with(clusteringResultItems);
   }
 
-  private SimClusteringItem[] initClusteringItems(FilesDistances filesDistances, ClusteringParameters parameters) {
-    int nbItems = filesDistances.items1.length;
+  private SimClusteringItem[] initClusteringItems(
+    DistancesComputationResult distancesComputationResult, ClusteringParameters parameters) {
+    String[] ids = distancesComputationResult.ids;
+    int nbItems = ids.length;
     int k = parameters.knn() ? parameters.kNearestNeighboursThreshold : nbItems;
     SimClusteringItem[] simClusteringItems = new SimClusteringItem[nbItems];
     for(int i = 0; i < nbItems; i++) {
-      simClusteringItems[i] = new SimClusteringItem(filesDistances.items1[i].relativeFilename);
+      simClusteringItems[i] = new SimClusteringItem(ids[i]);
     }
-    buildTriangulationVertices(simClusteringItems, filesDistances.distancesArray, k);
+    buildTriangulationVertices(simClusteringItems, distancesComputationResult.distancesArray, k);
     return simClusteringItems;
   }
 
