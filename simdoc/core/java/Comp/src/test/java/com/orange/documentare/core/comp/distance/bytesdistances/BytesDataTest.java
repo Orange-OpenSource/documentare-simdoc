@@ -68,4 +68,12 @@ public class BytesDataTest {
     Assertions.assertThat(actualBytesDataByte.bytes).isEqualTo(bytesDataByte.bytes);
   }
 
+  @Test(expected=IllegalStateException.class)
+  public void exception_is_raised_when_file_can_not_be_read() {
+    // given
+    String id1 = "id3";
+    // when
+    new BytesData(id1, "/pouet-pouet");
+    // then
+  }
 }
