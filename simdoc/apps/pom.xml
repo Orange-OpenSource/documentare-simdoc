@@ -7,13 +7,13 @@
   <packaging>pom</packaging>
 
   <modules>
-    <module>LineDetection</module>
-    <module>PrepInputDir</module>
-    <module>Ncd</module>
-    <module>PrepClustering</module>
-    <module>SimClustering</module>
-    <module>Thumbnails</module>
-    <module>Graph</module>
+    <module>line-detection</module>
+    <module>prep-data</module>
+    <module>ncd</module>
+    <module>prep-clustering</module>
+    <module>similarity-clustering</module>
+    <module>thumbnails</module>
+    <module>graph</module>
   </modules>
 
   <properties>

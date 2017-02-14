@@ -1,9 +1,9 @@
 #!/bin/sh
 
 ABS_DIR=`pwd`/$1
-(cd PrepInputDir && ./go.sh  -d $ABS_DIR) && \
-(cd Ncd && ./go.sh -d1 ../PrepInputDir/safe-input-dir) && \
-(cd PrepClustering && ./go.sh -json ../Ncd/ncd_regular_files_model.json.gz) && \
-(cd SimClustering && ./go.sh -json ../PrepClustering/prep_clustering_ready.json.gz -acut -qcut -scut -ccut) && \
-(cd Thumbnails && ./go.sh -d ../PrepInputDir/safe-input-dir) && \
-(cd Graph && ./go.sh -map ../PrepInputDir -json ../SimClustering/sc_graph_input.json.gz -d ../Thumbnails/thumbnails && ./show.sh)
+(cd prep-data && ./go.sh  -d $ABS_DIR) && \
+(cd ncd && ./go.sh -d1 ../prep-data/safe-input-dir) && \
+(cd prep-clustering && ./go.sh -json ../ncd/ncd_regular_files_model.json.gz) && \
+(cd similarity-clustering && ./go.sh -json ../prep-clustering/prep_clustering_ready.json.gz -acut -qcut -scut -ccut) && \
+(cd thumbnails && ./go.sh -d ../prep-data/safe-input-dir) && \
+(cd graph && ./go.sh -map ../prep-data -json ../similarity-clustering/sc_graph_input.json.gz -d ../thumbnails/thumbnails && ./show.sh)
