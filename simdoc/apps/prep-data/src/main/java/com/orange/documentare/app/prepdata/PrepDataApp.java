@@ -20,6 +20,7 @@ import java.io.IOException;
 public class PrepDataApp {
   private static final File OUTPUT_DIR = new File("safe-working-dir");
   private static final File METADATA_JSON = new File("metadata.json");
+  private static final File BYTESDATA_JSON = new File("bytes-data.json");
 
   public static void main(String[] args) {
     System.out.println("\n[prep-data - Start]");
@@ -40,11 +41,12 @@ public class PrepDataApp {
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
     PrepData prepData = PrepData.builder()
-      .inputDirectory(options.getInputDir())
-      .safeWorkingDirConverter()
-      .safeWorkingDirectory(OUTPUT_DIR)
-      .metadataOutputFile(METADATA_JSON)
-      .build();
+            .inputDirectory(options.getInputDir())
+            .safeWorkingDirConverter()
+            .safeWorkingDirectory(OUTPUT_DIR)
+            .preppedBytesDataOutputFile(BYTESDATA_JSON)
+            .metadataOutputFile(METADATA_JSON)
+            .build();
     prepData.prep();
   }
 }
