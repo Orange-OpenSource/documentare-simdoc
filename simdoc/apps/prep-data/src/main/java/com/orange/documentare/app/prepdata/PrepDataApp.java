@@ -1,4 +1,4 @@
-package com.orange.documentare.app.prepinputdir;
+package com.orange.documentare.app.prepdata;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,7 +9,7 @@ package com.orange.documentare.app.prepinputdir;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.prepinputdir.cmdline.CommandLineOptions;
+import com.orange.documentare.app.prepdata.cmdline.CommandLineOptions;
 import com.orange.documentare.core.system.filesid.FilesIdBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -17,12 +17,12 @@ import java.io.File;
 import java.io.IOException;
 
 @Slf4j
-public class PrepInputDirApp {
+public class PrepDataApp {
 
   private static final File OUTPUT_DIR = new File("safe-input-dir");
 
   public static void main(String[] args) {
-    System.out.println("\n[PrepInputDir - Start]");
+    System.out.println("\n[prep-data - Start]");
     CommandLineOptions options;
     try {
       options = new CommandLineOptions(args);
@@ -32,7 +32,7 @@ public class PrepInputDirApp {
     }
     try {
       doTheJob(options);
-      System.out.println("\n[PrepInputDir - Done]");
+      System.out.println("\n[prep-data - Done]");
     } catch (Exception e) {
       e.printStackTrace();
     }

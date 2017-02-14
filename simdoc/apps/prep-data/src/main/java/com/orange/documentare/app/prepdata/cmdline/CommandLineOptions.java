@@ -1,4 +1,4 @@
-package com.orange.documentare.app.prepinputdir.cmdline;
+package com.orange.documentare.app.prepdata.cmdline;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -77,6 +77,6 @@ public class CommandLineOptions {
   public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("PrepInputDir ", options);
+    formatter.printHelp("prep-data ", options);
   }
 }

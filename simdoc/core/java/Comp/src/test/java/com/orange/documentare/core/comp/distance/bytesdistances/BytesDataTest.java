@@ -120,4 +120,17 @@ public class BytesDataTest {
     // Then
     Assertions.assertThat(Arrays.asList(bytesDataArray).contains(new BytesData(".hidden-file", (new File(getClass().getResource(DIR_2 + "/.hidden-file").getFile())).getAbsolutePath()))).isFalse();
   }
+
+  @Test
+  public void build_data_array_from_directory_content_without_bytes() {
+    // Given
+    File directory = new File(getClass().getResource(DIR_1).getFile());
+
+    // When
+    BytesData[] bytesDataArray = BytesData.buildFromDirectoryWithoutBytes(directory);
+
+    // Then
+    Assertions.assertThat(bytesDataArray).hasSize(34);
+    Assertions.assertThat(bytesDataArray[0].bytes).isNull();
+  }
 }
