@@ -2,9 +2,9 @@
 
 TAG=`git describe`
 
-#(cd simdoc && ./prep-simdoc.sh) && \
-#(cd simdoc/simdoc-server && ./mvnw clean install) && \
-#(cd simdoc/apps && ./refIntegrationTest.sh) && \
+(cd simdoc && ./prep-simdoc.sh) && \
+(cd simdoc/simdoc-server && ./mvnw clean install) && \
+(cd simdoc/apps && ./refIntegrationTest.sh) && \
 cp simdoc/simdoc-server/target/simdoc-server-1.0.0-SNAPSHOT.jar simdoc-server-$TAG.jar && \
 cp simdoc/apps/line-detection/target/line*.jar line-detection-$TAG.jar && \
 cp simdoc/apps/prep-data/target/prep*.jar prep-data-$TAG.jar && \
