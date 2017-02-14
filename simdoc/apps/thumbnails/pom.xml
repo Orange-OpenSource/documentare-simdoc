@@ -7,7 +7,7 @@
     <version>1.0-SNAPSHOT</version>
   </parent>
 
-  <artifactId>Thumbnails</artifactId>
+  <artifactId>thumbnails</artifactId>
 
   <dependencies>
     <dependency>

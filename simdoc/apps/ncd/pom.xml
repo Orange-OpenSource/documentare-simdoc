@@ -7,7 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>Ncd</artifactId>
+    <artifactId>ncd</artifactId>
 
     <dependencies>
         <dependency>

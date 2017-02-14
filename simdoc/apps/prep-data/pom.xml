@@ -7,7 +7,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
 
-    <artifactId>PrepInputDir</artifactId>
+    <artifactId>prep-data</artifactId>
 
     <dependencies>
         <dependency>
