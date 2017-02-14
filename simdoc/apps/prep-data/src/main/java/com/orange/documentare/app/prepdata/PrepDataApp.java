@@ -10,7 +10,7 @@ package com.orange.documentare.app.prepdata;
  */
 
 import com.orange.documentare.app.prepdata.cmdline.CommandLineOptions;
-import com.orange.documentare.core.system.filesid.FilesIdBuilder;
+import com.orange.documentare.core.prepdata.PrepData;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.File;
@@ -18,8 +18,8 @@ import java.io.IOException;
 
 @Slf4j
 public class PrepDataApp {
-
-  private static final File OUTPUT_DIR = new File("safe-input-dir");
+  private static final File OUTPUT_DIR = new File("safe-working-dir");
+  private static final File METADATA_JSON = new File("metadata.json");
 
   public static void main(String[] args) {
     System.out.println("\n[prep-data - Start]");
@@ -39,7 +39,12 @@ public class PrepDataApp {
   }
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
-    FilesIdBuilder builder = new FilesIdBuilder();
-    builder.createFilesIdDirectory(options.getInputDir().getAbsolutePath(), OUTPUT_DIR.getAbsolutePath(), "./");
+    PrepData prepData = PrepData.builder()
+      .inputDirectory(options.getInputDir())
+      .safeWorkingDirConverter()
+      .safeWorkingDirectory(OUTPUT_DIR)
+      .metadataOutputFile(METADATA_JSON)
+      .build();
+    prepData.prep();
   }
 }

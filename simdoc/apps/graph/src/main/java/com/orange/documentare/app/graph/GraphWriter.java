@@ -19,7 +19,9 @@ import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphTBuilder;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import com.orange.documentare.core.system.filesid.FilesIdBuilder;
+import com.orange.documentare.core.prepdata.Metadata;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
+import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import org.apache.commons.cli.ParseException;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.VertexNameProvider;
@@ -71,9 +73,13 @@ public class GraphWriter {
     exporter.export(writer, graph);
   }
 
-  private static VertexNameProvider labelProvider() {
-    return options.hasFilesIdMap() ?
-      new LabelProvider((new FilesIdBuilder()).readMapIn(options.getFilesIdMap().getAbsolutePath())) :
-      null;
+  private static VertexNameProvider labelProvider() throws IOException {
+    if (options.hasFilesIdMap()) {
+      JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+      FilesMap filesMap = (FilesMap)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getFilesIdMap());
+      return new LabelProvider(filesMap);
+    } else {
+      return null;
+    }
   }
 }

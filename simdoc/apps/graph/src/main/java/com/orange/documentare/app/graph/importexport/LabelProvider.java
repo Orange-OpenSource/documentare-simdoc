@@ -10,14 +10,14 @@ package com.orange.documentare.app.graph.importexport;
  */
 
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import com.orange.documentare.core.system.filesid.FilesIdMap;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringEscapeUtils;
 import org.jgrapht.ext.VertexNameProvider;
 
 @RequiredArgsConstructor
 public class LabelProvider implements VertexNameProvider<GraphItem> {
-  private final FilesIdMap map;
+  private final FilesMap map;
 
   @Override
   public String getVertexName(GraphItem graphItem) {

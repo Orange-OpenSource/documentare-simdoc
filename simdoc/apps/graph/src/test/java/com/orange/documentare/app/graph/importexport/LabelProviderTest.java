@@ -1,7 +1,7 @@
 package com.orange.documentare.app.graph.importexport;
 
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import com.orange.documentare.core.system.filesid.FilesIdMap;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 
@@ -10,7 +10,7 @@ public class LabelProviderTest {
   @Test
   public void escape_to_html() {
     // Given
-    FilesIdMap map = new FilesIdMap();
+    FilesMap map = new FilesMap();
     map.put(0, "Léon Tolstoï, nom francisé de Lev Nikolaïevitch Tolstoï (en russe : Лев Никола́евич Толсто́й");
     LabelProvider labelProvider = new LabelProvider(map);
     GraphItem graphItem = new GraphItem();

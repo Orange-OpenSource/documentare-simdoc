@@ -74,6 +74,6 @@ public class CommandLineOptions {
   public static void showHelp() {
     System.out.println();
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("ncd", options);
+    formatter.printHelp("thumbnails", options);
   }
 }
