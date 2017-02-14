@@ -1,4 +1,4 @@
-package com.orange.documentare.core.system.filesid;
+package com.orange.documentare.core.system.inputfilesconverter;
 
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
@@ -14,7 +14,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FilesIdTest {
+public class InputFilesConverterTest {
 
   private final static String[] TEST_FILES = {
     ".DS_STORE",
@@ -36,19 +36,47 @@ public class FilesIdTest {
     FileUtils.deleteDirectory(DEST_ROOT_DIR);
   }
 
+  @Test(expected = FileConverterException.class)
+  public void missing_source_directory_raises_exception() {
+    InputFilesConverter.builder()
+      .sourceDirectory(null)
+      .destinationDirectory(DEST_DIR)
+      .fileConverter(new SymbolicLinkConverter())
+      .build();
+  }
+
+  @Test(expected = FileConverterException.class)
+  public void missing_destination_directory_raises_exception() {
+    InputFilesConverter.builder()
+      .sourceDirectory(SRC_DIR)
+      .destinationDirectory(null)
+      .fileConverter(new SymbolicLinkConverter())
+      .build();
+  }
+
+  @Test(expected = FileConverterException.class)
+  public void missing_converter_raises_exception() {
+    InputFilesConverter.builder()
+      .sourceDirectory(SRC_DIR)
+      .destinationDirectory(DEST_DIR)
+      .fileConverter(null)
+      .build();
+  }
+
   @Test
   public void create_files_id_directory() throws IOException {
     // Given
     buildSourceDir(SRC_DIR, TEST_FILES);
-    FilesId filesId = FilesId.builder()
+    InputFilesConverter inputFilesConverter = InputFilesConverter.builder()
       .sourceDirectory(SRC_DIR)
       .destinationDirectory(DEST_DIR)
+      .fileConverter(new SymbolicLinkConverter())
       .build();
 
     List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
-    filesId.createFilesIdDirectory();
+    inputFilesConverter.createFilesIdDirectory();
 
     // Then
     for (int index = 0; index < nonHiddenSourceFiles.size(); index++) {
@@ -62,13 +90,14 @@ public class FilesIdTest {
   public void skip_hidden_files_in_dest_directory() throws IOException {
     // Given
     buildSourceDir(SRC_DIR, TEST_FILES);
-    FilesId filesId = FilesId.builder()
+    InputFilesConverter inputFilesConverter = InputFilesConverter.builder()
       .sourceDirectory(SRC_DIR)
       .destinationDirectory(DEST_DIR)
+      .fileConverter(new SymbolicLinkConverter())
       .build();
 
     // When
-    filesId.createFilesIdDirectory();
+    inputFilesConverter.createFilesIdDirectory();
     Collection<File> destFiles = FileUtils.listFiles(DEST_DIR, null, true);
 
     // Then
@@ -82,14 +111,15 @@ public class FilesIdTest {
   public void create_files_id_mapping() throws IOException {
     // Given
     buildSourceDir(SRC_DIR, TEST_FILES);
-    FilesId filesId = FilesId.builder()
+    InputFilesConverter inputFilesConverter = InputFilesConverter.builder()
       .sourceDirectory(SRC_DIR)
       .destinationDirectory(DEST_DIR)
+      .fileConverter(new SymbolicLinkConverter())
       .build();
     List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
-    FilesIdMap map = filesId.createFilesIdDirectory();
+    FilesMap map = inputFilesConverter.createFilesIdDirectory();
 
     // Then
     map.keySet().forEach(index -> {

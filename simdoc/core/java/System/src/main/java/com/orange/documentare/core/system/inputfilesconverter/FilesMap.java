@@ -1,4 +1,4 @@
-package com.orange.documentare.core.system.filesid;
+package com.orange.documentare.core.system.inputfilesconverter;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -12,7 +12,7 @@ package com.orange.documentare.core.system.filesid;
 import java.io.File;
 import java.util.HashMap;
 
-public class FilesIdMap extends HashMap<Integer, String> {
+public class FilesMap extends HashMap<Integer, String> {
 
   public String simpleFilenameAt(int index) {
     String absFilename = get(index);

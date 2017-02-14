@@ -1,6 +1,6 @@
-package com.orange.documentare.core.system.filesid;
+package com.orange.documentare.core.system.inputfilesconverter;
 /*
- * Copyright (c) 2016 Orange
+ * Copyright (c) 2017 Orange
  *
  * Authors: Christophe Maldivi & Joel Gardes
  *
@@ -9,8 +9,8 @@ package com.orange.documentare.core.system.filesid;
  * the Free Software Foundation.
  */
 
-public class FilesIdException extends RuntimeException {
-  public FilesIdException(String msg) {
-    super(msg);
-  }
+import java.io.File;
+
+public interface FileConverter {
+  void convert(File source, File destination);
 }

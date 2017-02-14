@@ -1,4 +1,4 @@
-package com.orange.documentare.core.system.filesid;
+package com.orange.documentare.core.system.inputfilesconverter;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -13,13 +13,13 @@ package com.orange.documentare.core.system.filesid;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 
-public class FilesIdMapTest {
+public class InputFilesConverterMapTest {
 
   @Test
   public void extract_complete_name_if_path_separator_is_not_found() {
     // Given
     String expected = "christmas-carol";
-    FilesIdMap map = new FilesIdMap();
+    FilesMap map = new FilesMap();
     map.put(0, expected);
 
     // When
@@ -34,7 +34,7 @@ public class FilesIdMapTest {
     // Given
     String expected = "christmas-carol";
     String path = "/Morten/Lauridsen/Kings/College/" + expected;
-    FilesIdMap map = new FilesIdMap();
+    FilesMap map = new FilesMap();
     map.put(0, path);
 
     // When
