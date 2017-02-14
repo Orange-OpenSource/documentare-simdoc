@@ -33,6 +33,7 @@ public class BytesDataTest {
 
   @After
   public void cleanUp() {
+    FileUtils.deleteQuietly(new File(FILE_PATH));
     FileUtils.deleteQuietly(new File(JSON_FILE_PATH));
     FileUtils.deleteQuietly(new File(BYTES_DATA_JSON));
   }

@@ -31,7 +31,7 @@ public class ClusteringTasksServiceTest {
   private final ClusteringTasksService tasksHandler = ClusteringTasksService.instance();
   private final ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
 
-  //@After
+  @After
   public void cleanup() {
     FileUtils.deleteQuietly(new File(STRIPPED_CLUSTERING_JSON));
     FileUtils.deleteQuietly(new File(NOT_STRIPPED_CLUSTERING_JSON));
