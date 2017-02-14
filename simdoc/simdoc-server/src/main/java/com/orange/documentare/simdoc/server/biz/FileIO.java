@@ -13,7 +13,8 @@ package com.orange.documentare.simdoc.server.biz;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.core.system.filesid.FilesIdBuilder;
+import com.orange.documentare.core.prepdata.Metadata;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequestResult;
 import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;
@@ -25,13 +26,14 @@ import java.io.IOException;
 
 @EqualsAndHashCode
 public class FileIO {
-  private static final String SAFE_INPUT_DIR = "/safe-input-dir";
+  private static final String SAFE_WORKING_DIR = "/safe-working-dir";
   private static final String CLUSTERING_REQUEST_FILE = "/clustering-request.json.gz";
   private static final String CLUSTERING_RESULT_FILE = "/clustering-result.json.gz";
   private static final String CLUSTERING_GRAPH_FILE = "/clustering-graph.json.gz";
+  private static final String METADATA_JSON = "metadata.json";
 
-  private final String inputDirectoryAbsPath;
-  private final String outputDirectoryAbsPath;
+  public final String inputDirectoryAbsPath;
+  public final String outputDirectoryAbsPath;
 
   public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
@@ -82,23 +84,25 @@ public class FileIO {
   }
 
   public void cleanupClustering() {
-    FileUtils.deleteQuietly(safeInputDir());
-    FileUtils.deleteQuietly(mapFile());
+    FileUtils.deleteQuietly(safeWorkingDirectory());
+    FileUtils.deleteQuietly(metadataFile());
   }
 
-
-  public File safeInputDir() {
-    return new File(outputDirectoryAbsPath + SAFE_INPUT_DIR);
+  public FilesMap loadFilesMap() {
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+    try {
+      return ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, metadataFile()))
+        .filesMap;
+    } catch (IOException e) {
+      throw new IllegalStateException(String.format("Failed to load metadata json '%s': %s", metadataFile().getAbsolutePath(), e.getMessage()));
+    }
   }
 
-  public String inPath() {
-    return inputDirectoryAbsPath;
-  }
-  public String outPath() {
-    return outputDirectoryAbsPath;
+  public File safeWorkingDirectory() {
+    return new File(outputDirectoryAbsPath + SAFE_WORKING_DIR);
   }
 
-  private File inputDirectory() {
+  public File inputDirectory() {
     return new File(inputDirectoryAbsPath);
   }
 
@@ -112,16 +116,16 @@ public class FileIO {
     jsonGenericHandler.writeObjectToJsonGzipFile(o, file);
   }
 
+  public File metadataFile() {
+    return new File(outputDirectoryAbsPath + "/" + METADATA_JSON);
+  }
+
   private File clusteringRequestFile() {
     return new File(outputDirectoryAbsPath + CLUSTERING_REQUEST_FILE);
   }
 
   private File clusteringGraphFile() {
     return new File(outputDirectoryAbsPath + CLUSTERING_GRAPH_FILE);
-  }
-
-  private File mapFile() {
-    return new File(outputDirectoryAbsPath + "/" + FilesIdBuilder.MAP_NAME);
   }
 
   private File clusteringResultFile() {

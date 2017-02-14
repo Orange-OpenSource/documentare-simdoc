@@ -10,14 +10,12 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.system.filesid.FilesIdBuilder;
-import com.orange.documentare.core.system.filesid.FilesIdMap;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
+import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
-
-import java.io.File;
 
 @RequiredArgsConstructor
 @EqualsAndHashCode
@@ -28,15 +26,14 @@ public class ClusteringResultItem {
   public final int clusterId;
 
   static ClusteringResultItem[] buildItems(FileIO fileIO, SimClusteringItem[] simClusteringItems) {
-    FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
-    FilesIdMap map = filesIdBuilder.readMapIn(fileIO.outPath());
     ClusteringResultItem[] items = new ClusteringResultItem[simClusteringItems.length];
+    FilesMap map = fileIO.loadFilesMap();
 
     for (int i = 0; i < items.length; i++) {
       int fileId = Integer.valueOf(simClusteringItems[i].getHumanReadableId());
       String fileAbsPath = map.get(fileId);
       /* +1 to remove leading '/' */
-      String relPath = fileAbsPath.substring(fileIO.inPath().length() + 1);
+      String relPath = fileAbsPath.substring(fileIO.inputDirectoryAbsPath.length() + 1);
       items[i] = new ClusteringResultItem(relPath, simClusteringItems[i].getClusterId());
     }
     return items;

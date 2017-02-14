@@ -18,7 +18,7 @@ import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
-import com.orange.documentare.core.system.filesid.FilesIdBuilder;
+import com.orange.documentare.core.prepdata.PrepData;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -39,7 +39,7 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringParameters parameters, boolean debug) throws IOException {
-    createSafeInputDirectory(fileIO);
+    createSafeWorkingDirectory(fileIO);
     ClusteringOutput clusteringOutput = buildClustering(fileIO, parameters);
     ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(fileIO, clusteringOutput);
 
@@ -53,16 +53,18 @@ public class ClusteringServiceImpl implements ClusteringService {
     return clusteringRequestResult;
   }
 
-  private void createSafeInputDirectory(FileIO fileIO) {
-    FilesIdBuilder filesIdBuilder = new FilesIdBuilder();
-    filesIdBuilder.createFilesIdDirectory(
-      fileIO.inPath(),
-      fileIO.safeInputDir().getAbsolutePath(),
-      fileIO.outPath());
+  private void createSafeWorkingDirectory(FileIO fileIO) {
+    PrepData prepData = PrepData.builder()
+      .inputDirectory(fileIO.inputDirectory())
+      .safeWorkingDirConverter()
+      .safeWorkingDirectory(fileIO.safeWorkingDirectory())
+      .metadataOutputFile(fileIO.metadataFile())
+      .build();
+    prepData.prep();
   }
 
   private ClusteringOutput buildClustering(FileIO fileIO, ClusteringParameters parameters) throws IOException {
-    File safeInputDir = fileIO.safeInputDir();
+    File safeInputDir = fileIO.safeWorkingDirectory();
     DistancesComputationResult distancesComputationResult = computeDistances(safeInputDir);
 
     SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, parameters);

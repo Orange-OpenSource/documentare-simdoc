@@ -94,11 +94,11 @@ public class ClusteringTest {
     coreTest(req);
 
     List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
-    Assertions.assertThat(outputDirectoryList).contains("map.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("metadata.json");
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
-    Assertions.assertThat(outputDirectoryList).contains("safe-input-dir");
+    Assertions.assertThat(outputDirectoryList).contains("safe-working-dir");
   }
 
   private void coreTest(ClusteringRequest req) throws Exception {
