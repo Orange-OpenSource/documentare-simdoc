@@ -10,10 +10,14 @@ package com.orange.documentare.core.prepdata;
  */
 
 
+import com.orange.documentare.core.image.opencv.OpenCvImage;
 import com.orange.documentare.core.system.inputfilesconverter.FileConverter;
 import com.orange.documentare.core.system.inputfilesconverter.SymbolicLinkConverter;
+import org.apache.commons.io.FileUtils;
+import org.opencv.core.Mat;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 public class RawFilesConverter implements FileConverter {
@@ -34,6 +38,13 @@ public class RawFilesConverter implements FileConverter {
   }
 
   private void convertToRaw(File source, File destination) {
+    Mat mat = OpenCvImage.loadMat(source);
+    byte[] bytes = OpenCvImage.matToRaw(mat);
+    try {
+      FileUtils.writeByteArrayToFile(destination, bytes);
+    } catch (IOException e) {
+      throw new IllegalStateException(String.format("Failed to write raw file to '%s': %s", destination.getAbsolutePath(), e.getMessage()));
+    }
   }
 
   private boolean isImage(File source) {

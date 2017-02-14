@@ -26,7 +26,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PrepData {
   private final File inputDirectory;
-  private final File idDestinationDirectory;
+  private final File safeWorkingDirectory;
   private final File preppedBytesDataOutputFile;
   private final File metadataOutputFile;
   private final boolean prepBytesData;
@@ -41,7 +41,7 @@ public class PrepData {
     File inDir = inputDirectory;
 
     if (safeWorkingDirConverter) {
-      inDir = idDestinationDirectory;
+      inDir = safeWorkingDirectory;
       prepSafeWorkingDirectory();
     }
 
@@ -55,7 +55,7 @@ public class PrepData {
 
     InputFilesConverter inputFilesConverter = InputFilesConverter.builder()
       .sourceDirectory(inputDirectory)
-      .destinationDirectory(idDestinationDirectory)
+      .destinationDirectory(safeWorkingDirectory)
       .fileConverter(rawConverter ? new RawFilesConverter() : new SymbolicLinkConverter())
       .build();
     FilesMap filesMap = inputFilesConverter.createSafeWorkingDirectory();
@@ -85,7 +85,7 @@ public class PrepData {
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   public static class PrepDataBuilder {
     private File inputDirectory;
-    private File idDestinationDirectory;
+    private File safeWorkingDirectory;
     private File preppedBytesDataOutputFile;
     private File metadataOutputFile;
     private boolean safeWorkingDirConverter;
@@ -96,8 +96,8 @@ public class PrepData {
       return this;
     }
 
-    public PrepDataBuilder idDestinationDirectory(File idDestinationDirectory) {
-      this.idDestinationDirectory = idDestinationDirectory;
+    public PrepDataBuilder safeWorkingDirectory(File safeWorkingDirectory) {
+      this.safeWorkingDirectory = safeWorkingDirectory;
       return this;
     }
 
@@ -122,19 +122,24 @@ public class PrepData {
     }
 
     public PrepData build() {
+      boolean prepBytesData = preppedBytesDataOutputFile != null;
+
       Optional<String> error = Optional.empty();
-      if (!inputDirectory.isDirectory()) {
+      if (inputDirectory == null) {
+        error = Optional.of("input directory file is null");
+      } else if (!inputDirectory.isDirectory()) {
         error = Optional.of("input directory is not a directory...: " + inputDirectory.getAbsolutePath());
-      } else if (safeWorkingDirConverter && idDestinationDirectory == null) {
-        error = Optional.of("id destination directory is null");
-      } else if (metadataOutputFile == null) {
+      } else if (safeWorkingDirConverter && safeWorkingDirectory == null) {
+        error = Optional.of("safe working directory is null");
+      } else if (safeWorkingDirConverter && metadataOutputFile == null) {
         error = Optional.of("metadata output file is null");
+      } else if (!safeWorkingDirConverter && !rawConverter && !prepBytesData) {
+        error = Optional.of("no converter");
       }
       if (error.isPresent()) {
         throw new IllegalStateException(error.get());
       }
-      boolean prepBytesData = preppedBytesDataOutputFile != null;
-      return new PrepData(inputDirectory, idDestinationDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, rawConverter);
+      return new PrepData(inputDirectory, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, rawConverter);
     }
   }
 }
