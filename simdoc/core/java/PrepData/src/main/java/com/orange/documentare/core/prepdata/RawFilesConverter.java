@@ -9,10 +9,17 @@ package com.orange.documentare.core.prepdata;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
-public class PreppedData {
-  public final BytesData[] bytesData;
+import com.orange.documentare.core.system.inputfilesconverter.FileConverter;
+
+import java.io.File;
+
+public class RawFilesConverter implements FileConverter {
+
+  
+
+  @Override
+  public void convert(File source, File destination) {
+
+  }
 }

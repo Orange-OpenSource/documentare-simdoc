@@ -76,7 +76,7 @@ public class InputFilesConverterTest {
     List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
-    inputFilesConverter.createFilesIdDirectory();
+    inputFilesConverter.createSafeWorkingDirectory();
 
     // Then
     for (int index = 0; index < nonHiddenSourceFiles.size(); index++) {
@@ -97,7 +97,7 @@ public class InputFilesConverterTest {
       .build();
 
     // When
-    inputFilesConverter.createFilesIdDirectory();
+    inputFilesConverter.createSafeWorkingDirectory();
     Collection<File> destFiles = FileUtils.listFiles(DEST_DIR, null, true);
 
     // Then
@@ -119,7 +119,7 @@ public class InputFilesConverterTest {
     List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
-    FilesMap map = inputFilesConverter.createFilesIdDirectory();
+    FilesMap map = inputFilesConverter.createSafeWorkingDirectory();
 
     // Then
     map.keySet().forEach(index -> {

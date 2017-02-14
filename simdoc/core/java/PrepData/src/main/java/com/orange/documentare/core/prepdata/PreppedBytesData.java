@@ -9,11 +9,10 @@ package com.orange.documentare.core.prepdata;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class Metadata {
-  public final String inputDirectoryPath;
-  public final FilesMap filesMap;
+public class PreppedBytesData {
+  public final BytesData[] bytesData;
 }

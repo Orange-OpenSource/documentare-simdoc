@@ -33,13 +33,12 @@ public class InputFilesConverter {
     return new FilesIdBuilder();
   }
 
-  public FilesMap createFilesIdDirectory() {
+  public FilesMap createSafeWorkingDirectory() {
     createDestinationDirectory();
-    List<File> srcFiles = createFilesId();
-    return buildMap(srcFiles);
+    return convertFiles();
   }
 
-  private List<File> createFilesId() {
+  private FilesMap convertFiles() {
     List<File> files =
       FileUtils.listFiles(sourceDirectory, null, true).stream()
       .filter(file -> !file.isHidden())
@@ -50,7 +49,7 @@ public class InputFilesConverter {
       File destination = new File(destinationDirectory.getAbsolutePath() + "/" + id);
       converter.convert(source, destination);
     }
-    return files;
+    return buildMap(files);
   }
 
   private FilesMap buildMap(List<File> srcFiles) {

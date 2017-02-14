@@ -32,7 +32,7 @@ public class PrepDataTest {
   public void raise_exception_if_input_directory_does_not_exists() {
     PrepData.builder()
       .inputDirectory(new File("/pouet-pouet"))
-      .preppedDataOutputFile(PREPPED_DATA_JSON)
+      .preppedBytesDataOutputFile(PREPPED_DATA_JSON)
       .metadataOutputFile(METADATA_JSON)
       .build();
   }
@@ -42,7 +42,7 @@ public class PrepDataTest {
     File inputDirectory = new File(getClass().getResource("/prep-data-test-input-dir").getFile());
     PrepData.builder()
       .inputDirectory(inputDirectory)
-      .preppedDataOutputFile(null)
+      .preppedBytesDataOutputFile(null)
       .metadataOutputFile(METADATA_JSON)
       .build();
   }
@@ -52,7 +52,7 @@ public class PrepDataTest {
     File inputDirectory = new File(getClass().getResource("/prep-data-test-input-dir").getFile());
     PrepData.builder()
       .inputDirectory(inputDirectory)
-      .preppedDataOutputFile(PREPPED_DATA_JSON)
+      .preppedBytesDataOutputFile(PREPPED_DATA_JSON)
       .metadataOutputFile(null)
       .build();
   }
@@ -63,21 +63,21 @@ public class PrepDataTest {
     File inputDirectory = new File(getClass().getResource("/prep-data-test-input-dir").getFile());
     PrepData prepData = PrepData.builder()
       .inputDirectory(inputDirectory)
-      .preppedDataOutputFile(PREPPED_DATA_JSON)
+      .preppedBytesDataOutputFile(PREPPED_DATA_JSON)
       .metadataOutputFile(METADATA_JSON)
       .build();
 
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
     // When
     prepData.prep();
-    PreppedData preppedData =
-      (PreppedData) jsonGenericHandler.getObjectFromJsonFile(PreppedData.class, PREPPED_DATA_JSON);
+    PreppedBytesData preppedBytesData =
+      (PreppedBytesData) jsonGenericHandler.getObjectFromJsonFile(PreppedBytesData.class, PREPPED_DATA_JSON);
     Metadata metadata = (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, METADATA_JSON);
 
     // Then
-    Assertions.assertThat(preppedData.bytesData.length).isEqualTo(2);
-    Assertions.assertThat(preppedData.bytesData[0].id).isEqualTo("image.png");
-    Assertions.assertThat(preppedData.bytesData[1].id).isEqualTo("subdir/opossum");
+    Assertions.assertThat(preppedBytesData.bytesData.length).isEqualTo(2);
+    Assertions.assertThat(preppedBytesData.bytesData[0].id).isEqualTo("image.png");
+    Assertions.assertThat(preppedBytesData.bytesData[1].id).isEqualTo("subdir/opossum");
     Assertions.assertThat(metadata.inputDirectoryPath).isEqualTo(inputDirectory.getAbsolutePath());
   }
 }
