@@ -11,8 +11,12 @@ package com.orange.documentare.core.prepdata;
 
 
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.model.json.JsonGenericHandler;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.OptionalDataException;
+import java.util.Optional;
 
 public class PrepData {
   public final File inputDirectory;
@@ -28,7 +32,15 @@ public class PrepData {
   public void prep() {
     BytesData[] bytesData =
       BytesData.buildFromDirectoryWithoutBytes(inputDirectory, BytesData.relativePathIdProvider(inputDirectory));
-
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
+    PreppedData preppedData = new PreppedData(bytesData);
+    Metadata metadata = new Metadata(inputDirectory.getAbsolutePath());
+    try {
+      jsonGenericHandler.writeObjectToJsonFile(preppedData, preppedDataOutputFile);
+      jsonGenericHandler.writeObjectToJsonFile(metadata, metadataOutputFile);
+    } catch (IOException e) {
+      throw new IllegalStateException(String.format("Failed to write prepped data to output file '%s': %s", preppedDataOutputFile.getAbsolutePath(), e.getMessage()));
+    }
   }
 
   public static PrepDataBuilder builder() {
@@ -56,6 +68,18 @@ public class PrepData {
     }
 
     public PrepData build() {
+      Optional<String> error = Optional.empty();
+      if (!inputDirectory.isDirectory()) {
+        error = Optional.of("input directory is not a directory...: " + inputDirectory.getAbsolutePath());
+      } else if (preppedDataOutputFile == null) {
+        error = Optional.of("prepped data output file is null");
+      } else if (metadataOutputFile == null) {
+        error = Optional.of("metadata output file is null");
+      }
+      if (error.isPresent()) {
+        throw new IllegalStateException(error.get());
+      }
+
       return new PrepData(inputDirectory, preppedDataOutputFile, metadataOutputFile);
     }
   }

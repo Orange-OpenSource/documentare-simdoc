@@ -83,7 +83,7 @@ public final class BytesData implements DistanceItem {
     }
 
     FileIdProvider idProvider = fileIdProvider == null ? file -> file.getAbsolutePath() : fileIdProvider;
-    return Arrays.stream(directory.listFiles())
+    return FileUtils.listFiles(directory, null, true).stream()
       .filter(file -> !file.isHidden())
       .sorted() // For the sake of tests: it is mandatory to keep same order across different test platform...
       .map(file -> new BytesData(idProvider.idFor(file), file.getAbsolutePath(), null, withBytes))

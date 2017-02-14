@@ -26,8 +26,7 @@ public class BytesDataTest {
   private static final String JSON_FILE_PATH = "fileBytesData.json";
   private static final String BYTES_DATA_JSON = "byteData.json";
 
-  private static final String DIR_1 = "/bestioles";
-  private static final String DIR_2 = "/comp_dir";
+  private static final String INPUT_DIR = "/bytes-data-input-dir";
 
   private JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
 
@@ -85,52 +84,67 @@ public class BytesDataTest {
   @Test
   public void build_data_array_from_directory_content() {
     // Given
-    File directory = new File(getClass().getResource(DIR_1).getFile());
+    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
 
     // When
     BytesData[] bytesDataArray = BytesData.loadFromDirectory(directory);
 
     // Then
-    Assertions.assertThat(bytesDataArray).hasSize(34);
+    Assertions.assertThat(bytesDataArray).hasSize(2);
   }
 
   @Test
   public void build_data_array_from_directory_content_with_id_provider() {
     // Given
-    File directory = new File(getClass().getResource(DIR_1).getFile());
-    BytesData.FileIdProvider fileIdProvider = file -> file.getName();
+    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
+    BytesData.FileIdProvider fileIdProvider = file -> file.getName() + "@";
 
     // When
     BytesData[] bytesDataArray = BytesData.loadFromDirectory(directory, fileIdProvider);
 
     // Then
-    Assertions.assertThat(bytesDataArray).hasSize(34);
-    Assertions.assertThat(bytesDataArray).contains(new BytesData("human", (new File(getClass().getResource(DIR_1 + "/human").getFile())).getAbsolutePath()));
+    Assertions.assertThat(bytesDataArray).hasSize(2);
+    Assertions.assertThat(bytesDataArray).contains(new BytesData("human@", (new File(getClass().getResource(INPUT_DIR + "/human").getFile())).getAbsolutePath()));
+  }
+
+  @Test
+  public void build_data_array_from_directory_content_with_file_id_provider() {
+    // Given
+    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
+    BytesData.FileIdProvider fileIdProvider = BytesData.relativePathIdProvider(directory);
+
+    // When
+    BytesData[] bytesDataArray = BytesData.loadFromDirectory(directory, fileIdProvider);
+
+    // Then
+    Assertions.assertThat(bytesDataArray).hasSize(2);
+    Assertions.assertThat(bytesDataArray).contains(new BytesData("human", (new File(getClass().getResource(INPUT_DIR + "/human").getFile())).getAbsolutePath()));
+    Assertions.assertThat(bytesDataArray).contains(new BytesData("subdir/opossum", (new File(getClass().getResource(INPUT_DIR + "/subdir/opossum").getFile())).getAbsolutePath()));
   }
 
   @Test
   public void build_data_array_from_directory_content_without_hidden_file() {
     // Given
-    File directory = new File(getClass().getResource(DIR_2).getFile());
+    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
     BytesData.FileIdProvider fileIdProvider = file -> file.getName();
 
     // When
     BytesData[] bytesDataArray = BytesData.loadFromDirectory(directory, fileIdProvider);
 
     // Then
-    Assertions.assertThat(Arrays.asList(bytesDataArray).contains(new BytesData(".hidden-file", (new File(getClass().getResource(DIR_2 + "/.hidden-file").getFile())).getAbsolutePath()))).isFalse();
+    Assertions.assertThat(Arrays.asList(bytesDataArray).contains(new BytesData(".hidden-file", (new File(getClass().getResource(INPUT_DIR + "/.hidden-file").getFile())).getAbsolutePath()))).isFalse();
   }
 
   @Test
   public void build_data_array_from_directory_content_without_bytes() {
     // Given
-    File directory = new File(getClass().getResource(DIR_1).getFile());
+    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
 
     // When
     BytesData[] bytesDataArray = BytesData.buildFromDirectoryWithoutBytes(directory);
 
     // Then
-    Assertions.assertThat(bytesDataArray).hasSize(34);
+    Assertions.assertThat(bytesDataArray).hasSize(2);
     Assertions.assertThat(bytesDataArray[0].bytes).isNull();
   }
 }
