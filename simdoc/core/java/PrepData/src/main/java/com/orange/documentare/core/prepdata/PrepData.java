@@ -31,7 +31,8 @@ public class PrepData {
   private final File metadataOutputFile;
   private final boolean prepBytesData;
   private final boolean safeWorkingDirConverter;
-  private final boolean rawConverter;
+  private final boolean withRawConverter;
+  private final boolean withBytes;
 
   public static PrepDataBuilder builder() {
     return new PrepDataBuilder();
@@ -56,10 +57,10 @@ public class PrepData {
     InputFilesConverter inputFilesConverter = InputFilesConverter.builder()
       .sourceDirectory(inputDirectory)
       .destinationDirectory(safeWorkingDirectory)
-      .fileConverter(rawConverter ? new RawFilesConverter() : new SymbolicLinkConverter())
+      .fileConverter(withRawConverter ? new RawFilesConverter() : new SymbolicLinkConverter())
       .build();
     FilesMap filesMap = inputFilesConverter.createSafeWorkingDirectory();
-    Metadata metadata = new Metadata(inputDirectory.getAbsolutePath(), filesMap);
+    Metadata metadata = new Metadata(inputDirectory.getAbsolutePath(), filesMap, withRawConverter);
 
     writeJson(metadata, metadataOutputFile, jsonGenericHandler);
   }
@@ -67,8 +68,10 @@ public class PrepData {
   private void prepBytesData(File inDir) {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
 
-    BytesData[] bytesData =
+    BytesData[] bytesData = withBytes ?
+      BytesData.loadFromDirectory(inDir, BytesData.relativePathIdProvider(inDir)) :
       BytesData.buildFromDirectoryWithoutBytes(inDir, BytesData.relativePathIdProvider(inDir));
+
     PreppedBytesData preppedBytesData = new PreppedBytesData(bytesData);
 
     writeJson(preppedBytesData, preppedBytesDataOutputFile, jsonGenericHandler);
@@ -89,7 +92,8 @@ public class PrepData {
     private File preppedBytesDataOutputFile;
     private File metadataOutputFile;
     private boolean safeWorkingDirConverter;
-    private boolean rawConverter;
+    private boolean withRawConverter;
+    private boolean withBytes;
 
     public PrepDataBuilder inputDirectory(File inputDirectory) {
       this.inputDirectory = inputDirectory;
@@ -116,8 +120,13 @@ public class PrepData {
       return this;
     }
 
-    public PrepDataBuilder rawConverter() {
-      rawConverter = true;
+    public PrepDataBuilder withRawConverter(boolean enable) {
+      withRawConverter = enable;
+      return this;
+    }
+
+    public PrepDataBuilder withBytes(boolean enable) {
+      withBytes = enable;
       return this;
     }
 
@@ -133,13 +142,13 @@ public class PrepData {
         error = Optional.of("safe working directory is null");
       } else if (safeWorkingDirConverter && metadataOutputFile == null) {
         error = Optional.of("metadata output file is null");
-      } else if (!safeWorkingDirConverter && !rawConverter && !prepBytesData) {
+      } else if (!safeWorkingDirConverter && !withRawConverter && !prepBytesData) {
         error = Optional.of("no converter");
       }
       if (error.isPresent()) {
         throw new IllegalStateException(error.get());
       }
-      return new PrepData(inputDirectory, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, rawConverter);
+      return new PrepData(inputDirectory, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, withRawConverter, withBytes);
     }
   }
 }

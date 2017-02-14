@@ -16,4 +16,5 @@ import lombok.RequiredArgsConstructor;
 public class Metadata {
   public final String inputDirectoryPath;
   public final FilesMap filesMap;
+  public final boolean rawConversion;
 }

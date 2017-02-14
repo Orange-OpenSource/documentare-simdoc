@@ -10,6 +10,7 @@ package com.orange.documentare.app.prepdata;
  */
 
 import com.orange.documentare.app.prepdata.cmdline.CommandLineOptions;
+import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.prepdata.PrepData;
 import lombok.extern.slf4j.Slf4j;
 
@@ -40,12 +41,18 @@ public class PrepDataApp {
   }
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
+    if (options.isRawConverterEnabled()) {
+      OpencvLoader.load();
+    }
+
     PrepData prepData = PrepData.builder()
             .inputDirectory(options.getInputDir())
             .safeWorkingDirConverter()
             .safeWorkingDirectory(OUTPUT_DIR)
             .preppedBytesDataOutputFile(BYTESDATA_JSON)
             .metadataOutputFile(METADATA_JSON)
+            .withRawConverter(options.isRawConverterEnabled())
+            .withBytes(options.isWithBytes())
             .build();
     prepData.prep();
   }

@@ -104,6 +104,36 @@ public class PrepDataTest {
     Assertions.assertThat(preppedBytesData.bytesData.length).isEqualTo(2);
     Assertions.assertThat(preppedBytesData.bytesData[0].id).isEqualTo("image.png");
     Assertions.assertThat(preppedBytesData.bytesData[1].id).isEqualTo("subdir/opossum");
+    Assertions.assertThat(preppedBytesData.bytesData[0].filepath).isEqualTo(new File(inputDirectory.getAbsolutePath() + "/image.png").getAbsolutePath());
+    Assertions.assertThat(preppedBytesData.bytesData[1].filepath).isEqualTo(new File(inputDirectory.getAbsolutePath() + "/subdir/opossum").getAbsolutePath());
+    Assertions.assertThat(preppedBytesData.bytesData[0].bytes).isNull();
+    Assertions.assertThat(preppedBytesData.bytesData[1].bytes).isNull();
+  }
+
+  @Test
+  public void prep_bytes_data_with_bytes() throws IOException {
+    // Given
+    File inputDirectory = new File(getClass().getResource("/prep-data-test-input-dir").getFile());
+    PrepData prepData = PrepData.builder()
+      .inputDirectory(inputDirectory)
+      .preppedBytesDataOutputFile(PREPPED_DATA_JSON)
+      .withBytes(true)
+      .build();
+
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+    // When
+    prepData.prep();
+    PreppedBytesData preppedBytesData =
+      (PreppedBytesData) jsonGenericHandler.getObjectFromJsonFile(PreppedBytesData.class, PREPPED_DATA_JSON);
+
+    // Then
+    Assertions.assertThat(preppedBytesData.bytesData.length).isEqualTo(2);
+    Assertions.assertThat(preppedBytesData.bytesData[0].id).isEqualTo("image.png");
+    Assertions.assertThat(preppedBytesData.bytesData[1].id).isEqualTo("subdir/opossum");
+    Assertions.assertThat(preppedBytesData.bytesData[0].filepath).isEqualTo(new File(inputDirectory.getAbsolutePath() + "/image.png").getAbsolutePath());
+    Assertions.assertThat(preppedBytesData.bytesData[1].filepath).isEqualTo(new File(inputDirectory.getAbsolutePath() + "/subdir/opossum").getAbsolutePath());
+    Assertions.assertThat(preppedBytesData.bytesData[0].bytes).isNotNull();
+    Assertions.assertThat(preppedBytesData.bytesData[1].bytes).isNotNull();
   }
 
   @Test
@@ -134,6 +164,7 @@ public class PrepDataTest {
     Assertions.assertThat(Files.isSymbolicLink(safeFiles[0].toPath())).isTrue();
     Assertions.assertThat(Files.isSymbolicLink(safeFiles[1].toPath())).isTrue();
     Assertions.assertThat(metadata.inputDirectoryPath).isEqualTo(inputDirectory.getAbsolutePath());
+    Assertions.assertThat(metadata.rawConversion).isFalse();
     Assertions.assertThat(filesMap.size()).isEqualTo(2);
     Assertions.assertThat(new File(filesMap.get(0)).exists()).isTrue();
     Assertions.assertThat(new File(filesMap.get(1)).exists()).isTrue();
@@ -147,7 +178,7 @@ public class PrepDataTest {
       .inputDirectory(inputDirectory)
       .safeWorkingDirConverter()
       .safeWorkingDirectory(SAFE_WORKING_DIRECTORY)
-      .rawConverter()
+      .withRawConverter(true)
       .metadataOutputFile(METADATA_JSON)
       .build();
 
@@ -168,6 +199,7 @@ public class PrepDataTest {
     Assertions.assertThat(safeFiles.length).isEqualTo(2);
     Assertions.assertThat(Files.isSymbolicLink(safeFiles[0].toPath())).isFalse();
     Assertions.assertThat(Files.isSymbolicLink(safeFiles[1].toPath())).isTrue();
+    Assertions.assertThat(metadata.rawConversion).isTrue();
     Assertions.assertThat(filesMap.size()).isEqualTo(2);
     Assertions.assertThat(crc32.getValue()).isEqualTo(2829745108L);
   }
