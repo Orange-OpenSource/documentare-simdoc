@@ -12,22 +12,19 @@ package com.orange.documentare.core.prepdata;
 
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.OptionalDataException;
 import java.util.Optional;
 
+@RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PrepData {
   public final File inputDirectory;
   public final File preppedDataOutputFile;
   public final File metadataOutputFile;
-
-  private PrepData(File inputDirectory, File preppedDataOutputFile, File metadataOutputFile) {
-    this.inputDirectory = inputDirectory;
-    this.preppedDataOutputFile = preppedDataOutputFile;
-    this.metadataOutputFile = metadataOutputFile;
-  }
 
   public void prep() {
     BytesData[] bytesData =
@@ -47,6 +44,7 @@ public class PrepData {
     return new PrepDataBuilder();
   }
 
+  @NoArgsConstructor(access = AccessLevel.PRIVATE)
   public static class PrepDataBuilder {
     private File inputDirectory;
     private File preppedDataOutputFile;

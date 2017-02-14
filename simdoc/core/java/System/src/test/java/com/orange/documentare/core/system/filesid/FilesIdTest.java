@@ -9,13 +9,12 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class FilesIdBuilderTest {
+public class FilesIdTest {
 
   private final static String[] TEST_FILES = {
     ".DS_STORE",
@@ -26,31 +25,35 @@ public class FilesIdBuilderTest {
     ".hidden-file"
   };
 
-  private final static String SRC_DIR = "test_tmp/files_id_src";
-  private final static String DEST_ROOT_DIR = "test_tmp/fake_parent_to_test_parent_creation/files_id_dest";
-  private final static String DEST_DIR = DEST_ROOT_DIR + "/safe-input-dir";
+  private final static File SRC_DIR = new File("test_tmp/files_id_src");
+  private final static File DEST_ROOT_DIR = new File("test_tmp/fake_parent_to_test_parent_creation/files_id_dest");
+  private final static File DEST_DIR = new File(DEST_ROOT_DIR.getAbsolutePath() + "/safe-input-dir");
 
   @Before
   @After
   public void cleanup() throws IOException {
-    FileUtils.deleteDirectory(new File(SRC_DIR));
-    FileUtils.deleteDirectory(new File(DEST_ROOT_DIR));
+    FileUtils.deleteDirectory(SRC_DIR);
+    FileUtils.deleteDirectory(DEST_ROOT_DIR);
   }
 
   @Test
   public void create_files_id_directory() throws IOException {
     // Given
-    FilesIdBuilder builder = new FilesIdBuilder();
     buildSourceDir(SRC_DIR, TEST_FILES);
+    FilesId filesId = FilesId.builder()
+      .sourceDirectory(SRC_DIR)
+      .destinationDirectory(DEST_DIR)
+      .build();
+
     List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
-    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
+    filesId.createFilesIdDirectory();
 
     // Then
     for (int index = 0; index < nonHiddenSourceFiles.size(); index++) {
       File srcFile = nonHiddenSourceFiles.get(index);
-      File destFile = new File(DEST_DIR + "/" + index);
+      File destFile = new File(DEST_DIR.getAbsolutePath() + "/" + index);
       Assertions.assertThat(FileUtils.readFileToString(destFile)).isEqualTo(FileUtils.readFileToString(srcFile));
     }
   }
@@ -58,12 +61,15 @@ public class FilesIdBuilderTest {
   @Test
   public void skip_hidden_files_in_dest_directory() throws IOException {
     // Given
-    FilesIdBuilder builder = new FilesIdBuilder();
     buildSourceDir(SRC_DIR, TEST_FILES);
+    FilesId filesId = FilesId.builder()
+      .sourceDirectory(SRC_DIR)
+      .destinationDirectory(DEST_DIR)
+      .build();
 
     // When
-    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
-    Collection<File> destFiles = FileUtils.listFiles(new File(DEST_DIR), null, true);
+    filesId.createFilesIdDirectory();
+    Collection<File> destFiles = FileUtils.listFiles(DEST_DIR, null, true);
 
     // Then
     for (File file : destFiles) {
@@ -75,13 +81,15 @@ public class FilesIdBuilderTest {
   @Test
   public void create_files_id_mapping() throws IOException {
     // Given
-    FilesIdBuilder builder = new FilesIdBuilder();
     buildSourceDir(SRC_DIR, TEST_FILES);
+    FilesId filesId = FilesId.builder()
+      .sourceDirectory(SRC_DIR)
+      .destinationDirectory(DEST_DIR)
+      .build();
     List<File> nonHiddenSourceFiles = nonHiddenSourceFiles(TEST_FILES);
 
     // When
-    builder.createFilesIdDirectory(SRC_DIR, DEST_DIR, DEST_ROOT_DIR);
-    FilesIdMap map = builder.readMapIn(DEST_ROOT_DIR);
+    FilesIdMap map = filesId.createFilesIdDirectory();
 
     // Then
     map.keySet().forEach(index -> {
@@ -90,15 +98,15 @@ public class FilesIdBuilderTest {
     });
   }
 
-  private void buildSourceDir(String srcDir, String[] filenames) throws IOException {
+  private void buildSourceDir(File srcDir, String[] filenames) throws IOException {
     for (String filename : filenames) {
-      FileUtils.writeStringToFile(new File(srcDir + "/" + filename), filename);
+      FileUtils.writeStringToFile(new File(srcDir.getAbsolutePath() + "/" + filename), filename);
     }
   }
 
   private List<File> nonHiddenSourceFiles(String[] sourceFiles) {
     return Arrays.stream(sourceFiles)
-      .map(filename -> new File(SRC_DIR + File.separator + filename))
+      .map(filename -> new File(SRC_DIR.getAbsolutePath() + File.separator + filename))
       .filter(file -> !file.isHidden())
       .collect(Collectors.toList());
   }
