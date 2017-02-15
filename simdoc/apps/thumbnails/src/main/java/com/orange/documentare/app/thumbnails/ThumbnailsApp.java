@@ -10,11 +10,20 @@ package com.orange.documentare.app.thumbnails;
  */
 
 import com.orange.documentare.app.thumbnails.cmdline.CommandLineOptions;
+import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.image.thumbnail.Thumbnail;
+import org.apache.commons.io.FileUtils;
 
+import java.io.File;
 import java.io.IOException;
 
 public class ThumbnailsApp {
+  static {
+    OpencvLoader.load();
+  }
+
+  private static String OUTPUT_DIR = "thumbnails";
+
   public static void main(String[] args) {
     System.out.println("\n[Thumbnails - Start]");
     CommandLineOptions options;
@@ -33,7 +42,13 @@ public class ThumbnailsApp {
   }
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
-    Thumbnail thumbnail = new Thumbnail(options.getDirectory());
-    thumbnail.createDirectoryFilesThumbnails();
+    File outputDir = new File(OUTPUT_DIR);
+    FileUtils.deleteQuietly(outputDir);
+    outputDir.mkdir();
+    for (File file : options.getDirectory().listFiles()) {
+      if (Thumbnail.canCreateThumbnail(file)) {
+        Thumbnail.createThumbnail(file, new File(OUTPUT_DIR + "/" + file.getName() + ".png"));
+      }
+    }
   }
 }
