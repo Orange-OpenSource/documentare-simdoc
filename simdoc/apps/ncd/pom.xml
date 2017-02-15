@@ -12,11 +12,7 @@
     <dependencies>
         <dependency>
             <groupId>com.orange.documentare.core</groupId>
-            <artifactId>Model</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.orange.documentare.core</groupId>
-            <artifactId>Comp</artifactId>
+            <artifactId>PrepData</artifactId>
         </dependency>
         <dependency>
             <groupId>commons-cli</groupId>

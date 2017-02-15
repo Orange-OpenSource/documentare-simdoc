@@ -18,6 +18,9 @@ import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
+import com.orange.documentare.core.prepdata.Metadata;
+import com.orange.documentare.core.prepdata.PrepData;
+import com.orange.documentare.core.prepdata.PreppedBytesData;
 import com.orange.documentare.core.system.measure.MemoryWatcher;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.cli.ParseException;
@@ -41,6 +44,8 @@ public class NcdApp {
   private static final ProgressListener progressListener =
     (step, progress) -> System.out.print("\r" + progress.displayString(step.toString()));
 
+  private static JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
+
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
     System.out.println("\n[NCD - Start]");
@@ -48,7 +53,7 @@ public class NcdApp {
     try {
       options = new CommandLineOptions(args);
     } catch(Exception e) {
-      CommandLineOptions.showHelp();
+      CommandLineOptions.showHelp(e);
       return;
     }
     try {
@@ -59,13 +64,13 @@ public class NcdApp {
     }
   }
 
-  private static void doTheJob(CommandLineOptions commandLineOptions) throws IOException {
+  private static void doTheJob(CommandLineOptions o) throws IOException {
     MemoryWatcher.watch();
     ResultToExport resultToExport;
-    if (commandLineOptions.getSimdoc() != null) {
-      resultToExport = doTheJobForSimDocInput(commandLineOptions.getSimdoc());
+    if (o.getSimdoc() != null) {
+      resultToExport = doTheJobForSimDocInput(o.getSimdoc());
     } else {
-      resultToExport = doTheJobForRegularFiles(commandLineOptions.getD1(), commandLineOptions.getD2());
+      resultToExport = doTheJobForRegularFiles(o.getD1(), o.getD2(), o.getJ1(), o.getJ2());
     }
 
     System.out.println("\n[Export model]");
@@ -75,16 +80,28 @@ public class NcdApp {
     MemoryWatcher.stopWatching();
   }
 
-  private static ResultToExport doTheJobForRegularFiles(File directory1, File directory2) throws IOException {
-    BytesData[] bytesData1 = BytesData.loadFromDirectory(directory1, BytesData.relativePathIdProvider(directory1));
-    BytesData[] bytesData2 = directory1.equals(directory2) ?
-      bytesData1 : BytesData.loadFromDirectory(directory2, BytesData.relativePathIdProvider(directory2));
+  private static ResultToExport doTheJobForRegularFiles(File directory1, File directory2, File json1, File json2) throws IOException {
+    BytesData[] bytesData1;
+    BytesData[] bytesData2;
+    if (json1 == null) {
+      bytesData1 = BytesData.loadFromDirectory(directory1, BytesData.relativePathIdProvider(directory1));
+      bytesData2 = directory1.equals(directory2) ?
+        bytesData1 : BytesData.loadFromDirectory(directory2, BytesData.relativePathIdProvider(directory2));
 
+    } else {
+      // NB: withBytes is used since provided json may not contained bytes arrays, but only filepath info
+      bytesData1 = BytesData.withBytes(loadPreppedBytesData(json1));
+      bytesData2 = json1.equals(json2) ? bytesData1 : BytesData.withBytes(loadPreppedBytesData(json2));
+    }
     BytesDistances bytesDistances = new BytesDistances(progressListener);
     DistancesArray distancesArray = bytesDistances.computeDistancesBetweenCollections(bytesData1, bytesData2);
 
     ExportModel exportModel = new ExportModel(bytesData1, bytesData2, distancesArray);
     return new ResultToExport(exportModel, FILES_DISTANCES_EXPORT_FILE);
+  }
+
+  private static BytesData[] loadPreppedBytesData(File json) throws IOException {
+    return ((PreppedBytesData)jsonGenericHandler.getObjectFromJsonFile(PreppedBytesData.class, json)).bytesData;
   }
 
   private static ResultToExport doTheJobForSimDocInput(File simDocJsonGz) throws IOException {
@@ -116,7 +133,6 @@ public class NcdApp {
   }
 
   private static void exportToJson(ResultToExport resultToExport) throws IOException {
-    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
     jsonGenericHandler.writeObjectToJsonGzipFile(resultToExport.o, resultToExport.file);
   }
 }
