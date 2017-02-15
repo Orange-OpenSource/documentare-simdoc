@@ -9,95 +9,57 @@ package com.orange.documentare.core.image.thumbnail;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.system.nativeinterface.NativeInterface;
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FileUtils;
+import com.orange.documentare.core.image.opencv.OpenCvImage;
+import nu.pattern.OpenCV;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.stream.Collectors;
 
-@Slf4j
 public class Thumbnail {
-  private static final File THUMBNAILS_DIR = new File("thumbnails");
-  private static final String CMD = "convert";
-  private static final String[] ARGS = {
-    "-thumbnail", "x300", "-background white", "-alpha remove", "-polaroid -0"
-  };
   private static final String[] SUPPORT_THUMBNAILS = {
-          ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".pdf"
+    ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".pdf"
   };
 
-  private final File directory;
+  private static int THUMBNAIL_SIDE = 200;
 
-  public Thumbnail(File directory) throws IOException {
-    this.directory = directory;
-    FileUtils.deleteDirectory(THUMBNAILS_DIR);
-    THUMBNAILS_DIR.mkdir();
-  }
-
-  public void createDirectoryFilesThumbnails() throws IOException {
-    System.out.println();
-
-    String[] extensions = null;
-    boolean recursively = true;
-    Collection<File> files = FileUtils.listFiles(directory, extensions, recursively);
-
-    List<File> readyForThumbnails = files.stream()
-            .filter(file -> canCreateThumbnail(file))
-            .collect(Collectors.toList());
-
-    ThumbnailProgress thumbnailProgress = new ThumbnailProgress(readyForThumbnails.size());
-    readyForThumbnails.parallelStream()
-            .forEach(file -> createThumbnail(file, thumbnailProgress));
-
-    clearLog();
-  }
-
-  private void clearLog() throws IOException {
-    String[] extensions = { "log" };
-    boolean recursively = false;
-    Collection<File> files = FileUtils.listFiles(THUMBNAILS_DIR, extensions, recursively);
-    for (File file : files) {
-      FileUtils.forceDelete(file);
-    }
-  }
-
-  private void createThumbnail(File file, ThumbnailProgress thumbnailProgress) {
-    List<String> options = new ArrayList<>(Arrays.asList(ARGS));
-    String thumbnailPath = THUMBNAILS_DIR.getAbsolutePath() + "/" + file.getName() + ".png";
-    options.add(0, file.getAbsolutePath() + "\\[0\\]");
-    options.add(thumbnailPath);
-    NativeInterface.launch(
-            CMD, options.toArray(new String[options.size()]), thumbnailPath + ".log");
-
-    showProgress(thumbnailProgress);
-  }
-
-  private void showProgress(ThumbnailProgress thumbnailProgress) {
-    thumbnailProgress.newThumbnailCreated();
-    System.out.print("\r" + thumbnailProgress.progress().displayString("Thumbnails"));
-  }
-
-  boolean canCreateThumbnail(File file) {
+  public static boolean canCreateThumbnail(File file) throws IOException {
     File target;
-    try {
-      target = Files.isSymbolicLink(file.toPath()) ?
-        Files.readSymbolicLink(file.toPath()).toFile() :
-        file;
-    } catch (IOException e) {
-      log.error("[Thumbnails] Failed to read file", e);
-      return false;
-    }
+    target = Files.isSymbolicLink(file.toPath()) ?
+      Files.readSymbolicLink(file.toPath()).toFile() :
+      file;
 
     String filename = target.getName().toLowerCase();
     return Arrays.asList(SUPPORT_THUMBNAILS).stream()
-            .filter(extension -> filename.endsWith(extension))
-            .count() > 0;
+      .filter(extension -> filename.endsWith(extension))
+      .count() > 0;
+  }
+
+  public static void createThumbnail(File image, File thumbnail) throws IOException {
+    if (image == null || thumbnail == null) {
+      throw new NullPointerException(String.format("Can not create thumbnail, provided image '%s' or thumbnail '%s' file is null", image, thumbnail));
+    }
+    Mat mat = OpenCvImage.loadMat(image);
+    if (mat.size().width == 0) {
+      throw new IOException(String.format("Can not create thumbnail, provided image '%s' is invalid", image.getAbsolutePath()));
+    }
+    Mat thumbnailMat = new Mat();
+    Imgproc.resize(mat, thumbnailMat, computeThumbnailSize(mat.size()));
+
+    Highgui.imwrite(thumbnail.getAbsolutePath(), thumbnailMat);
+  }
+
+  private static Size computeThumbnailSize(Size imageSize) {
+    if (imageSize.width < THUMBNAIL_SIDE && imageSize.height < THUMBNAIL_SIDE) {
+      return imageSize;
+    } else {
+      double ratio = Math.min(THUMBNAIL_SIDE / imageSize.width, THUMBNAIL_SIDE / imageSize.height);
+      return new Size(imageSize.width * ratio, imageSize.height * ratio);
+    }
   }
 }
