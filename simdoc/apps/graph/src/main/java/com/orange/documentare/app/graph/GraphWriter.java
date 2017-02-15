@@ -76,7 +76,7 @@ public class GraphWriter {
   private static VertexNameProvider labelProvider() throws IOException {
     if (options.hasFilesIdMap()) {
       JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
-      FilesMap filesMap = (FilesMap)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getFilesIdMap());
+      FilesMap filesMap = ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getFilesIdMap())).filesMap;
       return new LabelProvider(filesMap);
     } else {
       return null;
