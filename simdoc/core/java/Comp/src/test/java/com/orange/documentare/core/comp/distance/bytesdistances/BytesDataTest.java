@@ -147,4 +147,19 @@ public class BytesDataTest {
     Assertions.assertThat(bytesDataArray).hasSize(2);
     Assertions.assertThat(bytesDataArray[0].bytes).isNull();
   }
+
+  @Test
+  public void build_data_array_from_directory_content_without_bytes_then_add_bytes_in_new_array() {
+    // Given
+    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
+    BytesData[] bytesDataArray = BytesData.buildFromDirectoryWithoutBytes(directory);
+
+    // When
+    BytesData[] bytesDataArrayWithBytes = BytesData.withBytes(bytesDataArray);
+
+    // Then
+    Assertions.assertThat(bytesDataArrayWithBytes).hasSize(2);
+    Assertions.assertThat(bytesDataArrayWithBytes[0].bytes).isNotNull();
+    Assertions.assertThat(bytesDataArrayWithBytes[1].bytes).isNotNull();
+  }
 }

@@ -29,8 +29,8 @@ public class InputFilesConverter {
   private final File destinationDirectory;
   private final FileConverter converter;
 
-  public static FilesIdBuilder builder() {
-    return new FilesIdBuilder();
+  public static InputFilesConverterBuilder builder() {
+    return new InputFilesConverterBuilder();
   }
 
   public FilesMap createSafeWorkingDirectory() {
@@ -72,22 +72,22 @@ public class InputFilesConverter {
   }
 
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
-  public static class FilesIdBuilder {
+  public static class InputFilesConverterBuilder {
     private File sourceDirectory;
     private File destinationDirectory;
     private FileConverter fileConverter;
 
-    public FilesIdBuilder sourceDirectory(File sourceDirectory) {
+    public InputFilesConverterBuilder sourceDirectory(File sourceDirectory) {
       this.sourceDirectory = sourceDirectory;
       return this;
     }
 
-    public FilesIdBuilder destinationDirectory(File destinationDirectory) {
+    public InputFilesConverterBuilder destinationDirectory(File destinationDirectory) {
       this.destinationDirectory = destinationDirectory;
       return this;
     }
 
-    public FilesIdBuilder fileConverter(FileConverter fileConverter) {
+    public InputFilesConverterBuilder fileConverter(FileConverter fileConverter) {
       this.fileConverter = fileConverter;
       return this;
     }

@@ -18,6 +18,7 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.stream.IntStream;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
@@ -26,8 +27,8 @@ public final class BytesData implements DistanceItem {
   public interface FileIdProvider {
     String idFor(File file);
   }
-  public final String id;
 
+  public final String id;
   public final String filepath;
   public final byte[] bytes;
 
@@ -55,10 +56,17 @@ public final class BytesData implements DistanceItem {
     this(null, null, null, false);
   }
 
-  private BytesData(String id, String filepath, byte[] bytes, boolean loadBytes) {
-    this.id = id;
-    this.filepath = filepath;
-    this.bytes = loadBytes ? loadBytesFromFile(filepath) : bytes;
+  /**
+   * In case some elements of the provided array just have a filepath entry (bytes == null),
+   * this function will return a new array in which bytes arrays are loaded thanks to filepath entries.
+   * It can be useful when we built BytesData only with the filepath and no bytes
+   * @param bytesData
+   * @return new BytesData array in which bytes are present
+   */
+  public static BytesData[] withBytes(BytesData[] bytesData) {
+    return Arrays.stream(bytesData)
+      .map(b -> new BytesData(b.id, b.filepath, b.bytes, true))
+      .toArray(size -> new BytesData[size]);
   }
 
   public static BytesData[] loadFromDirectory(File directory, FileIdProvider fileIdProvider) {
@@ -99,6 +107,12 @@ public final class BytesData implements DistanceItem {
       }
       return relativeFileName;
     };
+  }
+
+  private BytesData(String id, String filepath, byte[] bytes, boolean loadBytes) {
+    this.id = id;
+    this.filepath = filepath;
+    this.bytes = loadBytes ? loadBytesFromFile(filepath) : bytes;
   }
 
   private byte[] loadBytesFromFile(String filepath) {
