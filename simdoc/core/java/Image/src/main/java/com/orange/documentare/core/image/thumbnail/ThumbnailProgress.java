@@ -1,4 +1,4 @@
-package com.orange.documentare.core.system.thumbnail;
+package com.orange.documentare.core.image.thumbnail;
 /*
  * Copyright (c) 2016 Orange
  *

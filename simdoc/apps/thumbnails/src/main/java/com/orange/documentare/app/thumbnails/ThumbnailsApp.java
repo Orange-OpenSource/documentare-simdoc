@@ -10,7 +10,7 @@ package com.orange.documentare.app.thumbnails;
  */
 
 import com.orange.documentare.app.thumbnails.cmdline.CommandLineOptions;
-import com.orange.documentare.core.system.thumbnail.Thumbnail;
+import com.orange.documentare.core.image.thumbnail.Thumbnail;
 
 import java.io.IOException;
 

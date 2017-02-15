@@ -12,7 +12,7 @@
   <dependencies>
     <dependency>
       <groupId>com.orange.documentare.core</groupId>
-      <artifactId>System</artifactId>
+      <artifactId>Image</artifactId>
     </dependency>
     <dependency>
       <groupId>commons-cli</groupId>
