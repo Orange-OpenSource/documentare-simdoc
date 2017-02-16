@@ -1,0 +1,106 @@
+{
+  "clustering" : [ {
+    "filename" : "aardvark",
+    "clusterId" : 1
+  }, {
+    "filename" : "armadillo",
+    "clusterId" : 2
+  }, {
+    "filename" : "baboon",
+    "clusterId" : 3
+  }, {
+    "filename" : "blueWhale",
+    "clusterId" : 2
+  }, {
+    "filename" : "cat",
+    "clusterId" : 1
+  }, {
+    "filename" : "chimpanzee",
+    "clusterId" : 3
+  }, {
+    "filename" : "cow",
+    "clusterId" : 2
+  }, {
+    "filename" : "dog",
+    "clusterId" : 1
+  }, {
+    "filename" : "donkey",
+    "clusterId" : 4
+  }, {
+    "filename" : "elephant",
+    "clusterId" : 4
+  }, {
+    "filename" : "fatDormouse",
+    "clusterId" : 5
+  }, {
+    "filename" : "finWhale",
+    "clusterId" : 2
+  }, {
+    "filename" : "fruitBat",
+    "clusterId" : 2
+  }, {
+    "filename" : "gibbon",
+    "clusterId" : 3
+  }, {
+    "filename" : "gorilla",
+    "clusterId" : 3
+  }, {
+    "filename" : "graySeal",
+    "clusterId" : 1
+  }, {
+    "filename" : "guineaPig",
+    "clusterId" : 1
+  }, {
+    "filename" : "harborSeal",
+    "clusterId" : 1
+  }, {
+    "filename" : "hippopotamus",
+    "clusterId" : 2
+  }, {
+    "filename" : "horse",
+    "clusterId" : 4
+  }, {
+    "filename" : "human",
+    "clusterId" : 3
+  }, {
+    "filename" : "indianRhinoceros",
+    "clusterId" : 4
+  }, {
+    "filename" : "mouse",
+    "clusterId" : 5
+  }, {
+    "filename" : "opossum",
+    "clusterId" : 6
+  }, {
+    "filename" : "orangutan",
+    "clusterId" : 3
+  }, {
+    "filename" : "pig",
+    "clusterId" : 2
+  }, {
+    "filename" : "pigmyChimpanzee",
+    "clusterId" : 3
+  }, {
+    "filename" : "platypus",
+    "clusterId" : 4
+  }, {
+    "filename" : "rabbit",
+    "clusterId" : 2
+  }, {
+    "filename" : "rat",
+    "clusterId" : 5
+  }, {
+    "filename" : "sheep",
+    "clusterId" : 2
+  }, {
+    "filename" : "squirrel",
+    "clusterId" : 6
+  }, {
+    "filename" : "wallaroo",
+    "clusterId" : 6
+  }, {
+    "filename" : "whiteRhinoceros",
+    "clusterId" : 4
+  } ],
+  "error" : false
+}

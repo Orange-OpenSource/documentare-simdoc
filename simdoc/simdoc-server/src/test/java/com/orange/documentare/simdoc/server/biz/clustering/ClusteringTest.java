@@ -12,7 +12,6 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
@@ -117,11 +116,9 @@ public class ClusteringTest {
     coreTest(req);
 
     List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
-    Assertions.assertThat(outputDirectoryList).contains("metadata.json");
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
-    Assertions.assertThat(outputDirectoryList).contains("safe-working-dir");
   }
 
   private void coreTest(ClusteringRequest req) throws Exception {
@@ -138,27 +135,32 @@ public class ClusteringTest {
     MockHttpServletResponse res = result.getResponse();
     ClusteringRequestResult clusteringRequestResult = toClusteringResult(res);
 
-    Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult());
-    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult());
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
+    jsonGenericHandler.writeObjectToJsonFile(clusteringRequestResult, new File("titi"));
+
+    Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult(req.bytesDataMode));
+    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode));
   }
 
   private String inputDirectory() throws IOException {
     return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
   }
 
-  private ClusteringRequestResult expectedClusteringResult() throws IOException {
-     return mapper.readValue(
-       context.getResource("classpath:expected-clustering-result.json").getFile(),
-       ClusteringRequestResult.class
-       );
+  private ClusteringRequestResult expectedClusteringResult(boolean bytesDataMode) throws IOException {
+    return mapper.readValue(
+      context.getResource(
+        bytesDataMode ? "classpath:expected-clustering-result-bytes-data.json" : "classpath:expected-clustering-result.json").getFile(),
+      ClusteringRequestResult.class
+    );
   }
 
   private ClusteringRequestResult readResultOnDisk() throws IOException {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
-    return (ClusteringRequestResult) jsonGenericHandler.getObjectFromJsonGzipFile(
+    ClusteringRequestResult clusteringRequestResult = (ClusteringRequestResult) jsonGenericHandler.getObjectFromJsonGzipFile(
       ClusteringRequestResult.class,
       new File(OUTPUT_DIRECTORY + "/clustering-result.json.gz")
     );
+    return clusteringRequestResult;
   }
 
   private String json(Object req) throws JsonProcessingException {
@@ -166,6 +168,7 @@ public class ClusteringTest {
   }
 
   private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
-    return mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
+    ClusteringRequestResult clusteringRequestResult = mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
+    return clusteringRequestResult;
   }
 }
