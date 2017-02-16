@@ -20,21 +20,21 @@ public class CommandLineOptions {
 
   private static final String HELP = "h";
   private static final String GRAPH_INPUT_FILE = "json";
-  private static final String FILES_ID_MAP = "map";
+  private static final String METADATA = "metadata";
   private static final String IMAGE_DIRECTORY = "d";
 
   private static final Options options = new Options();
 
   private File graphJsonFile;
-  private File filesIdMap;
+  private File metadata;
   private String imageDirectory;
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
   }
 
-  public boolean hasFilesIdMap() {
-    return filesIdMap != null;
+  public boolean hasMetadata() {
+    return metadata != null;
   }
 
   public boolean hasImageDirectory() {
@@ -68,11 +68,11 @@ public class CommandLineOptions {
     if (trianglesJsonPath == null) {
       throw new CommandLineException("\nERROR: an input argument is invalid\n");
     } else {
-      doSetInputFiles(trianglesJsonPath, commandLine.getOptionValue(FILES_ID_MAP), commandLine.getOptionValue(IMAGE_DIRECTORY));
+      doSetInputFiles(trianglesJsonPath, commandLine.getOptionValue(METADATA), commandLine.getOptionValue(IMAGE_DIRECTORY));
     }
   }
 
-  private void doSetInputFiles(String trianglesJsonPath, String filesIdMapJsonPath, String imageDirectoryPath) {
+  private void doSetInputFiles(String trianglesJsonPath, String metadataJsonPath, String imageDirectoryPath) {
     boolean error = true;
     if (trianglesJsonPath != null) {
       graphJsonFile = new File(trianglesJsonPath);
@@ -81,10 +81,10 @@ public class CommandLineOptions {
     if (error) {
       throw new CommandLineException("\nERROR: an input file is not accessible\n");
     }
-    if (filesIdMapJsonPath != null) {
-      File file = new File(filesIdMapJsonPath);
+    if (metadataJsonPath != null) {
+      File file = new File(metadataJsonPath);
       if (file.exists()) {
-        filesIdMap = file;
+        metadata = file;
       }
     }
     if (imageDirectoryPath != null) {
@@ -98,11 +98,11 @@ public class CommandLineOptions {
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
     Option graphJsonOpt = OptionBuilder.withArgName("graph json").hasArg().withDescription("path to json gzip file containing graph").create(GRAPH_INPUT_FILE);
-    Option filesIdMapOpt = OptionBuilder.withArgName("files id map").hasArg().withDescription("path to json gzip file containing files id map").create(FILES_ID_MAP);
+    Option metadataOpt = OptionBuilder.withArgName("files metadata").hasArg().withDescription("path to json file containing files metadata").create(METADATA);
     Option imageDir = OptionBuilder.withArgName("image directory").hasArg().withDescription(String.format("directory containing images of vertices")).create(IMAGE_DIRECTORY);
     options.addOption(help);
     options.addOption(graphJsonOpt);
-    options.addOption(filesIdMapOpt);
+    options.addOption(metadataOpt);
     options.addOption(imageDir);
     CommandLineParser parser = new PosixParser();
     return parser.parse(options, args);

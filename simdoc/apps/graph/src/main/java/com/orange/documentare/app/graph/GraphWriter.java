@@ -21,7 +21,6 @@ import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import com.orange.documentare.core.prepdata.Metadata;
 import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
-import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import org.apache.commons.cli.ParseException;
 import org.jgrapht.ext.DOTExporter;
 import org.jgrapht.ext.VertexNameProvider;
@@ -30,6 +29,7 @@ import org.jgrapht.graph.AbstractBaseGraph;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Optional;
 
 public class GraphWriter {
   private static final String DOT_OUTPUT = "graph.dot";
@@ -52,9 +52,15 @@ public class GraphWriter {
   }
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
+    Optional<String> imageDirectoryAbsPath = buildThumbnails();
     ClusteringGraph clusteringGraph = getClusteringGraphFrom(options.getGraphJsonFile());
     AbstractBaseGraph<GraphItem, JGraphEdge> graph = getJGraphTGraph(clusteringGraph);
-    export(graph, DOT_OUTPUT);
+    export(graph, DOT_OUTPUT, imageDirectoryAbsPath);
+  }
+
+  private static Optional<String> buildThumbnails() throws IOException {
+    return options.hasImageDirectory() ?
+      Optional.of(options.getImageDirectory()) : options.hasMetadata() ? doBuildThumbnails(options.getMetadata()) : Optional.empty();
   }
 
   private static ClusteringGraph getClusteringGraphFrom(File inputJsonFile) throws IOException {
@@ -67,19 +73,26 @@ public class GraphWriter {
     return jGraphTBuilder.getJGraphTFrom(clusteringGraph);
   }
 
-  private static void export(AbstractBaseGraph<GraphItem, JGraphEdge> graph, String fileName) throws IOException {
-    DOTExporter exporter = new DOTExporter(new IdProvider(), labelProvider(), new EdgeLabelProvider(), new VertexAttributeProvider(options), null);
+  private static void export(AbstractBaseGraph<GraphItem, JGraphEdge> graph, String fileName, Optional<String> imageDirectoryAbsPath) throws IOException {
+    DOTExporter exporter = new DOTExporter(new IdProvider(), labelProvider(), new EdgeLabelProvider(), new VertexAttributeProvider(imageDirectoryAbsPath), null);
     FileWriter writer = new FileWriter(fileName);
     exporter.export(writer, graph);
   }
 
   private static VertexNameProvider labelProvider() throws IOException {
-    if (options.hasFilesIdMap()) {
+    if (options.hasMetadata()) {
       JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
-      FilesMap filesMap = ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getFilesIdMap())).filesMap;
+      FilesMap filesMap = ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getMetadata())).filesMap;
       return new LabelProvider(filesMap);
     } else {
       return null;
     }
+  }
+
+  private static Optional<String> doBuildThumbnails(File metadataFile) throws IOException {
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+    Metadata metadata = (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, metadataFile);
+    ThumbnailsBuilder thumbnailsBuilder = new ThumbnailsBuilder(metadata);
+    return thumbnailsBuilder.build();
   }
 }

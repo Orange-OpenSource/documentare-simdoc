@@ -6,8 +6,7 @@ ABS_IMG=`pwd`/$1
 (cd ncd && ./go.sh -j1 ../prep-data/bytes-data.json) && \
 (cd prep-clustering && ./go.sh -json ../ncd/ncd_regular_files_model.json.gz -writeCSV) && \
 (cd similarity-clustering/ && ./go.sh -json ../prep-clustering/prep_clustering_ready.json.gz -acut -qcut -scut -ccut) && \
-(cd thumbnails && ./go.sh -d ../prep-data/safe-working-dir/) && \
-(cd graph && ./go.sh -map ../prep-data/metadata.json -json ../similarity-clustering/sc_graph_input.json.gz -d ../thumbnails/thumbnails && ./show.sh) && \
+(cd graph && ./go.sh -map ../prep-data/metadata.json -json ../similarity-clustering/sc_graph_input.json.gz && ./show.sh) && \
 echo && \
 echo OK && \
 echo
