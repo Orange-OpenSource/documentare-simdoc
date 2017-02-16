@@ -10,6 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import com.orange.documentare.simdoc.server.biz.FileIO;
@@ -25,7 +26,7 @@ public class ClusteringResultItem {
   @ApiModelProperty(example = "3", required = true)
   public final int clusterId;
 
-  static ClusteringResultItem[] buildItems(FileIO fileIO, SimClusteringItem[] simClusteringItems) {
+  static ClusteringResultItem[] buildItemsInFilesMode(FileIO fileIO, SimClusteringItem[] simClusteringItems) {
     ClusteringResultItem[] items = new ClusteringResultItem[simClusteringItems.length];
     FilesMap map = fileIO.loadFilesMap();
 
@@ -35,6 +36,14 @@ public class ClusteringResultItem {
       /* +1 to remove leading '/' */
       String relPath = fileAbsPath.substring(fileIO.inputDirectoryAbsPath.length() + 1);
       items[i] = new ClusteringResultItem(relPath, simClusteringItems[i].getClusterId());
+    }
+    return items;
+  }
+
+  static ClusteringResultItem[] buildItemsInBytesDataMode(BytesData[] bytesDatas, SimClusteringItem[] simClusteringItems) {
+    ClusteringResultItem[] items = new ClusteringResultItem[simClusteringItems.length];
+    for (int i = 0; i < items.length; i++) {
+      items[i] = new ClusteringResultItem(bytesDatas[i].id, simClusteringItems[i].getClusterId());
     }
     return items;
   }

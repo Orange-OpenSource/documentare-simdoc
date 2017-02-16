@@ -10,10 +10,8 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 
-import java.io.File;
 import java.io.IOException;
 
 interface ClusteringService {

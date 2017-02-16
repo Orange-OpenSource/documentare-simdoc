@@ -43,10 +43,12 @@ public class ClusteringServiceImpl implements ClusteringService {
       createSafeWorkingDirectory(fileIO);
     }
     ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
-    ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(fileIO, clusteringOutput);
+    ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode ?
+      prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput) :
+      prepClusteringRequestResultInFilesMode(fileIO, clusteringOutput);
 
     fileIO.writeClusteringRequestResult(clusteringRequestResult);
-    if (clusteringRequest.debug) {
+    if (clusteringRequest.debug()) {
       fileIO.writeClusteringGraph(clusteringOutput.graph);
     } else {
       fileIO.cleanupClustering();
@@ -95,9 +97,14 @@ public class ClusteringServiceImpl implements ClusteringService {
     return new DistancesComputationResult(ids, distanceArray);
   }
 
-  private ClusteringRequestResult prepClusteringRequestResult(FileIO fileIO, ClusteringOutput clusteringOutput) {
+  private ClusteringRequestResult prepClusteringRequestResultInFilesMode(FileIO fileIO, ClusteringOutput clusteringOutput) {
     ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItems(fileIO, clusteringOutput.simClusteringItems);
+      ClusteringResultItem.buildItemsInFilesMode(fileIO, clusteringOutput.simClusteringItems);
+    return ClusteringRequestResult.with(clusteringResultItems);
+  }
+  private ClusteringRequestResult prepClusteringRequestResultInBytesDataMode(BytesData[] bytesDatas, ClusteringOutput clusteringOutput) {
+    ClusteringResultItem[] clusteringResultItems =
+      ClusteringResultItem.buildItemsInBytesDataMode(bytesDatas, clusteringOutput.simClusteringItems);
     return ClusteringRequestResult.with(clusteringResultItems);
   }
 

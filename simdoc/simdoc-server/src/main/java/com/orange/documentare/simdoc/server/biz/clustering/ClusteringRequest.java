@@ -20,6 +20,7 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
+@RequiredArgsConstructor
 public class ClusteringRequest {
   @ApiModelProperty(example = "myDocuments")
   public final String inputDirectory;
@@ -42,21 +43,6 @@ public class ClusteringRequest {
   public final Boolean wcut;
   @ApiModelProperty(example = "5")
   public final Integer kNearestNeighboursThreshold;
-
-  public ClusteringRequest(String inputDirectory, BytesData[] bytesData, String outputDirectory, Boolean debug, Float acutSdFactor, Float qcutSdFactor, Float scutSdFactor, Integer ccutPercentile, Boolean wcut, Integer kNearestNeighboursThreshold) {
-    this.inputDirectory = inputDirectory;
-    this.bytesData = bytesData;
-    this.bytesDataMode = bytesData != null;
-    this.outputDirectory = outputDirectory;
-    this.debug = debug;
-    this.acutSdFactor = acutSdFactor;
-    this.qcutSdFactor = qcutSdFactor;
-    this.scutSdFactor = scutSdFactor;
-    this.ccutPercentile = ccutPercentile;
-    this.wcut = wcut;
-    this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
-
-  }
 
   public RequestValidation validate() {
     boolean valid = false;
@@ -118,7 +104,8 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
+      boolean bytesDataMode = bytesData != null;
+      return new ClusteringRequest(inputDirectory, bytesData, bytesDataMode, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
     }
 
 
@@ -171,6 +158,5 @@ public class ClusteringRequest {
       this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
       return this;
     }
-
   }
 }
