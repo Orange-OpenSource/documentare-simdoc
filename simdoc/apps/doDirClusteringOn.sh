@@ -1,7 +1,7 @@
 #!/bin/sh
 
 ABS_DIR=`pwd`/$1
-(cd prep-data && ./go.sh  -d $ABS_DIR) && \
+(cd prep-data && ./go.sh -raw -bytes -d $ABS_DIR) && \
 (cd ncd && ./go.sh -d1 ../prep-data/safe-working-dir) && \
 (cd prep-clustering && ./go.sh -json ../ncd/ncd_regular_files_model.json.gz) && \
 (cd similarity-clustering && ./go.sh -json ../prep-clustering/prep_clustering_ready.json.gz -acut -qcut -scut -ccut) && \
