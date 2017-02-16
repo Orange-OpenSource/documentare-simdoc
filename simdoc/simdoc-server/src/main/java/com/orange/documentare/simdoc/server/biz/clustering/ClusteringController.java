@@ -57,7 +57,7 @@ public class ClusteringController implements ClusteringApi {
   private ClusteringRequestResult doClustering(FileIO fileIO, ClusteringRequest req) throws IOException {
     fileIO.deleteAllClusteringFiles();
     fileIO.writeRequest(req);
-    return clusteringService.build(fileIO, req.clusteringParameters(), req.debug());
+    return clusteringService.build(fileIO, req);
   }
 
   private ClusteringRequestResult error(HttpServletResponse res, String error) throws IOException {

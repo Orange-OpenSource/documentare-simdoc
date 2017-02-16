@@ -38,13 +38,15 @@ public class ClusteringServiceImpl implements ClusteringService {
   }
 
   @Override
-  public ClusteringRequestResult build(FileIO fileIO, ClusteringParameters parameters, boolean debug) throws IOException {
-    createSafeWorkingDirectory(fileIO);
-    ClusteringOutput clusteringOutput = buildClustering(fileIO, parameters);
+  public ClusteringRequestResult build(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
+    if (!clusteringRequest.bytesDataMode) {
+      createSafeWorkingDirectory(fileIO);
+    }
+    ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
     ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResult(fileIO, clusteringOutput);
 
     fileIO.writeClusteringRequestResult(clusteringRequestResult);
-    if (debug) {
+    if (clusteringRequest.debug) {
       fileIO.writeClusteringGraph(clusteringOutput.graph);
     } else {
       fileIO.cleanupClustering();
@@ -63,19 +65,28 @@ public class ClusteringServiceImpl implements ClusteringService {
     prepData.prep();
   }
 
-  private ClusteringOutput buildClustering(FileIO fileIO, ClusteringParameters parameters) throws IOException {
-    File safeInputDir = fileIO.safeWorkingDirectory();
-    DistancesComputationResult distancesComputationResult = computeDistances(safeInputDir);
+  private ClusteringOutput buildClustering(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
+    File safeInputDir = null;
+    if (!clusteringRequest.bytesDataMode) {
+      safeInputDir = fileIO.safeWorkingDirectory();
+    }
 
-    SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, parameters);
+    DistancesComputationResult distancesComputationResult = computeDistances(safeInputDir, clusteringRequest);
+
+    SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, clusteringRequest.clusteringParameters());
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringGraph graph = clusteringGraphBuilder.build(simClusteringItems, parameters);
+    ClusteringGraph graph = clusteringGraphBuilder.build(simClusteringItems, clusteringRequest.clusteringParameters());
 
     return new ClusteringOutput(simClusteringItems, graph);
   }
 
-  private DistancesComputationResult computeDistances(File safeInputDir) {
-    BytesData[] bytesDataArray = BytesData.loadFromDirectory(safeInputDir, BytesData.relativePathIdProvider(safeInputDir));
+  private DistancesComputationResult computeDistances(File safeInputDir, ClusteringRequest clusteringRequest) {
+    BytesData[] bytesDataArray;
+    if (!clusteringRequest.bytesDataMode) {
+      bytesDataArray = BytesData.loadFromDirectory(safeInputDir, BytesData.relativePathIdProvider(safeInputDir));
+    } else {
+      bytesDataArray = clusteringRequest.bytesData;
+    }
     BytesDistances bytesDistances = new BytesDistances();
     DistancesArray distanceArray = bytesDistances.computeDistancesInCollection(bytesDataArray);
     String[] ids = Arrays.stream(bytesDataArray)

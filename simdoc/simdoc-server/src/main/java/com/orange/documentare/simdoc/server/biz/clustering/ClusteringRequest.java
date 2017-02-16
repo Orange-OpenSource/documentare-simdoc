@@ -12,6 +12,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.ClusteringParametersBuilder;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
@@ -19,10 +20,12 @@ import lombok.ToString;
 
 @ToString
 @EqualsAndHashCode
-@RequiredArgsConstructor
 public class ClusteringRequest {
-  @ApiModelProperty(example = "myDocuments", required = true)
+  @ApiModelProperty(example = "myDocuments")
   public final String inputDirectory;
+  @ApiModelProperty(example = "{[{'id':'titi', 'filepath':'/home/titi', 'bytes':[0x1,0x3...]},...])")
+  public final BytesData[] bytesData;
+  public final boolean bytesDataMode;
   @ApiModelProperty(example = "clusteringOutput", required = true)
   public final String outputDirectory;
   @ApiModelProperty(example = "true")
@@ -40,11 +43,26 @@ public class ClusteringRequest {
   @ApiModelProperty(example = "5")
   public final Integer kNearestNeighboursThreshold;
 
+  public ClusteringRequest(String inputDirectory, BytesData[] bytesData, String outputDirectory, Boolean debug, Float acutSdFactor, Float qcutSdFactor, Float scutSdFactor, Integer ccutPercentile, Boolean wcut, Integer kNearestNeighboursThreshold) {
+    this.inputDirectory = inputDirectory;
+    this.bytesData = bytesData;
+    this.bytesDataMode = bytesData != null;
+    this.outputDirectory = outputDirectory;
+    this.debug = debug;
+    this.acutSdFactor = acutSdFactor;
+    this.qcutSdFactor = qcutSdFactor;
+    this.scutSdFactor = scutSdFactor;
+    this.ccutPercentile = ccutPercentile;
+    this.wcut = wcut;
+    this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
+
+  }
+
   public RequestValidation validate() {
     boolean valid = false;
     String error = null;
-    if (inputDirectory == null) {
-      error = "inputDirectory is missing";
+    if (inputDirectory == null && bytesData == null) {
+      error = "inputDirectory and bytesData are missing";
     } else if (outputDirectory == null) {
       error = "outputDirectory is missing";
     } else {
@@ -86,6 +104,7 @@ public class ClusteringRequest {
 
   public static class ClusteringRequestBuilder {
     private String inputDirectory;
+    private BytesData[] bytesData;
     private String outputDirectory;
     private Boolean debug;
     private Float acutSdFactor;
@@ -99,12 +118,17 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      return new ClusteringRequest(inputDirectory, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
+      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
     }
 
 
     public ClusteringRequestBuilder inputDirectory(String inputDirectory) {
       this.inputDirectory = inputDirectory;
+      return this;
+    }
+
+    public ClusteringRequestBuilder bytesData(BytesData[] bytesData) {
+      this.bytesData = bytesData;
       return this;
     }
 
@@ -147,5 +171,6 @@ public class ClusteringRequest {
       this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
       return this;
     }
+
   }
 }

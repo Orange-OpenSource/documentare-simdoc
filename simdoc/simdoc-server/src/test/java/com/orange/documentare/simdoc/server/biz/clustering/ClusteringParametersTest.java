@@ -158,8 +158,7 @@ public class ClusteringParametersTest {
 
     Mockito.verify(clusteringService).build(
       new FileIO(sharedDirectory, req),
-      expectedParameters.clusteringParameters,
-      expectedParameters.debug);
+      req);
   }
 
   private String json(Object req) throws JsonProcessingException {

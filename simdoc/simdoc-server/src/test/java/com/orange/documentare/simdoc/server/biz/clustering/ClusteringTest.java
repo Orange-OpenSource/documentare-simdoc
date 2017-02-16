@@ -12,9 +12,8 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
-import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -43,6 +42,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ClusteringTest {
+
   private static final String OUTPUT_DIRECTORY = "out";
 
   private final ObjectMapper mapper = new ObjectMapper();
@@ -87,6 +87,29 @@ public class ClusteringTest {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(inputDirectory())
+      .outputDirectory(OUTPUT_DIRECTORY)
+      .debug()
+      .build();
+
+    coreTest(req);
+
+    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
+    Assertions.assertThat(outputDirectoryList).contains("metadata.json");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("safe-working-dir");
+  }
+
+  @Test
+  public void build_animals_dna_clustering_with_bytes_data_in_debug_mode() throws Exception {
+    // Given
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+    File bytesDataJson = new File(getClass().getResource("/bytes-data-animals-dna.json").getFile());
+    BytesDataArray bytesDatasArray = (BytesDataArray) jsonGenericHandler.getObjectFromJsonFile(BytesDataArray.class, bytesDataJson);
+
+    ClusteringRequest req = ClusteringRequest.builder()
+      .bytesData(bytesDatasArray.bytesData)
       .outputDirectory(OUTPUT_DIRECTORY)
       .debug()
       .build();

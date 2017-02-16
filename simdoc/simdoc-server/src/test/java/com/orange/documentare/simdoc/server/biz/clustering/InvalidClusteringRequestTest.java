@@ -12,6 +12,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -72,9 +73,9 @@ public class InvalidClusteringRequestTest {
   }
 
   @Test
-  public void clustering_api_return_bad_request_if_input_directory_is_missing() throws Exception {
+  public void clustering_api_return_bad_request_if_input_directory_and_bytes_data_are_missing() throws Exception {
     // Given
-    String expectedMessage = "inputDirectory is missing";
+    String expectedMessage = "inputDirectory and bytesData are missing";
     ClusteringRequest req = ClusteringRequest.builder()
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
@@ -136,7 +137,7 @@ public class InvalidClusteringRequestTest {
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_not_writable() throws Exception {
     // Given
-    String expectedMessage = "outputDirectory is not writable: /";
+    String expectedMessage = "outputDirectory is not writable:";
     createInputDirectory();
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(INPUT_DIRECTORY)

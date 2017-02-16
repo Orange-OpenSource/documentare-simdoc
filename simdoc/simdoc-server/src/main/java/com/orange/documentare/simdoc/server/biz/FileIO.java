@@ -34,8 +34,10 @@ public class FileIO {
 
   public final String inputDirectoryAbsPath;
   public final String outputDirectoryAbsPath;
+  private final boolean bytesDataMode;
 
   public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
+    this.bytesDataMode = req.bytesDataMode;
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
       sharedDirectory.sharedDirectoryRootPath() :
       "";
@@ -48,9 +50,9 @@ public class FileIO {
   public RequestValidation validate() {
     boolean valid = false;
     String error = null;
-     if (!inputDirectory().exists()) {
+     if (!bytesDataMode && !inputDirectory().exists()) {
       error = "inputDirectory can not be reached: " + inputDirectoryAbsPath;
-    } else if (!inputDirectory().isDirectory()) {
+    } else if (!bytesDataMode && !inputDirectory().isDirectory()) {
       error = "inputDirectory is not a directory: " + inputDirectoryAbsPath;
     } else if (!outputDirectory().exists()) {
       error = "outputDirectory can not be reached: " + outputDirectoryAbsPath;
