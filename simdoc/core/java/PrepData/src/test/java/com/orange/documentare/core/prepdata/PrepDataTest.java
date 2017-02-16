@@ -20,6 +20,7 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.Arrays;
 import java.util.zip.CRC32;
 
 public class PrepDataTest {
@@ -153,6 +154,7 @@ public class PrepDataTest {
     // When
     prepData.prep();
     File[] safeFiles = SAFE_WORKING_DIRECTORY.listFiles();
+    Arrays.sort(safeFiles);
     Metadata metadata =
       (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, METADATA_JSON);
     FilesMap filesMap = metadata.filesMap;
@@ -187,6 +189,7 @@ public class PrepDataTest {
     // When
     prepData.prep();
     File[] safeFiles = SAFE_WORKING_DIRECTORY.listFiles();
+    Arrays.sort(safeFiles);
     Metadata metadata =
       (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, METADATA_JSON);
     FilesMap filesMap = metadata.filesMap;
