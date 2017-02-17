@@ -39,9 +39,6 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    if (!clusteringRequest.bytesDataMode) {
-      createSafeWorkingDirectory(fileIO);
-    }
     ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
     ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode ?
       prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput) :
@@ -68,12 +65,16 @@ public class ClusteringServiceImpl implements ClusteringService {
   }
 
   private ClusteringOutput buildClustering(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    File safeInputDir = null;
-    if (!clusteringRequest.bytesDataMode) {
-      safeInputDir = fileIO.safeWorkingDirectory();
+    BytesData[] bytesDataArray;
+    if (clusteringRequest.bytesDataMode) {
+      bytesDataArray = clusteringRequest.bytesData;
+    } else {
+      createSafeWorkingDirectory(fileIO);
+      File safeWorkingDirectory = fileIO.safeWorkingDirectory();
+      bytesDataArray = BytesData.loadFromDirectory(safeWorkingDirectory, BytesData.relativePathIdProvider(safeWorkingDirectory));
     }
 
-    DistancesComputationResult distancesComputationResult = computeDistances(safeInputDir, clusteringRequest);
+    DistancesComputationResult distancesComputationResult = computeDistances(bytesDataArray);
 
     SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, clusteringRequest.clusteringParameters());
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
@@ -82,13 +83,8 @@ public class ClusteringServiceImpl implements ClusteringService {
     return new ClusteringOutput(simClusteringItems, graph);
   }
 
-  private DistancesComputationResult computeDistances(File safeInputDir, ClusteringRequest clusteringRequest) {
-    BytesData[] bytesDataArray;
-    if (!clusteringRequest.bytesDataMode) {
-      bytesDataArray = BytesData.loadFromDirectory(safeInputDir, BytesData.relativePathIdProvider(safeInputDir));
-    } else {
-      bytesDataArray = clusteringRequest.bytesData;
-    }
+
+  private DistancesComputationResult computeDistances(BytesData[] bytesDataArray) {
     BytesDistances bytesDistances = new BytesDistances();
     DistancesArray distanceArray = bytesDistances.computeDistancesInCollection(bytesDataArray);
     String[] ids = Arrays.stream(bytesDataArray)
