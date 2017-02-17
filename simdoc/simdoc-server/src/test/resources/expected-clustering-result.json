@@ -1,105 +1,105 @@
 {
   "clustering" : [ {
-    "filename" : "aardvark",
+    "id" : "aardvark",
     "clusterId" : 1
   }, {
-    "filename" : "armadillo",
+    "id" : "armadillo",
     "clusterId" : 2
   }, {
-    "filename" : "fatDormouse",
+    "id" : "fatDormouse",
     "clusterId" : 3
   }, {
-    "filename" : "finWhale",
+    "id" : "finWhale",
     "clusterId" : 2
   }, {
-    "filename" : "fruitBat",
+    "id" : "fruitBat",
     "clusterId" : 2
   }, {
-    "filename" : "gibbon",
+    "id" : "gibbon",
     "clusterId" : 4
   }, {
-    "filename" : "gorilla",
+    "id" : "gorilla",
     "clusterId" : 4
   }, {
-    "filename" : "graySeal",
+    "id" : "graySeal",
     "clusterId" : 1
   }, {
-    "filename" : "guineaPig",
+    "id" : "guineaPig",
     "clusterId" : 1
   }, {
-    "filename" : "harborSeal",
+    "id" : "harborSeal",
     "clusterId" : 1
   }, {
-    "filename" : "hippopotamus",
+    "id" : "hippopotamus",
     "clusterId" : 2
   }, {
-    "filename" : "horse",
+    "id" : "horse",
     "clusterId" : 6
   }, {
-    "filename" : "baboon",
+    "id" : "baboon",
     "clusterId" : 4
   }, {
-    "filename" : "human",
+    "id" : "human",
     "clusterId" : 4
   }, {
-    "filename" : "indianRhinoceros",
+    "id" : "indianRhinoceros",
     "clusterId" : 6
   }, {
-    "filename" : "mouse",
+    "id" : "mouse",
     "clusterId" : 3
   }, {
-    "filename" : "opossum",
+    "id" : "opossum",
     "clusterId" : 5
   }, {
-    "filename" : "orangutan",
+    "id" : "orangutan",
     "clusterId" : 4
   }, {
-    "filename" : "pig",
+    "id" : "pig",
     "clusterId" : 2
   }, {
-    "filename" : "pigmyChimpanzee",
+    "id" : "pigmyChimpanzee",
     "clusterId" : 4
   }, {
-    "filename" : "platypus",
+    "id" : "platypus",
     "clusterId" : 6
   }, {
-    "filename" : "rabbit",
+    "id" : "rabbit",
     "clusterId" : 2
   }, {
-    "filename" : "rat",
+    "id" : "rat",
     "clusterId" : 3
   }, {
-    "filename" : "blueWhale",
+    "id" : "blueWhale",
     "clusterId" : 2
   }, {
-    "filename" : "sheep",
+    "id" : "sheep",
     "clusterId" : 3
   }, {
-    "filename" : "squirrel",
+    "id" : "squirrel",
     "clusterId" : 5
   }, {
-    "filename" : "wallaroo",
+    "id" : "wallaroo",
     "clusterId" : 5
   }, {
-    "filename" : "whiteRhinoceros",
+    "id" : "whiteRhinoceros",
     "clusterId" : 6
   }, {
-    "filename" : "cat",
+    "id" : "cat",
     "clusterId" : 1
   }, {
-    "filename" : "chimpanzee",
+    "id" : "chimpanzee",
     "clusterId" : 4
   }, {
-    "filename" : "cow",
+    "id" : "cow",
     "clusterId" : 3
   }, {
-    "filename" : "dog",
+    "id" : "dog",
     "clusterId" : 1
   }, {
-    "filename" : "donkey",
+    "id" : "donkey",
     "clusterId" : 6
   }, {
-    "filename" : "elephant",
+    "id" : "elephant",
     "clusterId" : 6
   } ],
   "error" : false

@@ -22,7 +22,7 @@ import lombok.RequiredArgsConstructor;
 @EqualsAndHashCode
 public class ClusteringResultItem {
   @ApiModelProperty(example = "january/ticket-beijing.pdf", required = true)
-  public final String filename;
+  public final String id;
   @ApiModelProperty(example = "3", required = true)
   public final int clusterId;
 
