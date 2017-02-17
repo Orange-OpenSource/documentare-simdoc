@@ -48,7 +48,7 @@ public class SimdocServerApplication {
       .title("Simdoc REST API")
       .description("This API provides access to simdoc treatments, such as clustering of documents")
       .termsOfServiceUrl("https://github.com/Orange-OpenSource/documentare-simdoc")
-      .contact(new Contact("Joël Gardes & Christophe Maldivi", "https://github.com/Orange-OpenSource/documentare-simdoc", "christophe.maldivi@orange.com"))
+      .contact(new Contact("Joël Gardes & Christophe Maldivi & Denis Boisset", "https://github.com/Orange-OpenSource/documentare-simdoc", "christophe.maldivi@orange.com"))
       .license("GPLv2")
       .licenseUrl("https://github.com/Orange-OpenSource/documentare-simdoc/blob/master/LICENSE")
       .version("0.1")
