@@ -11,6 +11,7 @@
     <module>Model</module>
     <module>Image</module>
     <module>Comp</module>
+    <module>PrepData</module>
     <module>GraphWriter</module>
   </modules>
 

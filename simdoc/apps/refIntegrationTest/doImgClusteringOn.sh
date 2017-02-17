@@ -1,13 +1,12 @@
 #!/bin/sh
 
 ABS_IMG=`pwd`/$1
-(cd LineDetection/ && ./go.sh $ABS_IMG && rm -f ld_out/*.raw) && \
-(cd PrepInputDir && ./go.sh -d ../LineDetection/ld_out) && \
-(cd Ncd && ./go.sh -d1 ../PrepInputDir/safe-input-dir) && \
-(cd PrepClustering && ./go.sh -json ../Ncd/ncd_regular_files_model.json.gz -writeCSV) && \
-(cd SimClustering/ && ./go.sh -json ../PrepClustering/prep_clustering_ready.json.gz -acut -qcut -scut -ccut) && \
-(cd Thumbnails && ./go.sh -d ../PrepInputDir/safe-input-dir/) && \
-(cd Graph && ./go.sh -map ../PrepInputDir -json ../SimClustering/sc_graph_input.json.gz -d ../Thumbnails/thumbnails && ./show.sh) && \
+(cd line-detection/ && ./go.sh $ABS_IMG && rm -f ld_out/*.raw) && \
+(cd prep-data && ./go.sh -d ../line-detection/ld_out -bytes) && \
+(cd ncd && ./go.sh -j1 ../prep-data/bytes-data.json) && \
+(cd prep-clustering && ./go.sh -json ../ncd/ncd_regular_files_model.json.gz -writeCSV) && \
+(cd similarity-clustering/ && ./go.sh -json ../prep-clustering/prep_clustering_ready.json.gz -acut -qcut -scut -ccut) && \
+(cd graph && ./go.sh -metadata ../prep-data/metadata.json -json ../similarity-clustering/sc_graph_input.json.gz && ./show.sh) && \
 echo && \
 echo OK && \
 echo
