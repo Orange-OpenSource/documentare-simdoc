@@ -26,6 +26,7 @@ public class ClusteringRequest {
   public final String inputDirectory;
   @ApiModelProperty(example = "{[{'id':'titi', 'filepath':'/home/titi', 'bytes':[0x1,0x3...]},...])")
   public final BytesData[] bytesData;
+  @ApiModelProperty(hidden = true)
   public final boolean bytesDataMode;
   @ApiModelProperty(example = "clusteringOutput", required = true)
   public final String outputDirectory;
