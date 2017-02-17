@@ -135,9 +135,6 @@ public class ClusteringTest {
     MockHttpServletResponse res = result.getResponse();
     ClusteringRequestResult clusteringRequestResult = toClusteringResult(res);
 
-    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
-    jsonGenericHandler.writeObjectToJsonFile(clusteringRequestResult, new File("titi"));
-
     Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult(req.bytesDataMode));
     Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode));
   }
