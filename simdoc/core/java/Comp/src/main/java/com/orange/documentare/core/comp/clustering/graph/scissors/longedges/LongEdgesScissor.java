@@ -29,7 +29,7 @@ public class LongEdgesScissor extends GraphScissor {
   }
 
   protected ScissorTrigger getTriggerImpl(List<GraphItem> graphItems, float standardDeviationDistanceFactor) {
-    return new LongEdgesTrigger(graphItems, standardDeviationDistanceFactor);
+    return new LongEdgesTrigger(standardDeviationDistanceFactor);
   }
 
   @Override

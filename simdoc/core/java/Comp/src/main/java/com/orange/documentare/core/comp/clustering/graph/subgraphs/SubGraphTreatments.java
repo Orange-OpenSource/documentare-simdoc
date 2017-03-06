@@ -30,11 +30,18 @@ public class SubGraphTreatments {
   private int edgesCutTotalCount;
 
   public void doTreatments() {
+    cutInvalidDistances();
     if (clusteringParameters.wcut) {
       cutNonMinimalVertices();
     } else if (clusteringParameters.scut()) {
       cutLongestVertices();
     }
+  }
+
+  private void cutInvalidDistances() {
+    InvalidEdgeDistanceScissor invalidEdgeDistanceScissor = new InvalidEdgeDistanceScissor(clusteringGraph, clusteringGraph.getSubGraphs().values());
+    int edgesCut = invalidEdgeDistanceScissor.clean();
+    log.info("Invalid distances (>=1) cut, edges cut = {}", edgesCut);
   }
 
   private void cutNonMinimalVertices() {
