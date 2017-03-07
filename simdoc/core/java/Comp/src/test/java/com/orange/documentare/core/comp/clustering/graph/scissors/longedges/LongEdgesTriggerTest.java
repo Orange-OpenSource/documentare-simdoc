@@ -28,7 +28,7 @@ public class LongEdgesTriggerTest {
 
   @Before
   public void setup() {
-    longEdgesTrigger = new LongEdgesTrigger(graphItems, STD_FACTOR);
+    longEdgesTrigger = new LongEdgesTrigger(STD_FACTOR);
   }
 
   @Test

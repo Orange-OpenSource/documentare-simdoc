@@ -20,11 +20,6 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor(suppressConstructorProperties = true)
 public class JGraphTBuilder extends GraphBuilder {
-  private final boolean notUsingEdgeFiltering;
-
-  public JGraphTBuilder() {
-    this.notUsingEdgeFiltering = false;
-  }
 
   @Override
   protected void addEdges(ClusteringGraph clusteringGraph) {

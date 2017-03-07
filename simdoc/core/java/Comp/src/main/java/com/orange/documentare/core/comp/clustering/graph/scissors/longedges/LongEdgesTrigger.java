@@ -25,7 +25,6 @@ import java.util.List;
 @RequiredArgsConstructor
 class LongEdgesTrigger implements ScissorTrigger {
 
-  private final List<GraphItem> graphItems;
   private final float standardDeviationDistanceFactor;
 
   @Getter(AccessLevel.PACKAGE)
