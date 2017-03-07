@@ -1,5 +1,8 @@
 #!/bin/sh
 
+# to avoid issues with character encoding and filesystems
+export LANG=C.UTF-8
+
 TAG=`git describe`
 
 (cd simdoc && ./prep-simdoc.sh) && \
