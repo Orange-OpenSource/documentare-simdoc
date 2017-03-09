@@ -10,6 +10,7 @@ package com.orange.documentare.core.image.thumbnail;
  */
 
 import com.orange.documentare.core.image.opencv.OpenCvImage;
+import com.orange.documentare.core.system.nativeinterface.NativeInterface;
 import nu.pattern.OpenCV;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
@@ -19,7 +20,9 @@ import org.opencv.imgproc.Imgproc;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Thumbnail {
   private static final String[] SUPPORT_THUMBNAILS = {
@@ -27,6 +30,13 @@ public class Thumbnail {
   };
 
   private static int THUMBNAIL_SIDE = 200;
+
+  private static final String CONVERT_CMD = "convert";
+
+  // FIXME check options, update x/y option
+  private static final String[] CONVERT_OPTIONS = {
+    "-thumbnail", "x300"
+  };
 
   public static boolean canCreateThumbnail(File file) throws IOException {
     File target;
@@ -44,6 +54,14 @@ public class Thumbnail {
     if (image == null || thumbnail == null) {
       throw new NullPointerException(String.format("Can not create thumbnail, provided image '%s' or thumbnail '%s' file is null", image, thumbnail));
     }
+
+    List<String> options = new ArrayList<>(Arrays.asList(CONVERT_OPTIONS));
+    options.add(0, image.getAbsolutePath() + "[0]");
+    options.add(thumbnail.getAbsolutePath());
+    NativeInterface.launch(
+            CONVERT_CMD, options.toArray(new String[options.size()]), thumbnail.getAbsolutePath() + ".log");
+
+
     Mat mat = OpenCvImage.loadMat(image);
     if (mat.size().width == 0) {
       throw new IOException(String.format("Can not create thumbnail, provided image '%s' is invalid", image.getAbsolutePath()));
