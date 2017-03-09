@@ -9,9 +9,8 @@ package com.orange.documentare.app.graph;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.image.opencv.OpencvLoader;
-import com.orange.documentare.core.image.thumbnail.Thumbnail;
 import com.orange.documentare.core.prepdata.Metadata;
+import com.orange.documentare.core.system.thumbnail.Thumbnail;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 
@@ -22,9 +21,6 @@ import java.util.Optional;
 
 @RequiredArgsConstructor
 public class ThumbnailsBuilder {
-  static {
-    OpencvLoader.load();
-  }
 
   private static final File THUMBNAILS_DIR = new File("thumbnails");
 

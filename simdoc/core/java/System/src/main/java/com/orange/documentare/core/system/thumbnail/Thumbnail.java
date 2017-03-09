@@ -25,9 +25,9 @@ public class Thumbnail {
 
   private static final String CONVERT_CMD = "convert";
 
-  // FIXME check options, update x/y option
+  // NB: widthxheight Maximum values of height and width given, aspect ratio preserved
   private static final String[] CONVERT_OPTIONS = {
-    "-thumbnail", "x200"
+    "-thumbnail", "200x200"
   };
 
   public static boolean canCreateThumbnail(File file) throws IOException {

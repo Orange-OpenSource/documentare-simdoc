@@ -12,7 +12,6 @@
     <module>ncd</module>
     <module>prep-clustering</module>
     <module>similarity-clustering</module>
-    <module>thumbnails</module>
     <module>graph</module>
   </modules>
 
