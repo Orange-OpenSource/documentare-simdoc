@@ -1,4 +1,4 @@
-package com.orange.documentare.core.image.thumbnail;
+package com.orange.documentare.core.system.thumbnail;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,24 +9,28 @@ package com.orange.documentare.core.image.thumbnail;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.image.opencv.OpenCvImage;
-import nu.pattern.OpenCV;
-import org.opencv.core.Mat;
-import org.opencv.core.Size;
-import org.opencv.highgui.Highgui;
-import org.opencv.imgproc.Imgproc;
+import com.orange.documentare.core.system.nativeinterface.NativeInterface;
 
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class Thumbnail {
   private static final String[] SUPPORT_THUMBNAILS = {
     ".png", ".jpg", ".jpeg", ".tif", ".tiff", ".bmp", ".pdf"
   };
 
-  private static int THUMBNAIL_SIDE = 200;
+  private static final String CONVERT_CMD = "convert";
+
+  // NB: widthxheight Maximum values of height and width given, aspect ratio preserved
+  private static final String[] CONVERT_OPTIONS = {
+    "-thumbnail", "200x200"
+  };
+
+  private static final String LABEL_FORMAT = "-pointsize 36 label:'%s' -gravity Center -append";
 
   public static boolean canCreateThumbnail(File file) throws IOException {
     File target;
@@ -41,25 +45,20 @@ public class Thumbnail {
   }
 
   public static void createThumbnail(File image, File thumbnail) throws IOException {
+    createThumbnail(image, thumbnail, null);
+  }
+
+  public static void createThumbnail(File image, File thumbnail, String label) throws IOException {
     if (image == null || thumbnail == null) {
       throw new NullPointerException(String.format("Can not create thumbnail, provided image '%s' or thumbnail '%s' file is null", image, thumbnail));
     }
-    Mat mat = OpenCvImage.loadMat(image);
-    if (mat.size().width == 0) {
-      throw new IOException(String.format("Can not create thumbnail, provided image '%s' is invalid", image.getAbsolutePath()));
+    List<String> options = new ArrayList<>(Arrays.asList(CONVERT_OPTIONS));
+    if (label != null) {
+      options.add(String.format(LABEL_FORMAT, label));
     }
-    Mat thumbnailMat = new Mat();
-    Imgproc.resize(mat, thumbnailMat, computeThumbnailSize(mat.size()));
-
-    Highgui.imwrite(thumbnail.getAbsolutePath(), thumbnailMat);
-  }
-
-  private static Size computeThumbnailSize(Size imageSize) {
-    if (imageSize.width < THUMBNAIL_SIDE && imageSize.height < THUMBNAIL_SIDE) {
-      return imageSize;
-    } else {
-      double ratio = Math.min(THUMBNAIL_SIDE / imageSize.width, THUMBNAIL_SIDE / imageSize.height);
-      return new Size(imageSize.width * ratio, imageSize.height * ratio);
-    }
+    options.add(0, image.getAbsolutePath() + "[0]");
+    options.add(thumbnail.getAbsolutePath());
+    NativeInterface.launch(
+      CONVERT_CMD, options.toArray(new String[options.size()]), thumbnail.getAbsolutePath() + ".log");
   }
 }

@@ -1,4 +1,4 @@
-package com.orange.documentare.core.image.thumbnail;
+package com.orange.documentare.core.system.inputfilesconverter.thumbnail;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -11,15 +11,13 @@ package com.orange.documentare.core.image.thumbnail;
 
 import com.googlecode.zohhak.api.TestWith;
 import com.googlecode.zohhak.api.runners.ZohhakRunner;
-import com.orange.documentare.core.image.opencv.OpenCvImage;
-import com.orange.documentare.core.image.opencv.OpencvLoader;
+import com.orange.documentare.core.system.nativeinterface.NativeException;
+import com.orange.documentare.core.system.thumbnail.Thumbnail;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.After;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.opencv.core.Mat;
 
 import java.io.File;
 import java.io.IOException;
@@ -27,18 +25,12 @@ import java.io.IOException;
 @RunWith(ZohhakRunner.class)
 public class ThumbnailTest {
 
-  static {
-    OpencvLoader.load();
-  }
-
-  private File bigImage = new File(getClass().getResource("/bastet.png").getFile());
+  private File image = new File(getClass().getResource("/bastet.png").getFile());
   private File thumbnail = new File("thumbnail.png");
-  private File thumbnailSmall = new File("thumbnail-small.png");
 
   @After
   public void cleanup() {
     FileUtils.deleteQuietly(thumbnail);
-    FileUtils.deleteQuietly(thumbnailSmall);
   }
 
   @TestWith({
@@ -68,39 +60,21 @@ public class ThumbnailTest {
     Thumbnail.createThumbnail(null, thumbnail);
   }
 
-  @Test(expected = IOException.class)
+  @Test(expected = NativeException.class)
   public void raise_exception_if_input_image_is_not_readable() throws IOException {
     Thumbnail.createThumbnail(new File("/pouet-pouet"), thumbnail);
   }
 
   @Test(expected = NullPointerException.class)
   public void raise_exception_if_output_image_is_null() throws IOException {
-    Thumbnail.createThumbnail(bigImage, null);
+    Thumbnail.createThumbnail(image, null);
   }
 
   @Test
-  public void create_thumbnail_of_a_big_image() throws IOException {
-    // Given
-
+  public void create_thumbnail() throws IOException {
     // When
-    Thumbnail.createThumbnail(bigImage, thumbnail);
-
+    Thumbnail.createThumbnail(image, thumbnail);
     // Then
-    Mat mat = OpenCvImage.loadMat(thumbnail);
-    Assertions.assertThat(mat.size().width).isEqualTo(151);
-    Assertions.assertThat(mat.size().height).isEqualTo(200);
-  }
-
-  @Test
-  public void thumbnail_of_a_small_image_has_same_size() throws IOException {
-    // Given
-    Thumbnail.createThumbnail(bigImage, thumbnail);
-    // When
-    Thumbnail.createThumbnail(thumbnail, thumbnailSmall);
-
-    // Then
-    Mat mat = OpenCvImage.loadMat(thumbnailSmall);
-    Assertions.assertThat(mat.size().width).isEqualTo(151);
-    Assertions.assertThat(mat.size().height).isEqualTo(200);
+    Assertions.assertThat(thumbnail.exists()).isTrue();
   }
 }

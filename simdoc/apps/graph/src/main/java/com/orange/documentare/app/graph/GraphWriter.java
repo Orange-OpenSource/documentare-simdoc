@@ -52,15 +52,16 @@ public class GraphWriter {
   }
 
   private static void doTheJob(CommandLineOptions options) throws IOException {
-    Optional<String> imageDirectoryAbsPath = buildThumbnails();
+    Optional<File> imageDirectory = buildThumbnails();
     ClusteringGraph clusteringGraph = getClusteringGraphFrom(options.getGraphJsonFile());
     AbstractBaseGraph<GraphItem, JGraphEdge> graph = getJGraphTGraph(clusteringGraph);
-    export(graph, DOT_OUTPUT, imageDirectoryAbsPath);
+    export(graph, DOT_OUTPUT, imageDirectory);
   }
 
-  private static Optional<String> buildThumbnails() throws IOException {
-    return options.hasImageDirectory() ?
-      Optional.of(options.getImageDirectory()) : options.hasMetadata() ? doBuildThumbnails(options.getMetadata()) : Optional.empty();
+  private static Optional<File> buildThumbnails() throws IOException {
+    return options.getImageDirectory().isPresent() ?
+      Optional.of(options.getImageDirectory().get()) :
+        options.getMetadata().isPresent() ? doBuildThumbnails(options.getMetadata().get()) : Optional.empty();
   }
 
   private static ClusteringGraph getClusteringGraphFrom(File inputJsonFile) throws IOException {
@@ -73,26 +74,26 @@ public class GraphWriter {
     return jGraphTBuilder.getJGraphTFrom(clusteringGraph);
   }
 
-  private static void export(AbstractBaseGraph<GraphItem, JGraphEdge> graph, String fileName, Optional<String> imageDirectoryAbsPath) throws IOException {
-    DOTExporter exporter = new DOTExporter(new IdProvider(), labelProvider(), new EdgeLabelProvider(), new VertexAttributeProvider(imageDirectoryAbsPath), null);
+  private static void export(AbstractBaseGraph<GraphItem, JGraphEdge> graph, String fileName, Optional<File> imageDirectory) throws IOException {
+    DOTExporter exporter = new DOTExporter(new IdProvider(), labelProvider(), new EdgeLabelProvider(), new VertexAttributeProvider(imageDirectory), null);
     FileWriter writer = new FileWriter(fileName);
     exporter.export(writer, graph);
   }
 
   private static VertexNameProvider labelProvider() throws IOException {
-    if (options.hasMetadata()) {
+    if (options.getMetadata().isPresent()) {
       JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
-      FilesMap filesMap = ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getMetadata())).filesMap;
+      FilesMap filesMap = ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, options.getMetadata().get())).filesMap;
       return new LabelProvider(filesMap);
     } else {
       return null;
     }
   }
 
-  private static Optional<String> doBuildThumbnails(File metadataFile) throws IOException {
+  private static Optional<File> doBuildThumbnails(File metadataFile) throws IOException {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
     Metadata metadata = (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, metadataFile);
-    ThumbnailsBuilder thumbnailsBuilder = new ThumbnailsBuilder(metadata);
+    ThumbnailsBuilder thumbnailsBuilder = new ThumbnailsBuilder(metadata, options.getThumbnailsSourceDirectory(), metadata.inputDirectoryPath);
     return thumbnailsBuilder.build();
   }
 }

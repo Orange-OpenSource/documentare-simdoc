@@ -14,6 +14,7 @@ import lombok.Getter;
 import org.apache.commons.cli.*;
 
 import java.io.File;
+import java.util.Optional;
 
 @Getter
 public class CommandLineOptions {
@@ -22,23 +23,17 @@ public class CommandLineOptions {
   private static final String GRAPH_INPUT_FILE = "json";
   private static final String METADATA = "metadata";
   private static final String IMAGE_DIRECTORY = "d";
+  private static final String THUMBNAILS_SOURCE_DIR = "src";
 
   private static final Options options = new Options();
 
   private File graphJsonFile;
-  private File metadata;
-  private String imageDirectory;
+  private Optional<File> metadata = Optional.empty();
+  private Optional<File> imageDirectory = Optional.empty();
+  private Optional<File> thumbnailsSourceDirectory = Optional.empty();
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
-  }
-
-  public boolean hasMetadata() {
-    return metadata != null;
-  }
-
-  public boolean hasImageDirectory() {
-    return imageDirectory != null;
   }
 
   private void init(String[] args) throws ParseException {
@@ -68,11 +63,16 @@ public class CommandLineOptions {
     if (trianglesJsonPath == null) {
       throw new CommandLineException("\nERROR: an input argument is invalid\n");
     } else {
-      doSetInputFiles(trianglesJsonPath, commandLine.getOptionValue(METADATA), commandLine.getOptionValue(IMAGE_DIRECTORY));
+      doSetInputFiles(
+        trianglesJsonPath,
+        commandLine.getOptionValue(METADATA),
+        commandLine.getOptionValue(IMAGE_DIRECTORY),
+        commandLine.getOptionValue(THUMBNAILS_SOURCE_DIR));
     }
   }
 
-  private void doSetInputFiles(String trianglesJsonPath, String metadataJsonPath, String imageDirectoryPath) {
+  private void doSetInputFiles(
+    String trianglesJsonPath, String metadataJsonPath, String imageDirectoryPath, String thumbnailsSourceDirectoryPath) {
     boolean error = true;
     if (trianglesJsonPath != null) {
       graphJsonFile = new File(trianglesJsonPath);
@@ -84,13 +84,19 @@ public class CommandLineOptions {
     if (metadataJsonPath != null) {
       File file = new File(metadataJsonPath);
       if (file.exists()) {
-        metadata = file;
+        metadata = Optional.of(file);
       }
     }
     if (imageDirectoryPath != null) {
       File file = new File(imageDirectoryPath);
       if (file.isDirectory()) {
-        imageDirectory = imageDirectoryPath;
+        imageDirectory = Optional.of(file);
+      }
+    }
+    if (thumbnailsSourceDirectoryPath != null) {
+      File file = new File(thumbnailsSourceDirectoryPath);
+      if (file.isDirectory()) {
+        thumbnailsSourceDirectory = Optional.of(file);
       }
     }
   }
@@ -100,10 +106,12 @@ public class CommandLineOptions {
     Option graphJsonOpt = OptionBuilder.withArgName("graph json").hasArg().withDescription("path to json gzip file containing graph").create(GRAPH_INPUT_FILE);
     Option metadataOpt = OptionBuilder.withArgName("files metadata").hasArg().withDescription("path to json file containing files metadata").create(METADATA);
     Option imageDir = OptionBuilder.withArgName("image directory").hasArg().withDescription(String.format("directory containing images of vertices")).create(IMAGE_DIRECTORY);
+    Option thSourceDir = OptionBuilder.withArgName("thumbnails source directory").hasArg().withDescription(String.format("directory containing files to use for thumbnails")).create(THUMBNAILS_SOURCE_DIR);
     options.addOption(help);
     options.addOption(graphJsonOpt);
     options.addOption(metadataOpt);
     options.addOption(imageDir);
+    options.addOption(thSourceDir);
     CommandLineParser parser = new PosixParser();
     return parser.parse(options, args);
   }

@@ -13,6 +13,7 @@ import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import lombok.RequiredArgsConstructor;
 import org.jgrapht.ext.ComponentAttributeProvider;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
@@ -24,18 +25,18 @@ public class VertexAttributeProvider implements ComponentAttributeProvider<Graph
   private static final String REGULAR_COLOR = "black";
   private static final String FILLED_STYLE = "filled";
 
-  private final Optional<String> imageDirectoryAbsPath;
+  private final Optional<File> imageDirectory;
 
   @Override
   public Map<String, String> getComponentAttributes(GraphItem graphItem) {
     Map<String, String> attrs = new HashMap<>();
     addColorAttr(attrs, graphItem);
-    imageDirectoryAbsPath.ifPresent(path -> addImageAttr(attrs, graphItem));
+    imageDirectory.ifPresent(f -> addImageAttr(attrs, graphItem));
     return attrs;
   }
 
   private void addImageAttr(Map<String, String> attrs, GraphItem graphItem) {
-    String vertexImageFileName = String.format("%s/%s.png", imageDirectoryAbsPath.get(), graphItem.getVertexName());
+    String vertexImageFileName = String.format("%s/%s.png", imageDirectory.get().getAbsolutePath(), graphItem.getVertexName());
     attrs.put("image", vertexImageFileName);
   }
 
