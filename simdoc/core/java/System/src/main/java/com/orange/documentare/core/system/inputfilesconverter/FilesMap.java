@@ -15,7 +15,10 @@ import java.util.HashMap;
 public class FilesMap extends HashMap<Integer, String> {
 
   public String simpleFilenameAt(int index) {
-    String absFilename = get(index);
+    return simpleFilename(get(index));
+  }
+
+  public static String simpleFilename(String absFilename) {
     int lastIndexOfDirSep = absFilename.lastIndexOf(File.separator);
     return lastIndexOfDirSep < 0 ?
       absFilename :

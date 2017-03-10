@@ -45,14 +45,20 @@ public class Thumbnail {
   }
 
   public static void createThumbnail(File image, File thumbnail) throws IOException {
+    createThumbnail(image, thumbnail, null);
+  }
+
+  public static void createThumbnail(File image, File thumbnail, String label) throws IOException {
     if (image == null || thumbnail == null) {
       throw new NullPointerException(String.format("Can not create thumbnail, provided image '%s' or thumbnail '%s' file is null", image, thumbnail));
     }
     List<String> options = new ArrayList<>(Arrays.asList(CONVERT_OPTIONS));
-    options.add(String.format(LABEL_FORMAT, image.getName()));
+    if (label != null) {
+      options.add(String.format(LABEL_FORMAT, label));
+    }
     options.add(0, image.getAbsolutePath() + "[0]");
     options.add(thumbnail.getAbsolutePath());
     NativeInterface.launch(
-            CONVERT_CMD, options.toArray(new String[options.size()]), thumbnail.getAbsolutePath() + ".log");
+      CONVERT_CMD, options.toArray(new String[options.size()]), thumbnail.getAbsolutePath() + ".log");
   }
 }
