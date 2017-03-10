@@ -14,7 +14,6 @@ cp simdoc/apps/prep-data/target/prep*.jar prep-data-$TAG.jar && \
 cp simdoc/apps/ncd/target/ncd*.jar ncd-$TAG.jar && \
 cp simdoc/apps/prep-clustering/target/prep*.jar prep-clustering-$TAG.jar && \
 cp simdoc/apps/similarity-clustering/target/sim*.jar similarity-clustering-$TAG.jar && \
-cp simdoc/apps/thumbnails/target/thumbnails*.jar thumbnails-$TAG.jar && \
 cp simdoc/apps/graph/target/graph*.jar graph-$TAG.jar && \
 cp simdoc/simdoc-server/target/simdoc-server*.jar simdoc-server-$TAG.jar && \
 echo Create tarball && \

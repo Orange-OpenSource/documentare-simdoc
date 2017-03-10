@@ -31,7 +31,7 @@ public class ThumbnailsBuilder {
     FileUtils.deleteQuietly(THUMBNAILS_DIR);
     THUMBNAILS_DIR.mkdir();
 
-    metadata.filesMap.entrySet().stream()
+    metadata.filesMap.entrySet().parallelStream()
       .forEach(this::buildThumbnail);
 
     return Optional.of(THUMBNAILS_DIR.getAbsolutePath());
