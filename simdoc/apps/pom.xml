@@ -13,6 +13,7 @@
     <module>prep-clustering</module>
     <module>similarity-clustering</module>
     <module>graph</module>
+    <module>base64</module>
   </modules>
 
   <properties>

@@ -15,6 +15,7 @@ cp simdoc/apps/ncd/target/ncd*.jar ncd-$TAG.jar && \
 cp simdoc/apps/prep-clustering/target/prep*.jar prep-clustering-$TAG.jar && \
 cp simdoc/apps/similarity-clustering/target/sim*.jar similarity-clustering-$TAG.jar && \
 cp simdoc/apps/graph/target/graph*.jar graph-$TAG.jar && \
+cp simdoc/apps/base64/target/base64*.jar base64-$TAG.jar && \
 cp simdoc/simdoc-server/target/simdoc-server*.jar simdoc-server-$TAG.jar && \
 echo Create tarball && \
 tar cvjf documentare-simdoc-$TAG.tar.bz2 *.jar && \
