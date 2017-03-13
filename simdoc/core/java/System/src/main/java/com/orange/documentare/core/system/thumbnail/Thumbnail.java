@@ -56,7 +56,7 @@ public class Thumbnail {
     if (label != null) {
       options.add(String.format(LABEL_FORMAT, label));
     }
-    options.add(0, image.getAbsolutePath() + "[0]");
+    options.add(0, image.getAbsolutePath()+ "\\[0\\]");
     options.add(thumbnail.getAbsolutePath());
     NativeInterface.launch(
       CONVERT_CMD, options.toArray(new String[options.size()]), thumbnail.getAbsolutePath() + ".log");
