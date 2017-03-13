@@ -37,7 +37,7 @@ public class RawFilesConverter implements FileConverter {
     }
   }
 
-  private void convertToRaw(File source, File destination) {
+  public void convertToRaw(File source, File destination) {
     Mat mat = OpenCvImage.loadMat(source);
     byte[] bytes = OpenCvImage.matToRaw(mat);
     try {
@@ -47,7 +47,7 @@ public class RawFilesConverter implements FileConverter {
     }
   }
 
-  private boolean isImage(File source) {
+  public boolean isImage(File source) {
     String lowerCaseFilename = source.getName().toLowerCase();
     return Arrays.stream(IMAGES_EXTENSION)
       .filter(ext -> lowerCaseFilename.endsWith(ext))
