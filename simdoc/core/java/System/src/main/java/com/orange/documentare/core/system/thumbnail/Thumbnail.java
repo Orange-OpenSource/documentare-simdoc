@@ -30,7 +30,7 @@ public class Thumbnail {
     "-thumbnail", "200x200"
   };
 
-  private static final String LABEL_FORMAT = "-pointsize 36 label:'%s' -gravity Center -append";
+  private static final String LABEL_FORMAT = "-pointsize 24 label:'%s' -gravity Center -append";
 
   public static boolean canCreateThumbnail(File file) throws IOException {
     File target;
