@@ -1,4 +1,4 @@
 #!/bin/sh
 
-rm -rf *.csv* *.json* safe-input-dir
-java -Xmx5G -jar target/prep-data-1.0-SNAPSHOT.jar $1 $2 $3 $4 $5 $6
+rm -rf base64
+java -Xmx5G -jar target/base64-1.0-SNAPSHOT.jar "$@"
