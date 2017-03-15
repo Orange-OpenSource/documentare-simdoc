@@ -7,7 +7,12 @@ cache:
 variables:
   JAVA_TOOL_OPTIONS: "-Dfile.encoding=UTF-8"
 
+stages:
+  - build
+  - deploy
+
 default-job:
+  stage: build
   script:
       - ./.ci.sh
   artifacts:
@@ -19,6 +24,7 @@ default-job:
       - tags
 
 release-job:
+  stage: build
   script:
       - ./.ci.sh
   artifacts:
@@ -27,3 +33,20 @@ release-job:
        - ./*.jar
   only:
      - tags
+
+deploy-job:
+  image: docker:latest
+  services:
+     - docker:dind
+  stage: deploy
+  before_script:
+#    - env | grep ^DOCKER_
+#    - env | grep ^CI_
+#    - docker info
+    - docker login $CI_REGISTRY --username gitlab-ci-token --password $CI_BUILD_TOKEN
+
+  script:
+      - (cd simdoc/simdoc-server && docker build --pull -t $CI_REGISTRY_IMAGE:$CI_BUILD_TAG .)
+      - docker push $CI_REGISTRY_IMAGE:$CI_BUILD_TAG
+#  only:
+#     - tags
