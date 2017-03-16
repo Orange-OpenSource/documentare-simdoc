@@ -4,6 +4,7 @@
 export LANG=C.UTF-8
 
 TAG=`git describe`
+echo git tag is: $TAG
 
 (cd simdoc && ./prep-simdoc.sh) && \
 (cd simdoc/simdoc-server && ./mvnw clean install) && \
