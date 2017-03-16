@@ -4,6 +4,7 @@
 export LANG=C.UTF-8
 
 TAG=`git describe`
+echo git tag is: $TAG
 
 (cd simdoc && ./prep-simdoc.sh) && \
 (cd simdoc/simdoc-server && ./mvnw clean install) && \
@@ -17,6 +18,7 @@ cp simdoc/apps/similarity-clustering/target/sim*.jar similarity-clustering-$TAG.
 cp simdoc/apps/graph/target/graph*.jar graph-$TAG.jar && \
 cp simdoc/apps/base64/target/base64*.jar base64-$TAG.jar && \
 cp simdoc/simdoc-server/target/simdoc-server*.jar simdoc-server-$TAG.jar && \
+cp simdoc-server-$TAG.jar simdoc/simdoc-server && \
 echo Create tarball && \
 tar cvjf documentare-simdoc-$TAG.tar.bz2 *.jar && \
 echo && \
