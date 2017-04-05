@@ -24,7 +24,9 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-public class ClusteringGraphBuilderGetClusteringGraphTest {
+// FIXME
+// Should be removed: knn should not be used in graph build, it only exists due to simdocjson legacy mode
+public class FixmeClusteringGraphBuilderQAreaKnnTest {
   @Getter
   @Setter
   @RequiredArgsConstructor

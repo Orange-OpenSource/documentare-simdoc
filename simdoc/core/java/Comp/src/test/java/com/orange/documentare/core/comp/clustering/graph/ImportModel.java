@@ -21,18 +21,18 @@ import java.io.IOException;
 @Setter
 @NoArgsConstructor
 public class ImportModel {
-  private InputItem[] items;
+  private Item[] items;
 
   public void loadItemsBytes() throws IOException {
-    for (InputItem inputItem : items) {
+    for (Item inputItem : items) {
       loadItemBytes(inputItem);
     }
   }
 
-  private void loadItemBytes(InputItem inputItem) throws IOException {
-    StringBuilder stringBuilder = new StringBuilder(inputItem.getFileNameReversed());
+  private void loadItemBytes(Item item) throws IOException {
+    StringBuilder stringBuilder = new StringBuilder(item.getFileNameReversed());
     String filename = stringBuilder.reverse().toString();
     byte[] bytes = FileUtils.readFileToByteArray(new File(getClass().getResource(filename).getFile()));
-    inputItem.setBytes(bytes);
+    item.setBytes(bytes);
   }
 }
