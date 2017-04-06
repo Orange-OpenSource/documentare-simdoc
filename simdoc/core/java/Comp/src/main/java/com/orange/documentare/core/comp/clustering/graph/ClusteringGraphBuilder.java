@@ -142,8 +142,7 @@ public class ClusteringGraphBuilder {
       ClusteringItem clusteringItem = clusteringItems[i];
       GraphItem graphItem = graphItems.get(i);
       clusteringItem.setClusterId(graphItem.getClusterId());
-      // null to avoid serializing in json "clusterCenter: false"
-      clusteringItem.setClusterCenter(graphItem.isClusterCenter() ? true : null);
+      clusteringItem.setClusterCenter(graphItem.isClusterCenter());
     }
   }
 }

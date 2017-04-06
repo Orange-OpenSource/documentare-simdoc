@@ -56,7 +56,7 @@ public class DigitalType extends SegmentationRect implements DistanceItem, Clust
 
   @Override
   public void setClusterCenter(boolean isCenter) {
-    this.clusterCenter = isCenter;
+    this.clusterCenter = isCenter ? true : null;
   }
 
   public boolean isClusterCenter() {
