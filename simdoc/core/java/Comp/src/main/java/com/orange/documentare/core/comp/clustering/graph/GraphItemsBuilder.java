@@ -17,21 +17,23 @@ import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
 @RequiredArgsConstructor
 class GraphItemsBuilder {
   private final ClusteringItem[] items;
-  private final List<GraphItem> graphItems;
   private final int kNearestNeighboursThreshold;
 
-  void initGraphItems() {
+  List<GraphItem> initGraphItems() {
+    List<GraphItem> graphItems = new ArrayList<>();
     for (int i = 0; i < items.length; i++) {
       GraphItem graphItem = getGraphItemFor(i);
       graphItems.add(graphItem);
     }
-    updateVerticesIndex();
+    updateVerticesIndex(graphItems);
+    return graphItems;
   }
 
   private GraphItem getGraphItemFor(int itemIndex) {
@@ -84,7 +86,7 @@ class GraphItemsBuilder {
     throw new IllegalStateException("Failed to find clustering item");
   }
 
-  private void updateVerticesIndex() {
+  private void updateVerticesIndex(List<GraphItem> graphItems) {
     List<ClusteringItem> itemsList = Arrays.asList(items);
     for (GraphItem graphItem : graphItems) {
       graphItem.setVertex2Index(itemsList.indexOf(graphItem.getVertex2()));

@@ -16,6 +16,7 @@ import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.IntStream;
 
@@ -40,12 +41,12 @@ public class ClusterTreatmentsTest {
   }
 
   private ClusteringGraph buildClusteringGraph() {
-    ClusteringGraph clusteringGraph = new ClusteringGraph();
-    List<GraphItem> graphItems = clusteringGraph.getItems();
+    List<GraphItem> graphItems = new ArrayList<>();
     IntStream.range(0, NB_ITEMS).forEach(i -> graphItems.add(new GraphItem()));
     IntStream.range(0, NB_ITEMS).forEach(i -> graphItems.get(i).setVertex1Index(i));
     graphItems.get(CENTER_1_INDEX).setClusterCenter(true);
     graphItems.get(CENTER_2_INDEX).setClusterCenter(true);
+    ClusteringGraph clusteringGraph = new ClusteringGraph(graphItems);
     return clusteringGraph;
   }
 

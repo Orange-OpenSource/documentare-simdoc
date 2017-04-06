@@ -35,9 +35,7 @@ import java.util.List;
  */
 @Slf4j
 public class ClusteringGraphBuilder {
-  private ClusteringItem[] items;
   private ClusteringParameters parameters;
-
 
   @Setter
   private ProgressListener progressListener;
@@ -46,35 +44,45 @@ public class ClusteringGraphBuilder {
   private int percent;
 
   public ClusteringGraph build(ClusteringItem[] items, ClusteringParameters parameters) {
-    this.items = items;
     this.parameters = parameters;
     log.info(parameters.toString());
     t0 = System.currentTimeMillis();
-    ClusteringGraph clusteringGraph = doBuild();
+
+    ClusteringGraph clusteringGraph = doBuild(items);
+
     percent = 100;
     onProgress(TreatmentStep.DONE);
     return clusteringGraph;
   }
 
-  private ClusteringGraph doBuild() {
-    ClusteringGraph clusteringGraph = new ClusteringGraph();
+  private ClusteringGraph doBuild(ClusteringItem[] clusteringItems) {
+    List<GraphItem> graphItems = buildGraphItems(clusteringItems);
+    ClusteringGraph clusteringGraph = new ClusteringGraph(graphItems);
     SubgraphsBuilder subgraphsBuilder = new SubgraphsBuilder(clusteringGraph);
-    triangulationTreatments(clusteringGraph.getItems());
+
+    triangulationTreatments(graphItems);
     subgraphsBuilder.computeSubGraphs(new TriangulationGraphBuilder());
+
     subGraphsPostTreatments(clusteringGraph);
-    rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder, items);
-    clustersPostTreatments(clusteringGraph, subgraphsBuilder);
+    rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder, clusteringItems);
+
+    clustersPostTreatments(clusteringGraph, subgraphsBuilder, clusteringItems);
     check(clusteringGraph);
+
     return clusteringGraph;
   }
 
   private void triangulationTreatments(List<GraphItem> graphItems) {
     onProgress(TreatmentStep.TRIANGULATION);
-    int kNearestNeighboursThreshold = parameters.knn() ? parameters.kNearestNeighboursThreshold : items.length;
-    GraphItemsBuilder graphItemsBuilder = new GraphItemsBuilder(items, graphItems, kNearestNeighboursThreshold);
-    graphItemsBuilder.initGraphItems();
+
     TriangulationTreatments triangulationTreatments = new TriangulationTreatments(graphItems, parameters);
     triangulationTreatments.doTreatments();
+  }
+
+  private List<GraphItem> buildGraphItems(ClusteringItem[] clusteringItems) {
+    int kNearestNeighboursThreshold = parameters.knn() ? parameters.kNearestNeighboursThreshold : clusteringItems.length;
+    GraphItemsBuilder graphItemsBuilder = new GraphItemsBuilder(clusteringItems, kNearestNeighboursThreshold);
+    return graphItemsBuilder.initGraphItems();
   }
 
   private void subGraphsPostTreatments(ClusteringGraph clusteringGraph) {
@@ -84,13 +92,13 @@ public class ClusteringGraphBuilder {
     subGraphTreatments.doTreatments();
   }
 
-  private void clustersPostTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder) {
+  private void clustersPostTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder, ClusteringItem[] clusteringItems) {
     percent = 50;
     onProgress(TreatmentStep.CLUSTERS_POST_PROCESSING);
-    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, parameters, items);
+    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, parameters, clusteringItems);
     if (parameters.ccut()) {
       clusterTreatments.cutLongestVertices();
-      rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder, items);
+      rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder, clusteringItems);
     }
     clusterTreatments.updateClusterCenter();
   }
