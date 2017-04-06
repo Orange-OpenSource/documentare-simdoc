@@ -21,7 +21,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ClusterTreatments {
   private final ClusteringGraph clusteringGraph;
   private final ClusteringParameters clusteringParameters;
-  private final ClusteringItem[] clusteringItems;
 
   public void cutLongestVertices() {
     ClusterLongEdgesScissor scissor = new ClusterLongEdgesScissor(clusteringGraph, clusteringGraph.getClusters().values(), clusteringParameters.ccutPercentile);
@@ -32,13 +31,5 @@ public class ClusterTreatments {
   public void updateClusterCenter() {
     ClusterCenter clusterCenter = new ClusterCenter(clusteringGraph.getItems(), clusteringGraph.getClusters().values());
     clusterCenter.updateCenter();
-    updateClusteringItemsCenters();
-  }
-
-  void updateClusteringItemsCenters() {
-    clusteringGraph.getItems().stream()
-            .filter(graphItem -> graphItem.isClusterCenter())
-            .mapToInt(graphItem -> graphItem.getVertex1Index())
-            .forEach(index -> clusteringItems[index].setClusterCenter(true));
   }
 }

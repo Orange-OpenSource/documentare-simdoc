@@ -39,7 +39,7 @@ public class ClusteringGraphBuilderIntegrationTest {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(importModel.getItems(), parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(importModel.getItems(), parameters);
     File output = new File(GRAPH_OUTPUT);
     jsonGenericHandler.writeObjectToJsonGzipFile(clusteringGraph, output);
     // then

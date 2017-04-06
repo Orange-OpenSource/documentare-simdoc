@@ -16,7 +16,6 @@ import com.orange.documentare.core.comp.clustering.graph.jgrapht.JGraphEdge;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.SameGroup;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.dotexport.DOT;
 import com.orange.documentare.core.comp.clustering.graph.jgrapht.dotexport.ExportVertexNameProvider;
-import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphCluster;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
@@ -39,15 +38,13 @@ import java.util.UUID;
  * NB: concurrent access are handled with UUID.
  */
 public class Voronoi {
-  private final ClusteringItem[] clusteringItems;
   private final ClusteringGraph clusteringGraph;
   private final Graph<GraphItem, JGraphEdge> graph;
   private final String graphDotIn;
   private final String graphDotOut;
   private final String cmdFilterLog;
 
-  public Voronoi(ClusteringItem[] clusteringItems, ClusteringGraph clusteringGraph, Graph<GraphItem, JGraphEdge> graph) {
-    this.clusteringItems = clusteringItems;
+  public Voronoi(ClusteringGraph clusteringGraph, Graph<GraphItem, JGraphEdge> graph) {
     this.clusteringGraph = clusteringGraph;
     this.graph = graph;
     String sessionId = getSessionId();
@@ -104,8 +101,6 @@ public class Voronoi {
   }
 
   private void setClusterIdWith(String vertextDotName, int clusterId) {
-    ClusteringItem clusteringItem = findClusteringItemMatching(vertextDotName);
-    clusteringItem.setClusterId(clusterId);
     GraphItem graphItem = findGraphItemMatching(vertextDotName);
     graphItem.setClusterId(clusterId);
     linkClusterAndSubGraph(graphItem);
@@ -118,16 +113,6 @@ public class Voronoi {
       throwVoronoiException(e);
       return -1;
     }
-  }
-
-  private ClusteringItem findClusteringItemMatching(String vertextDotName) {
-    for (ClusteringItem clusteringItem : clusteringItems) {
-      if (vertextDotName.equals(DOT.getDOTVertexName(clusteringItem.getHumanReadableId()))) {
-        return clusteringItem;
-      }
-    }
-    throwVoronoiException(new IllegalStateException("Failed to find mathing item in graphviz output"));
-    return null;
   }
 
   private GraphItem findGraphItemMatching(String vertextDotName) {

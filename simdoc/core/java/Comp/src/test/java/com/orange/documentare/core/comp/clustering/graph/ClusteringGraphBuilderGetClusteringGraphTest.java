@@ -57,7 +57,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     float[] expectedAreas = getExpectedAreas();
@@ -80,7 +80,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     float[] expectedAreas = getExpectedAreas();
@@ -106,7 +106,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
             .knn(1)
             .build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();
@@ -130,7 +130,7 @@ public class ClusteringGraphBuilderGetClusteringGraphTest {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();

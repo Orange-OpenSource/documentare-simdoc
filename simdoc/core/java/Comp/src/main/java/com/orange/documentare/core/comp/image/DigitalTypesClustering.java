@@ -74,7 +74,7 @@ public class DigitalTypesClustering implements ProgressListener {
   private ClusteringGraph computeClustering(ClusteringItem[] items, ClusteringParameters clusteringParameters) {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     clusteringGraphBuilder.setProgressListener(progressListener);
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(items, clusteringParameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(items, clusteringParameters);
     if (clearDistances) {
       for (int i = 0; i < items.length; i++) {
         ((DigitalType) items[i]).setNearestItems(null);

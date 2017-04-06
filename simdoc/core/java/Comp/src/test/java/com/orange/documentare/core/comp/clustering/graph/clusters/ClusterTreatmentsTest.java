@@ -30,9 +30,9 @@ public class ClusterTreatmentsTest {
   public void updateClusteringItemsCenters() {
     // given
     ClusteringGraph clusteringGraph = buildClusteringGraph();
-    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, null, buildClusteringItems());
+    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, null);
     // do
-    clusterTreatments.updateClusteringItemsCenters();
+    clusterTreatments.updateClusterCenter();
     // then
     IntStream.range(0, NB_ITEMS).forEach(i ->
               Assertions.assertThat(clusteringGraph.getItems().get(i).isClusterCenter())
@@ -48,13 +48,5 @@ public class ClusterTreatmentsTest {
     graphItems.get(CENTER_2_INDEX).setClusterCenter(true);
     ClusteringGraph clusteringGraph = new ClusteringGraph(graphItems);
     return clusteringGraph;
-  }
-
-  private ClusteringItem[] buildClusteringItems() {
-    ClusteringItem[] clusteringItems = new ClusteringItem[NB_ITEMS];
-    IntStream.range(0, NB_ITEMS).forEach(i -> clusteringItems[i] = new InputItem());
-    clusteringItems[CENTER_1_INDEX].setClusterCenter(true);
-    clusteringItems[CENTER_2_INDEX].setClusterCenter(true);
-    return clusteringItems;
   }
 }

@@ -31,7 +31,7 @@ import java.util.List;
 
 /**
  * For each clustering item, computes the triangle surface and equilaterality factor
- * of this item with its first two nearests elements, then build the associated graph.
+ * of this item with its first two nearests elements, then buildGraphAndUpdateClusterIdAndCenter the associated graph.
  */
 @Slf4j
 public class ClusteringGraphBuilder {
@@ -43,17 +43,19 @@ public class ClusteringGraphBuilder {
   private long t0;
   private int percent;
 
-  public ClusteringGraph build(ClusteringItem[] items, ClusteringParameters parameters) {
+  public ClusteringGraph buildGraphAndUpdateClusterIdAndCenter(ClusteringItem[] clusteringItems, ClusteringParameters parameters) {
     this.parameters = parameters;
     log.info(parameters.toString());
     t0 = System.currentTimeMillis();
 
-    ClusteringGraph clusteringGraph = doBuild(items);
+    ClusteringGraph clusteringGraph = doBuild(clusteringItems);
+    updateClusterIdAndCenter(clusteringItems, clusteringGraph.getItems());
 
     percent = 100;
     onProgress(TreatmentStep.DONE);
     return clusteringGraph;
   }
+
 
   private ClusteringGraph doBuild(ClusteringItem[] clusteringItems) {
     List<GraphItem> graphItems = buildGraphItems(clusteringItems);
@@ -64,9 +66,9 @@ public class ClusteringGraphBuilder {
     subgraphsBuilder.computeSubGraphs(new TriangulationGraphBuilder());
 
     subGraphsPostTreatments(clusteringGraph);
-    rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder, clusteringItems);
+    rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder);
 
-    clustersPostTreatments(clusteringGraph, subgraphsBuilder, clusteringItems);
+    clustersPostTreatments(clusteringGraph, subgraphsBuilder);
     check(clusteringGraph);
 
     return clusteringGraph;
@@ -92,13 +94,13 @@ public class ClusteringGraphBuilder {
     subGraphTreatments.doTreatments();
   }
 
-  private void clustersPostTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder, ClusteringItem[] clusteringItems) {
+  private void clustersPostTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder) {
     percent = 50;
     onProgress(TreatmentStep.CLUSTERS_POST_PROCESSING);
-    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, parameters, clusteringItems);
+    ClusterTreatments clusterTreatments = new ClusterTreatments(clusteringGraph, parameters);
     if (parameters.ccut()) {
       clusterTreatments.cutLongestVertices();
-      rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder, clusteringItems);
+      rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder);
     }
     clusterTreatments.updateClusterCenter();
   }
@@ -111,21 +113,20 @@ public class ClusteringGraphBuilder {
     log.info("Graph check: OK");
   }
 
-  private void rebuildSubGraphsAndClusters(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder, ClusteringItem[] items) {
+  private void rebuildSubGraphsAndClusters(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder) {
     Graph<GraphItem, JGraphEdge> graph;
     graph = subgraphsBuilder.computeSubGraphs(new JGraphTBuilder());;
-    buildVoronoiClusters(clusteringGraph, items, graph);
+    buildVoronoiClusters(clusteringGraph, graph);
   }
 
 
 
-  /** Use voronoi algo to detect graph regions, which may generate new subgraphs
-   * @param clusteringGraph
-   * @param items*/
-  private void buildVoronoiClusters(ClusteringGraph clusteringGraph, ClusteringItem[] items, Graph<GraphItem, JGraphEdge> graph) {
+
+  /** Use voronoi algo to detect graph regions, which may generate new subgraphs */
+  private void buildVoronoiClusters(ClusteringGraph clusteringGraph, Graph<GraphItem, JGraphEdge> graph) {
     onProgress(TreatmentStep.VORONOI);
     clusteringGraph.getClusters().clear();
-    Voronoi voronoi = new Voronoi(items, clusteringGraph, graph);
+    Voronoi voronoi = new Voronoi(clusteringGraph, graph);
     voronoi.mapClusterId();
     log.info("Voronoi, subgraphs = {}, clusters = {}", clusteringGraph.getSubGraphs().size(), clusteringGraph.getClusters().values().size());
   }
@@ -133,6 +134,16 @@ public class ClusteringGraphBuilder {
   private void onProgress(TreatmentStep step) {
     if (progressListener != null) {
       progressListener.onProgressUpdate(step, new Progress(percent, (int) (System.currentTimeMillis() - t0) / 1000));
+    }
+  }
+
+  private void updateClusterIdAndCenter(ClusteringItem[] clusteringItems, List<GraphItem> graphItems) {
+    for (int i = 0; i < graphItems.size(); i++) {
+      ClusteringItem clusteringItem = clusteringItems[i];
+      GraphItem graphItem = graphItems.get(i);
+      clusteringItem.setClusterId(graphItem.getClusterId());
+      // null to avoid serializing in json "clusterCenter: false"
+      clusteringItem.setClusterCenter(graphItem.isClusterCenter() ? true : null);
     }
   }
 }

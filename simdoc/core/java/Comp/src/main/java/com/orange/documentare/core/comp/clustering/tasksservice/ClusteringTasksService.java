@@ -82,7 +82,7 @@ public class ClusteringTasksService {
 
   @Synchronized
   private void taskError(ClusteringTask task, IOException e) {
-    String err = "TASK - Failed to build clustering for task: " + task + "/ exception: " + e.getMessage();
+    String err = "TASK - Failed to buildGraphAndUpdateClusterIdAndCenter clustering for task: " + task + "/ exception: " + e.getMessage();
     task.taskError(err);
     errorTasks.add(task);
     runningTasks.remove(task.id());

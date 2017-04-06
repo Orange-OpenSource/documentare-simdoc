@@ -93,6 +93,6 @@ public class SimClusteringApp {
 
   private static ClusteringGraph getClusteringGraphFor(ClusteringItem[] items) {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    return clusteringGraphBuilder.build(items, options.clusteringParameters);
+    return clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(items, options.clusteringParameters);
   }
 }

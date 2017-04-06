@@ -29,14 +29,14 @@ class GraphItemsBuilder {
   List<GraphItem> initGraphItems() {
     List<GraphItem> graphItems = new ArrayList<>();
     for (int i = 0; i < items.length; i++) {
-      GraphItem graphItem = getGraphItemFor(i);
+      GraphItem graphItem = buildGraphItemFor(i);
       graphItems.add(graphItem);
     }
     updateVerticesIndex(graphItems);
     return graphItems;
   }
 
-  private GraphItem getGraphItemFor(int itemIndex) {
+  private GraphItem buildGraphItemFor(int itemIndex) {
     ClusteringItem item = items[itemIndex];
     TriangleVertices triangleVertices = item.triangleVerticesAvailable() ?
         item.getTriangleVertices() :

@@ -15,6 +15,9 @@ import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class ClusteringOutputCoherenceTest {
 
   @Test
@@ -40,9 +43,10 @@ public class ClusteringOutputCoherenceTest {
 
     GraphItem graphItem = new GraphItem();
     graphItem.setClusterId(12);
-    ClusteringGraph graph = new ClusteringGraph();
-    graph.getItems().add(graphItem);
+    List<GraphItem> graphItems = new ArrayList<>();
+    graphItems.add(graphItem);
+    ClusteringGraph clusteringGraph = new ClusteringGraph(graphItems);
 
-    return new ClusteringOutput(simClusteringItems, graph);
+    return new ClusteringOutput(simClusteringItems, clusteringGraph);
   }
 }

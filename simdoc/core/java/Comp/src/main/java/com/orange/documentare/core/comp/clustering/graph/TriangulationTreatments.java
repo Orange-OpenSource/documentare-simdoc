@@ -32,7 +32,7 @@ class TriangulationTreatments {
 
   void doTreatments() {
     incrementalSingletonDetection();
-    log.info("Initial triangulation build (q/area), {} loop(s), singleton(s) = {}", stabilityLoopCount, singletons);
+    log.info("Initial triangulation buildGraphAndUpdateClusterIdAndCenter (q/area), {} loop(s), singleton(s) = {}", stabilityLoopCount, singletons);
   }
 
   private void incrementalSingletonDetection() {

@@ -78,7 +78,7 @@ public class ClusteringServiceImpl implements ClusteringService {
 
     SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, clusteringRequest.clusteringParameters());
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringGraph graph = clusteringGraphBuilder.build(simClusteringItems, clusteringRequest.clusteringParameters());
+    ClusteringGraph graph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(simClusteringItems, clusteringRequest.clusteringParameters());
 
     return new ClusteringOutput(simClusteringItems, graph);
   }
