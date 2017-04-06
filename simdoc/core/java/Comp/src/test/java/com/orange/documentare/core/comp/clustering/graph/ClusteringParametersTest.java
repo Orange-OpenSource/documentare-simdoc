@@ -26,7 +26,9 @@ public class ClusteringParametersTest {
     Assertions.assertThat(parameters.acut()).isFalse();
     Assertions.assertThat(parameters.scut()).isFalse();
     Assertions.assertThat(parameters.ccut()).isFalse();
+    Assertions.assertThat(parameters.wcut).isFalse();
     Assertions.assertThat(parameters.knn()).isFalse();
+    Assertions.assertThat(parameters.sloop).isFalse();;
   }
 
   @Test
@@ -40,6 +42,7 @@ public class ClusteringParametersTest {
             .scut()
             .ccut()
             .wcut()
+            .sloop()
             .build();
 
     // Then
@@ -47,7 +50,9 @@ public class ClusteringParametersTest {
     Assertions.assertThat(parameters.acut()).isTrue();
     Assertions.assertThat(parameters.scut()).isTrue();
     Assertions.assertThat(parameters.ccut()).isTrue();
+    Assertions.assertThat(parameters.wcut).isTrue();
     Assertions.assertThat(parameters.knn()).isFalse();
+    Assertions.assertThat(parameters.sloop).isTrue();
   }
 
 

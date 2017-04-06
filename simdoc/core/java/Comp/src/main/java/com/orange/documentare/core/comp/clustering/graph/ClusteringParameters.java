@@ -24,14 +24,16 @@ public final class ClusteringParameters {
   public final int ccutPercentile;
   public final boolean wcut;
   public final int kNearestNeighboursThreshold;
+  public final boolean sloop;
 
-  private ClusteringParameters(float qcutSdFactor, float acutSdFactor, float scutSdFactor, int ccutPercentile, boolean wcut, int kNearestNeighboursThreshold) {
+  private ClusteringParameters(float qcutSdFactor, float acutSdFactor, float scutSdFactor, int ccutPercentile, boolean wcut, int kNearestNeighboursThreshold, boolean sloop) {
     this.qcutSdFactor = qcutSdFactor;
     this.acutSdFactor = acutSdFactor;
     this.scutSdFactor = scutSdFactor;
     this.ccutPercentile = ccutPercentile;
     this.wcut = wcut;
     this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
+    this.sloop = sloop;
   }
 
   public static ClusteringParametersBuilder builder() {
@@ -73,12 +75,13 @@ public final class ClusteringParameters {
     private int ccutPercentile = -1;
     private boolean wcut;
     private int kNearestNeighboursThreshold = -1;
+    private boolean sloop;
 
     private ClusteringParametersBuilder() {
     }
 
     public ClusteringParameters build() {
-      return new ClusteringParameters(qcutSdFactor, acutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
+      return new ClusteringParameters(qcutSdFactor, acutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
     public ClusteringParametersBuilder qcut() {
@@ -120,6 +123,11 @@ public final class ClusteringParameters {
 
     public ClusteringParametersBuilder knn(int kNearestNeighboursThreshold) {
       this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
+      return this;
+    }
+
+    public ClusteringParametersBuilder sloop() {
+      sloop = true;
       return this;
     }
   }
