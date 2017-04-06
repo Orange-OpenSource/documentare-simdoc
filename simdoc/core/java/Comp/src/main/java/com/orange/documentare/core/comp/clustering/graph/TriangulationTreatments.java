@@ -19,10 +19,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 class TriangulationTreatments {
-  private final ClusteringGraph clusteringGraph;
+  private final List<GraphItem> graphItems;
   private final ClusteringParameters clusteringParameters;
 
   private int stabilityLoopCount = -1;
@@ -30,12 +32,11 @@ class TriangulationTreatments {
 
   void doTreatments() {
     incrementalSingletonDetection();
-    computeClusteringGraph();
-    log.info("Initial triangulation build (q/area), {} loop(s), subgraph(s) = {}, singleton(s) = {}", stabilityLoopCount, clusteringGraph.getSubGraphs().size(), singletons);
+    log.info("Initial triangulation build (q/area), {} loop(s), singleton(s) = {}", stabilityLoopCount, singletons);
   }
 
   private void incrementalSingletonDetection() {
-    TriangleScissor triangleScissor = new TriangleScissor(clusteringGraph, clusteringParameters);
+    TriangleScissor triangleScissor = new TriangleScissor(graphItems, clusteringParameters);
     int cutSingletons;
     do {
       cutSingletons = triangleScissor.cut();
@@ -45,9 +46,4 @@ class TriangulationTreatments {
     } while (cutSingletons != 0);
   }
 
-  private void computeClusteringGraph() {
-    TriangulationGraphBuilder triangulationGraphBuilder = new TriangulationGraphBuilder();
-    SubgraphsBuilder subgraphsBuilder = new SubgraphsBuilder(clusteringGraph, triangulationGraphBuilder);
-    subgraphsBuilder.computeSubGraphs();
-  }
 }

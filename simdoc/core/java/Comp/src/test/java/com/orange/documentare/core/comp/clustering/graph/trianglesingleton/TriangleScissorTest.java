@@ -36,8 +36,9 @@ public class TriangleScissorTest {
   public void acut_and_qcut() {
     // given
     ClusteringParameters parameters = ClusteringParameters.builder().acut(0.5f).qcut(0.8f).build();
-    TriangleScissor triangleScissor = new TriangleScissor(clusteringGraph, parameters);
     List<GraphItem> items = clusteringGraph.getItems();
+    TriangleScissor triangleScissor = new TriangleScissor(items, parameters);
+
     // do
     triangleScissor.cut();
     // then
@@ -50,8 +51,9 @@ public class TriangleScissorTest {
   public void acut() {
     // given
     ClusteringParameters parameters = ClusteringParameters.builder().acut(0.5f).build();
-    TriangleScissor triangleScissor = new TriangleScissor(clusteringGraph, parameters);
     List<GraphItem> items = clusteringGraph.getItems();
+    TriangleScissor triangleScissor = new TriangleScissor(items, parameters);
+
     // do
     triangleScissor.cut();
     // then
@@ -64,8 +66,9 @@ public class TriangleScissorTest {
   public void qcut() {
     // given
     ClusteringParameters parameters = ClusteringParameters.builder().qcut(0.8f).build();
-    TriangleScissor triangleScissor = new TriangleScissor(clusteringGraph, parameters);
     List<GraphItem> items = clusteringGraph.getItems();
+    TriangleScissor triangleScissor = new TriangleScissor(items, parameters);
+
     // do
     triangleScissor.cut();
     // then
@@ -78,8 +81,9 @@ public class TriangleScissorTest {
   public void no_cut() {
     // given
     ClusteringParameters parameters = ClusteringParameters.builder().build();
-    TriangleScissor triangleScissor = new TriangleScissor(clusteringGraph, parameters);
     List<GraphItem> items = clusteringGraph.getItems();
+    TriangleScissor triangleScissor = new TriangleScissor(items, parameters);
+
     // do
     triangleScissor.cut();
     // then
