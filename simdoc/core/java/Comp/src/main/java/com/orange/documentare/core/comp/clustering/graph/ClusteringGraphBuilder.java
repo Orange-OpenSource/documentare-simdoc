@@ -37,7 +37,6 @@ public class ClusteringGraphBuilder {
   private ClusteringItem[] items;
   private ClusteringParameters parameters;
   private SubgraphsBuilder subgraphsBuilder;
-  private Graph<GraphItem, JGraphEdge> graph;
 
   @Setter
   private ProgressListener progressListener;
@@ -50,22 +49,26 @@ public class ClusteringGraphBuilder {
     this.parameters = parameters;
     log.info(parameters.toString());
     t0 = System.currentTimeMillis();
-    buildTriangulationGraph();
-    subGraphsPostTreatments();
-    clustersPostTreatments();
-    check();
+    doBuild();
     percent = 100;
     onProgress(TreatmentStep.DONE);
     return clusteringGraph;
   }
 
-  private void buildTriangulationGraph() {
+  private void doBuild() {
+    triangulationTreatments();
+    subGraphsPostTreatments();
+    clustersPostTreatments();
+    check();
+  }
+
+  private void triangulationTreatments() {
     onProgress(TreatmentStep.TRIANGULATION);
     int kNearestNeighboursThreshold = parameters.knn() ? parameters.kNearestNeighboursThreshold : items.length;
     GraphItemsBuilder graphItemsBuilder = new GraphItemsBuilder(items, clusteringGraph.getItems(), kNearestNeighboursThreshold);
     graphItemsBuilder.initGraphItems();
-    Triangulation triangulation = new Triangulation(clusteringGraph, parameters);
-    graph = triangulation.getTriangulationGraph();
+    TriangulationTreatments triangulationTreatments = new TriangulationTreatments(clusteringGraph, parameters);
+    triangulationTreatments.doTreatments();
   }
 
   private void subGraphsPostTreatments() {
@@ -97,17 +100,16 @@ public class ClusteringGraphBuilder {
   }
 
   private void rebuildSubGraphsAndClusters(ClusteringItem[] items) {
-    computeSubGraphs();
-    buildVoronoiClusters(items);
+    Graph<GraphItem, JGraphEdge> graph;
+    graph = subgraphsBuilder.computeSubGraphs();;
+    buildVoronoiClusters(items, graph);
   }
 
-  private void computeSubGraphs() {
-    graph = subgraphsBuilder.computeSubGraphs();
-  }
+
 
   /** Use voronoi algo to detect graph regions, which may generate new subgraphs
    * @param items*/
-  private void buildVoronoiClusters(ClusteringItem[] items) {
+  private void buildVoronoiClusters(ClusteringItem[] items, Graph<GraphItem, JGraphEdge> graph) {
     onProgress(TreatmentStep.VORONOI);
     clusteringGraph.getClusters().clear();
     Voronoi voronoi = new Voronoi(items, clusteringGraph, graph);

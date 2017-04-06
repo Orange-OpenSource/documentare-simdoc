@@ -21,18 +21,17 @@ import org.jgrapht.Graph;
 
 @Slf4j
 @RequiredArgsConstructor
-class Triangulation {
+class TriangulationTreatments {
   private final ClusteringGraph clusteringGraph;
   private final ClusteringParameters clusteringParameters;
 
   private int stabilityLoopCount = -1;
   private int singletons;
 
-  Graph<GraphItem, JGraphEdge> getTriangulationGraph() {
+  void doTreatments() {
     incrementalSingletonDetection();
-    Graph<GraphItem, JGraphEdge> graph = computeClusteringGraph();
+    computeClusteringGraph();
     log.info("Initial triangulation build (q/area), {} loop(s), subgraph(s) = {}, singleton(s) = {}", stabilityLoopCount, clusteringGraph.getSubGraphs().size(), singletons);
-    return graph;
   }
 
   private void incrementalSingletonDetection() {
@@ -46,9 +45,9 @@ class Triangulation {
     } while (cutSingletons != 0);
   }
 
-  private Graph computeClusteringGraph() {
+  private void computeClusteringGraph() {
     TriangulationGraphBuilder triangulationGraphBuilder = new TriangulationGraphBuilder();
     SubgraphsBuilder subgraphsBuilder = new SubgraphsBuilder(clusteringGraph, triangulationGraphBuilder);
-    return subgraphsBuilder.computeSubGraphs();
+    subgraphsBuilder.computeSubGraphs();
   }
 }
