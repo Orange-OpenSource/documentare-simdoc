@@ -35,7 +35,7 @@ public abstract class GraphScissor {
   /** Number of edges which were cut */
   private int edgesCutInGraph;
 
-  /** Memorize if a group is stable, in order to avoid trying to clean it again for nothing */
+  /** Memorize if a group is stable, in order to avoid trying to cut it again for nothing */
   private Map<GraphGroup, Boolean> stableGroups = new HashMap<>();
 
   protected GraphScissor(ClusteringGraph clusteringGraph, Collection<? extends GraphGroup> groups) {
@@ -55,17 +55,17 @@ public abstract class GraphScissor {
    * Clean groups
    * @return the number of cut edges
    */
-  public int clean() {
+  public int cut() {
     edgesCutInGraph = 0;
     for (GraphGroup group : groups) {
       if (!stableGroups.get(group)) {
-        clean(group);
+        cut(group);
       }
     }
     return edgesCutInGraph;
   }
 
-  private void clean(GraphGroup group) {
+  private void cut(GraphGroup group) {
     getScissorTrigger().initForGroup(group);
     List<GraphEdge> edgesToRemove = new ArrayList<>();
     ScissorTrigger scissorTrigger = getScissorTrigger();

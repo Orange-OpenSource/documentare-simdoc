@@ -11,7 +11,6 @@ package com.orange.documentare.core.comp.clustering.graph.clusters;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.scissors.clusterlongedges.ClusterLongEdgesScissor;
-import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -24,7 +23,7 @@ public class ClusterTreatments {
 
   public void cutLongestVertices() {
     ClusterLongEdgesScissor scissor = new ClusterLongEdgesScissor(clusteringGraph, clusteringGraph.getClusters().values(), clusteringParameters.ccutPercentile);
-    int edgesCutInGraph = scissor.clean();
+    int edgesCutInGraph = scissor.cut();
     log.info("Scalpel in clusters, {} edges cut", edgesCutInGraph);
   }
 

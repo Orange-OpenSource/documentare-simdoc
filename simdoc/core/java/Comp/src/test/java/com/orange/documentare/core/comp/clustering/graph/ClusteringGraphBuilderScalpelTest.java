@@ -19,16 +19,17 @@ import org.junit.Test;
 import java.util.Arrays;
 import java.util.List;
 
-public class ClusteringGraphBuilderScalpelTest {
+public class ClusteringGraphBuilderScalpelTest implements Item.ItemInit {
 
   @Test
   public void compute_triangles_areas() {
     // given
-    ClusteringItem[] clusteringItems = getClusteringItemsWithVertices();
+    ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 7);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = ClusteringParameters.builder().scut().build();
+    ClusteringParameters parameters = ClusteringParameters.builder().scut(2f).build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph =
+      clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     List<GraphItem> graphItems = clusteringGraph.getItems();
@@ -36,37 +37,15 @@ public class ClusteringGraphBuilderScalpelTest {
     // TODO
   }
 
-  private ClusteringItem[] getClusteringItemsWithVertices() {
-    Item[] items = getClusteringItems();
-    int knn = items.length;
-    for (int i = 0; i < items.length; i++) {
-      items[i].setTriangleVertices(new TriangleVertices(items[i], items, knn));
-    }
-    // Ensure we can only rely on vertices
-    Arrays.asList(items).stream().forEach(item -> item.setNearestItems(null));
-    return items;
-  }
+  @Override
+  public void init(Item[] items) {
+    items[0].setNearestItems(new NearestItem[]{ new NearestItem(0, 0), new NearestItem(1, 5), new NearestItem(2, 5), new NearestItem(3, 10), new NearestItem(4, 40), new NearestItem(5, 45), new NearestItem(6, 45)});
+    items[1].setNearestItems(new NearestItem[]{ new NearestItem(1, 0), new NearestItem(0, 5), new NearestItem(2, 5), new NearestItem(3, 10), new NearestItem(4, 45), new NearestItem(5, 47), new NearestItem(6, 45)});
+    items[2].setNearestItems(new NearestItem[]{ new NearestItem(2, 0), new NearestItem(0, 5), new NearestItem(1, 5), new NearestItem(3, 10), new NearestItem(4, 45), new NearestItem(5, 47), new NearestItem(6, 45)});
+    items[3].setNearestItems(new NearestItem[]{ new NearestItem(3, 0), new NearestItem(0, 10), new NearestItem(1, 10), new NearestItem(2, 10), new NearestItem(4, 45), new NearestItem(5, 47), new NearestItem(6, 45)});
 
-  private Item[] getClusteringItems() {
-    Item[] items = getItems();
-    initItems(items);
-    return items;
-  }
-
-  private void initItems(Item[] items) {
-    // TODO: build relevant initial graph for test
-
-    items[0].setNearestItems(new NearestItem[]{ new NearestItem(0, 0), new NearestItem(1, 20), new NearestItem(2, 25), new NearestItem(3, 30)});
-    items[1].setNearestItems(new NearestItem[]{ new NearestItem(1, 0), new NearestItem(3, 10), new NearestItem(0, 20), new NearestItem(2, 45)});
-    items[2].setNearestItems(new NearestItem[]{ new NearestItem(2, 0), new NearestItem(0, 25), new NearestItem(1, 45), new NearestItem(3, 55)});
-    items[3].setNearestItems(new NearestItem[]{ new NearestItem(3, 0), new NearestItem(1, 10), new NearestItem(0, 30), new NearestItem(2, 55)});
-  }
-
-  private Item[] getItems() {
-    Item[] items = new Item[4];
-    for (int i = 0; i < items.length; i++) {
-      items[i] = new Item(String.valueOf(i));
-    }
-    return items;
+    items[4].setNearestItems(new NearestItem[]{ new NearestItem(4, 0), new NearestItem(5, 5), new NearestItem(6, 5), new NearestItem(0, 40), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
+    items[5].setNearestItems(new NearestItem[]{ new NearestItem(5, 0), new NearestItem(4, 5), new NearestItem(6, 5), new NearestItem(0, 45), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
+    items[6].setNearestItems(new NearestItem[]{ new NearestItem(6, 0), new NearestItem(4, 5), new NearestItem(5, 5), new NearestItem(0, 45), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
   }
 }

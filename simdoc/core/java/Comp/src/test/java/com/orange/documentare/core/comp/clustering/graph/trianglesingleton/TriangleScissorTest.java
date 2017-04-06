@@ -10,7 +10,7 @@ package com.orange.documentare.core.comp.clustering.graph.trianglesingleton;
  */
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
-import com.orange.documentare.core.comp.clustering.graph.Items;
+import com.orange.documentare.core.comp.clustering.graph.GraphItems;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import org.fest.assertions.Assertions;
@@ -25,7 +25,7 @@ public class TriangleScissorTest {
 
   @Before
   public void setup() {
-    Items items = new Items();
+    GraphItems items = new GraphItems();
     clusteringGraph = new ClusteringGraph(items);
   }
 

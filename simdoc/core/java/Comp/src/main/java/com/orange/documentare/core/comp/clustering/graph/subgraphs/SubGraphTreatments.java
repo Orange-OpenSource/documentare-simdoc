@@ -40,13 +40,13 @@ public class SubGraphTreatments {
 
   private void cutInvalidDistances() {
     InvalidEdgeDistanceScissor invalidEdgeDistanceScissor = new InvalidEdgeDistanceScissor(clusteringGraph, clusteringGraph.getSubGraphs().values());
-    int edgesCut = invalidEdgeDistanceScissor.clean();
+    int edgesCut = invalidEdgeDistanceScissor.cut();
     log.info("Invalid distances (>=1) cut, edges cut = {}", edgesCut);
   }
 
   private void cutNonMinimalVertices() {
     NonMinimalEdgesScissor minimalEdgesScissor = new NonMinimalEdgesScissor(clusteringGraph, clusteringGraph.getSubGraphs().values());
-    minimalEdgesScissor.clean();
+    minimalEdgesScissor.cut();
     log.info("Wonder cut");
   }
 
@@ -60,7 +60,7 @@ public class SubGraphTreatments {
   }
 
   private boolean loopOnRemoveStaticallyLongestVertices(LongEdgesScissor longEdgesScissor) {
-    int edgesCut = longEdgesScissor.clean();
+    int edgesCut = longEdgesScissor.cut();
     stabilityLoopCount++;
     edgesCutTotalCount += edgesCut;
     log.debug("Subgraph scut iterations = {}, edges cut = {}", stabilityLoopCount, edgesCut);

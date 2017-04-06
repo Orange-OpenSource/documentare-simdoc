@@ -16,10 +16,17 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
+import java.util.Arrays;
+
 @Getter
 @Setter
 @RequiredArgsConstructor
 public class Item implements ClusteringItem {
+
+  public interface ItemInit {
+    void init(Item[] items);
+  }
+
   private int itemId;
   private final String humanReadableId;
   private Float nearestTriangleArea;
@@ -42,5 +49,26 @@ public class Item implements ClusteringItem {
   @Override
   public boolean triangleVerticesAvailable() {
     return triangleVertices != null;
+  }
+
+  public static ClusteringItem[] buildClusteringItems(ItemInit itemInit, int nbItems) {
+    Item[] items = buildItems(nbItems);
+    itemInit.init(items);
+
+    int knn = items.length;
+    for (int i = 0; i < items.length; i++) {
+      items[i].setTriangleVertices(new TriangleVertices(items[i], items, knn));
+    }
+    // Ensure we can only rely on vertices
+    Arrays.asList(items).stream().forEach(item -> item.setNearestItems(null));
+    return items;
+  }
+
+  private static Item[] buildItems(int nbItems) {
+    Item[] items = new Item[nbItems];
+    for (int i = 0; i < items.length; i++) {
+      items[i] = new Item(String.valueOf(i));
+    }
+    return items;
   }
 }

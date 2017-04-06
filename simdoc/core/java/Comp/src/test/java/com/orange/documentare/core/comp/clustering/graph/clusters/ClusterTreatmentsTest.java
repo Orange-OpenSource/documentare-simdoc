@@ -9,8 +9,6 @@ package com.orange.documentare.core.comp.clustering.graph.clusters;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.Item;
-import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import org.fest.assertions.Assertions;
