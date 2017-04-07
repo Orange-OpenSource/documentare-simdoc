@@ -29,12 +29,15 @@ import java.util.Map;
 @RunWith(ZohhakRunner.class)
 public class ClusteringGraphBuilderScalpelTest implements Item.ItemInit {
 
-  @TestWith({"2, 1, 2", "1.96, 3, 3"})
-  public void compute_graph_with_scut(float scut, int subGraphsNb, int clustersNb) {
+  @TestWith({"false, 3, 1, 2", "false, 1.96, 3, 3", /* SLOOP TO IMPLEMENT "true, 3, 3, 3"*/})
+  public void compute_graph_with_scut(boolean sloop, float scut, int subGraphsNb, int clustersNb) {
     // given
     ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 6);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = ClusteringParameters.builder().scut(scut).build();
+    ClusteringParameters parameters = sloop ?
+      ClusteringParameters.builder().scut(scut).sloop().build() :
+      ClusteringParameters.builder().scut(scut).build();
+
     // do
     ClusteringGraph clusteringGraph =
       clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
@@ -46,12 +49,15 @@ public class ClusteringGraphBuilderScalpelTest implements Item.ItemInit {
     Assertions.assertThat(clusters).hasSize(clustersNb);
   }
 
-  @TestWith({"1"})
-  public void check_items_are_in_correct_cluster(float scut) {
+  @TestWith({"false, 1.96", /* SLOOP TO IMPLEMENT "true, 3" */})
+  public void check_items_are_in_correct_cluster(boolean sloop, float scut) {
     // given
     ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 6);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = ClusteringParameters.builder().scut(scut).build();
+    ClusteringParameters parameters = sloop ?
+      ClusteringParameters.builder().scut(scut).sloop().build() :
+      ClusteringParameters.builder().scut(scut).build();
+
     // do
     clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
