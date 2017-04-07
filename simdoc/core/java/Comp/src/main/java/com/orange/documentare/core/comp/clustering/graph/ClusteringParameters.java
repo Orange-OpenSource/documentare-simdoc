@@ -59,7 +59,7 @@ public final class ClusteringParameters {
 
   @Override
   public String toString() {
-    String str = String.format("acut=" + acut() + ", qcut=" + qcut() + ", scut=" + scut() + ", ccut=" + ccut() + ", wcut=" + wcut + ", knn=" + knn());
+    String str = String.format("acut=" + acut() + ", qcut=" + qcut() + ", scut=" + scut() + ", ccut=" + ccut() + ", wcut=" + wcut + ", knn=" + knn() + ", sloop=" + sloop);
     str += acut() ? ", acutSd=" + acutSdFactor : "";
     str += qcut() ? ", qcutSd=" + qcutSdFactor : "";
     str += scut() ? ", scutSd=" + scutSdFactor : "";

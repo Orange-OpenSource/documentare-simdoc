@@ -29,19 +29,21 @@ public class SubGraphTreatments {
   private int stabilityLoopCount;
   private int edgesCutTotalCount;
 
-  public void doTreatments() {
+  public void doTreatments(float scutSdFactor) {
     cutInvalidDistances();
     if (clusteringParameters.wcut) {
       cutNonMinimalVertices();
     } else if (clusteringParameters.scut()) {
-      cutLongestVertices();
+      cutLongestVertices(scutSdFactor);
     }
   }
 
   private void cutInvalidDistances() {
     InvalidEdgeDistanceScissor invalidEdgeDistanceScissor = new InvalidEdgeDistanceScissor(clusteringGraph, clusteringGraph.getSubGraphs().values());
     int edgesCut = invalidEdgeDistanceScissor.cut();
-    log.info("Invalid distances (>=1) cut, edges cut = {}", edgesCut);
+    if (edgesCut > 0) {
+      log.info("Invalid distances (>=1) cut, edges cut = {}", edgesCut);
+    }
   }
 
   private void cutNonMinimalVertices() {
@@ -50,13 +52,15 @@ public class SubGraphTreatments {
     log.info("Wonder cut");
   }
 
-  private void cutLongestVertices() {
+  private void cutLongestVertices(float scutSdFactor) {
     Map<Integer, SubGraph> subgraphs = clusteringGraph.getSubGraphs();
-    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs.values(), clusteringParameters.scutSdFactor);
+    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs.values(), scutSdFactor);
     stabilityLoopCount = 0;
     edgesCutTotalCount = 0;
     while(loopOnRemoveStaticallyLongestVertices(longEdgesScissor));
-    log.info("Scalpel cut, loops = {}, edges cut = {}", stabilityLoopCount, edgesCutTotalCount);
+    if (!clusteringParameters.sloop) {
+      log.info("Scalpel cut, loops = {}, edges cut = {}", stabilityLoopCount, edgesCutTotalCount);
+    }
   }
 
   private boolean loopOnRemoveStaticallyLongestVertices(LongEdgesScissor longEdgesScissor) {

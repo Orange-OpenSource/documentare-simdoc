@@ -29,7 +29,7 @@ import java.util.Map;
 @RunWith(ZohhakRunner.class)
 public class ClusteringGraphBuilderScalpelTest implements Item.ItemInit {
 
-  @TestWith({"false, 3, 1, 2", "false, 1.96, 3, 3", /* SLOOP TO IMPLEMENT "true, 3, 3, 3"*/})
+  @TestWith({"false, 3, 1, 2", "false, 1.96, 3, 3", "true, 3, 3, 3"})
   public void compute_graph_with_scut(boolean sloop, float scut, int subGraphsNb, int clustersNb) {
     // given
     ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 6);
@@ -49,7 +49,7 @@ public class ClusteringGraphBuilderScalpelTest implements Item.ItemInit {
     Assertions.assertThat(clusters).hasSize(clustersNb);
   }
 
-  @TestWith({"false, 1.96", /* SLOOP TO IMPLEMENT "true, 3" */})
+  @TestWith({"false, 1.96", "true, 3"})
   public void check_items_are_in_correct_cluster(boolean sloop, float scut) {
     // given
     ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 6);

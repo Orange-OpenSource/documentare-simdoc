@@ -65,14 +65,41 @@ public class ClusteringGraphBuilder {
     triangulationTreatments(graphItems);
     subgraphsBuilder.computeSubGraphs(new TriangulationGraphBuilder());
 
-    subGraphsPostTreatments(clusteringGraph);
-    rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder);
+    subGraphsTreatments(clusteringGraph, subgraphsBuilder);
 
     clustersPostTreatments(clusteringGraph, subgraphsBuilder);
     check(clusteringGraph);
 
     return clusteringGraph;
   }
+
+  /** if sloop is false, call treatment once, otherwise it loops */
+  private void subGraphsTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder) {
+    // FIXME: increment percent in sloop?
+    percent = 10;
+    onProgress(TreatmentStep.SUBGRAPHS_POST_PROCESSING);
+
+    int sloopLoops = 0;
+    float variableScut = parameters.scut() ? parameters.scutSdFactor : 3;
+    int subgraphNb;
+    int clusterNb;
+    do {
+      doSubGraphTreatments(clusteringGraph, subgraphsBuilder, variableScut);
+      subgraphNb = clusteringGraph.getSubGraphs().size();
+      clusterNb = clusteringGraph.getClusters().values().size();
+      variableScut -= 0.10;
+      sloopLoops++;
+    } while (parameters.sloop && subgraphNb != clusterNb && variableScut > 0);
+
+    log.info("Subgraphs treatments, subgraphs = {}, clusters = {}, sloop({}), slooploops({})", subgraphNb, clusterNb, parameters.sloop, sloopLoops);
+  }
+
+  private void doSubGraphTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder, float scutSdFactor) {
+    SubGraphTreatments subGraphTreatments = new SubGraphTreatments(clusteringGraph, parameters);
+    subGraphTreatments.doTreatments(scutSdFactor);
+    rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder);
+  }
+
 
   private void triangulationTreatments(List<GraphItem> graphItems) {
     onProgress(TreatmentStep.TRIANGULATION);
@@ -85,13 +112,6 @@ public class ClusteringGraphBuilder {
     int kNearestNeighboursThreshold = parameters.knn() ? parameters.kNearestNeighboursThreshold : clusteringItems.length;
     GraphItemsBuilder graphItemsBuilder = new GraphItemsBuilder(clusteringItems, kNearestNeighboursThreshold);
     return graphItemsBuilder.initGraphItems();
-  }
-
-  private void subGraphsPostTreatments(ClusteringGraph clusteringGraph) {
-    percent = 10;
-    onProgress(TreatmentStep.SUBGRAPHS_POST_PROCESSING);
-    SubGraphTreatments subGraphTreatments = new SubGraphTreatments(clusteringGraph, parameters);
-    subGraphTreatments.doTreatments();
   }
 
   private void clustersPostTreatments(ClusteringGraph clusteringGraph, SubgraphsBuilder subgraphsBuilder) {
@@ -128,7 +148,6 @@ public class ClusteringGraphBuilder {
     clusteringGraph.getClusters().clear();
     Voronoi voronoi = new Voronoi(clusteringGraph, graph);
     voronoi.mapClusterId();
-    log.info("Voronoi, subgraphs = {}, clusters = {}", clusteringGraph.getSubGraphs().size(), clusteringGraph.getClusters().values().size());
   }
 
   private void onProgress(TreatmentStep step) {
