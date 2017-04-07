@@ -123,6 +123,8 @@ public class ClusteringGraphBuilder {
       rebuildSubGraphsAndClusters(clusteringGraph, subgraphsBuilder);
     }
     clusterTreatments.updateClusterCenter();
+
+    log.info("Clusters treatments, subgraphs = {}, clusters = {}", clusteringGraph.getSubGraphs().size(), clusteringGraph.getClusters().values().size());
   }
 
   private void check(ClusteringGraph clusteringGraph) {

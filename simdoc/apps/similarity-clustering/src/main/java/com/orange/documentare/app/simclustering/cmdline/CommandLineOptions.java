@@ -23,6 +23,7 @@ public class CommandLineOptions {
   private static final String QCUT = "qcut";
   private static final String WONDER_CUT = "wcut";
   private static final String SCUT = "scut";
+  private static final String SLOOP = "sloop";
   private static final String CCUT = "ccut";
 
   private static final Options options = new Options();
@@ -59,6 +60,9 @@ public class CommandLineOptions {
     if (commandLine.hasOption(SCUT)) {
       builder.scut(Float.parseFloat(commandLine.getOptionValue(SCUT, String.valueOf(SCUT_DEFAULT_SD_FACTOR))));
     }
+    if (commandLine.hasOption(SLOOP)) {
+      builder.sloop();
+    }
     if (commandLine.hasOption(CCUT)) {
       builder.ccut(Integer.parseInt(commandLine.getOptionValue(CCUT, String.valueOf(CCUT_DEFAULT_PERCENTILE))));
     }
@@ -75,6 +79,7 @@ public class CommandLineOptions {
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
+    Option sloop = new Option(SLOOP, "subgraph scalpel, adaptative mode");
 
     Option distanceJsonOpt = Option.builder(DISTANCES_FILE)
             .desc("distances file (.json.gz)")
@@ -114,6 +119,7 @@ public class CommandLineOptions {
     Option subGraphsWonderCutPost = new Option(WONDER_CUT, "enable subgraphs wonder cut post treatments");
 
     options.addOption(help);
+    options.addOption(sloop);
     options.addOption(distanceJsonOpt);
     options.addOption(simDocOpt);
     options.addOption(qOpt);
