@@ -9,43 +9,69 @@ package com.orange.documentare.core.comp.clustering.graph;
  * the Free Software Foundation.
  */
 
+import com.googlecode.zohhak.api.TestWith;
+import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
+import com.orange.documentare.core.model.ref.clustering.graph.GraphCluster;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
+import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
+import org.fest.assertions.Assertions;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
+@RunWith(ZohhakRunner.class)
 public class ClusteringGraphBuilderScalpelTest implements Item.ItemInit {
 
-  @Test
-  public void compute_triangles_areas() {
+  @TestWith({"2, 1, 2", "1.96, 3, 3"})
+  public void compute_graph_with_scut(float scut, int subGraphsNb, int clustersNb) {
     // given
-    ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 7);
+    ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 6);
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = ClusteringParameters.builder().scut(2f).build();
+    ClusteringParameters parameters = ClusteringParameters.builder().scut(scut).build();
     // do
     ClusteringGraph clusteringGraph =
       clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
-    List<GraphItem> graphItems = clusteringGraph.getItems();
+    Map<Integer, SubGraph> subGraphs = clusteringGraph.getSubGraphs();
+    Map<Integer, GraphCluster> clusters = clusteringGraph.getClusters();
+    Assertions.assertThat(subGraphs).hasSize(subGraphsNb);
+    Assertions.assertThat(clusters).hasSize(clustersNb);
+  }
 
-    // TODO
+  @TestWith({"1"})
+  public void check_items_are_in_correct_cluster(float scut) {
+    // given
+    ClusteringItem[] clusteringItems = Item.buildClusteringItems(this, 6);
+    ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
+    ClusteringParameters parameters = ClusteringParameters.builder().scut(scut).build();
+    // do
+    clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
+
+    // then
+    Assertions.assertThat(clusteringItems[0].getClusterId()).isEqualTo(1);
+    Assertions.assertThat(clusteringItems[1].getClusterId()).isEqualTo(1);
+    Assertions.assertThat(clusteringItems[2].getClusterId()).isEqualTo(1);
+    Assertions.assertThat(clusteringItems[3].getClusterId()).isEqualTo(2);
+    Assertions.assertThat(clusteringItems[4].getClusterId()).isEqualTo(3);
+    Assertions.assertThat(clusteringItems[5].getClusterId()).isEqualTo(3);
   }
 
   @Override
   public void init(Item[] items) {
-    items[0].setNearestItems(new NearestItem[]{ new NearestItem(0, 0), new NearestItem(1, 5), new NearestItem(2, 5), new NearestItem(3, 10), new NearestItem(4, 40), new NearestItem(5, 45), new NearestItem(6, 45)});
-    items[1].setNearestItems(new NearestItem[]{ new NearestItem(1, 0), new NearestItem(0, 5), new NearestItem(2, 5), new NearestItem(3, 10), new NearestItem(4, 45), new NearestItem(5, 47), new NearestItem(6, 45)});
-    items[2].setNearestItems(new NearestItem[]{ new NearestItem(2, 0), new NearestItem(0, 5), new NearestItem(1, 5), new NearestItem(3, 10), new NearestItem(4, 45), new NearestItem(5, 47), new NearestItem(6, 45)});
-    items[3].setNearestItems(new NearestItem[]{ new NearestItem(3, 0), new NearestItem(0, 10), new NearestItem(1, 10), new NearestItem(2, 10), new NearestItem(4, 45), new NearestItem(5, 47), new NearestItem(6, 45)});
+    items[0].setNearestItems(new NearestItem[]{ new NearestItem(0, 0), new NearestItem(1, 5), new NearestItem(2, 5), new NearestItem(3, 10), new NearestItem(4, 40), new NearestItem(5, 45)});
+    items[1].setNearestItems(new NearestItem[]{ new NearestItem(1, 0), new NearestItem(0, 5), new NearestItem(2, 5), new NearestItem(3, 10), new NearestItem(4, 45), new NearestItem(5, 47)});
+    items[2].setNearestItems(new NearestItem[]{ new NearestItem(2, 0), new NearestItem(0, 5), new NearestItem(1, 5), new NearestItem(3, 10), new NearestItem(4, 45), new NearestItem(5, 47)});
+    items[3].setNearestItems(new NearestItem[]{ new NearestItem(3, 0), new NearestItem(0, 10), new NearestItem(1, 10), new NearestItem(2, 10), new NearestItem(4, 45), new NearestItem(5, 47)});
 
-    items[4].setNearestItems(new NearestItem[]{ new NearestItem(4, 0), new NearestItem(5, 5), new NearestItem(6, 5), new NearestItem(0, 40), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
-    items[5].setNearestItems(new NearestItem[]{ new NearestItem(5, 0), new NearestItem(4, 5), new NearestItem(6, 5), new NearestItem(0, 45), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
-    items[6].setNearestItems(new NearestItem[]{ new NearestItem(6, 0), new NearestItem(4, 5), new NearestItem(5, 5), new NearestItem(0, 45), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
+    items[4].setNearestItems(new NearestItem[]{ new NearestItem(4, 0), new NearestItem(5, 5), new NearestItem(0, 40), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
+    items[5].setNearestItems(new NearestItem[]{ new NearestItem(5, 0), new NearestItem(4, 5), new NearestItem(0, 45), new NearestItem(1, 47), new NearestItem(2, 47), new NearestItem(3, 47)});
   }
 }
