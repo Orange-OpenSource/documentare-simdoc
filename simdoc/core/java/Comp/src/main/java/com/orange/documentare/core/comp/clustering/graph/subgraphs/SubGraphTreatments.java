@@ -17,7 +17,10 @@ import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor(suppressConstructorProperties = true)
@@ -53,14 +56,23 @@ public class SubGraphTreatments {
   }
 
   private void cutLongestVertices(float scutSdFactor) {
-    Map<Integer, SubGraph> subgraphs = clusteringGraph.getSubGraphs();
-    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs.values(), scutSdFactor);
+    Collection<SubGraph> subgraphs = buildEligibleSubgraphsList();
+    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs, scutSdFactor);
     stabilityLoopCount = 0;
     edgesCutTotalCount = 0;
     while(loopOnRemoveStaticallyLongestVertices(longEdgesScissor));
     if (!clusteringParameters.sloop) {
       log.info("Scalpel cut, loops = {}, edges cut = {}", stabilityLoopCount, edgesCutTotalCount);
     }
+  }
+
+  private Collection<SubGraph> buildEligibleSubgraphsList() {
+    return clusteringGraph.getSubGraphs().values().stream()
+      .filter(subGraph -> {
+        // For "Scut loop" mode, keep on working on subgraph which contains no (first round) or more than one cluster
+        return !(subGraph.getClusterIndices().size() == 1);
+      })
+      .collect(Collectors.toList());
   }
 
   private boolean loopOnRemoveStaticallyLongestVertices(LongEdgesScissor longEdgesScissor) {

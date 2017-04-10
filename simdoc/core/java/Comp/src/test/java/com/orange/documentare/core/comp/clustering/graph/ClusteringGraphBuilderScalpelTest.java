@@ -1,6 +1,6 @@
 package com.orange.documentare.core.comp.clustering.graph;
 /*
- * Copyright (c) 2016 Orange
+ * Copyright (c) 2017 Orange
  *
  * Authors: Christophe Maldivi & Joel Gardes
  *
@@ -14,16 +14,11 @@ import com.googlecode.zohhak.api.runners.ZohhakRunner;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphCluster;
-import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
-import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import org.fest.assertions.Assertions;
-import org.junit.Test;
 import org.junit.runner.RunWith;
 
-import java.util.Arrays;
-import java.util.List;
 import java.util.Map;
 
 @RunWith(ZohhakRunner.class)

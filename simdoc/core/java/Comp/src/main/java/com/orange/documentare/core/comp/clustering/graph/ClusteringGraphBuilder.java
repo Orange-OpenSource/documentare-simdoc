@@ -80,13 +80,15 @@ public class ClusteringGraphBuilder {
     onProgress(TreatmentStep.SUBGRAPHS_POST_PROCESSING);
 
     int sloopLoops = 0;
-    float variableScut = parameters.scut() ? parameters.scutSdFactor : 3;
+    float variableScut = parameters.scutSdFactor;
     int subgraphNb;
     int clusterNb;
     do {
       doSubGraphTreatments(clusteringGraph, subgraphsBuilder, variableScut);
+
       subgraphNb = clusteringGraph.getSubGraphs().size();
       clusterNb = clusteringGraph.getClusters().values().size();
+
       variableScut -= 0.10;
       sloopLoops++;
     } while (parameters.sloop && subgraphNb != clusterNb && variableScut > 0);
