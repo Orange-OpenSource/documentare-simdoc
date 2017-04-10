@@ -13,6 +13,8 @@ import lombok.EqualsAndHashCode;
 
 @EqualsAndHashCode
 public final class ClusteringParameters {
+  public static final float SLOOP_SCUT_SD_FACTOR_DEFAULT = 3;
+
   public static final float A_DEFAULT_SD_FACTOR = 2;
   public static final float Q_DEFAULT_SD_FACTOR = 2;
   public static final float SCUT_DEFAULT_SD_FACTOR = 2;
@@ -81,6 +83,9 @@ public final class ClusteringParameters {
     }
 
     public ClusteringParameters build() {
+      if (sloop && scutSdFactor < 0) {
+        scutSdFactor = SLOOP_SCUT_SD_FACTOR_DEFAULT;
+      }
       return new ClusteringParameters(qcutSdFactor, acutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
