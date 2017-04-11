@@ -17,6 +17,7 @@ import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
 import com.orange.documentare.core.system.measure.Progress;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
@@ -27,7 +28,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @Accessors(fluent = true)
-@RequiredArgsConstructor
+@RequiredArgsConstructor(access = AccessLevel.PACKAGE)
 public class ClusteringTask implements ProgressListener {
 
   private final String inputFilename;
