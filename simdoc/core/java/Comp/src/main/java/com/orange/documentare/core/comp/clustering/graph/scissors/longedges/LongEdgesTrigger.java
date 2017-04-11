@@ -37,7 +37,7 @@ class LongEdgesTrigger implements ScissorTrigger {
 
   @Override
   public boolean shouldRemove(GraphEdge edge) {
-    return edge.getLength() >= edgeLengthThreshold;
+    return edge.getLength() > edgeLengthThreshold;
   }
 
   private int getEdgeLengthCutThreshold(GraphGroup group) {

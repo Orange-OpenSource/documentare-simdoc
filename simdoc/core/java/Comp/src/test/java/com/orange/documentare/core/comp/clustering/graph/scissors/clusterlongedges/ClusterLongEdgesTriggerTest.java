@@ -9,7 +9,7 @@ package com.orange.documentare.core.comp.clustering.graph.scissors.clusterlonged
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.Items;
+import com.orange.documentare.core.comp.clustering.graph.GraphItems;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphEdge;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphGroup;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
@@ -58,7 +58,7 @@ public class ClusterLongEdgesTriggerTest {
   }
 
   private List<GraphItem> getGraphItems() {
-    return new Items();
+    return new GraphItems();
   }
 
   private GraphGroup getGraphGroup() {

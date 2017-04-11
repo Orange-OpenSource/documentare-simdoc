@@ -19,24 +19,24 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jgrapht.Graph;
 
+import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
-class Triangulation {
-  private final ClusteringGraph clusteringGraph;
+class TriangulationTreatments {
+  private final List<GraphItem> graphItems;
   private final ClusteringParameters clusteringParameters;
 
   private int stabilityLoopCount = -1;
   private int singletons;
 
-  Graph<GraphItem, JGraphEdge> getTriangulationGraph() {
+  void doTreatments() {
     incrementalSingletonDetection();
-    Graph<GraphItem, JGraphEdge> graph = computeClusteringGraph();
-    log.info("Initial triangulation build (q/area), {} loop(s), subgraph(s) = {}, singleton(s) = {}", stabilityLoopCount, clusteringGraph.getSubGraphs().size(), singletons);
-    return graph;
+    log.info("Initial triangulation buildGraphAndUpdateClusterIdAndCenter (q/area), {} loop(s), singleton(s) = {}", stabilityLoopCount, singletons);
   }
 
   private void incrementalSingletonDetection() {
-    TriangleScissor triangleScissor = new TriangleScissor(clusteringGraph, clusteringParameters);
+    TriangleScissor triangleScissor = new TriangleScissor(graphItems, clusteringParameters);
     int cutSingletons;
     do {
       cutSingletons = triangleScissor.cut();
@@ -46,9 +46,4 @@ class Triangulation {
     } while (cutSingletons != 0);
   }
 
-  private Graph computeClusteringGraph() {
-    TriangulationGraphBuilder triangulationGraphBuilder = new TriangulationGraphBuilder();
-    SubgraphsBuilder subgraphsBuilder = new SubgraphsBuilder(clusteringGraph, triangulationGraphBuilder);
-    return subgraphsBuilder.computeSubGraphs();
-  }
 }

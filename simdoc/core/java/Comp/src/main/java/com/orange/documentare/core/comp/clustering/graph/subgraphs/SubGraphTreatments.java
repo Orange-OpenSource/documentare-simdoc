@@ -17,7 +17,10 @@ import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor(suppressConstructorProperties = true)
@@ -29,38 +32,51 @@ public class SubGraphTreatments {
   private int stabilityLoopCount;
   private int edgesCutTotalCount;
 
-  public void doTreatments() {
+  public void doTreatments(float scutSdFactor) {
     cutInvalidDistances();
     if (clusteringParameters.wcut) {
       cutNonMinimalVertices();
     } else if (clusteringParameters.scut()) {
-      cutLongestVertices();
+      cutLongestVertices(scutSdFactor);
     }
   }
 
   private void cutInvalidDistances() {
     InvalidEdgeDistanceScissor invalidEdgeDistanceScissor = new InvalidEdgeDistanceScissor(clusteringGraph, clusteringGraph.getSubGraphs().values());
-    int edgesCut = invalidEdgeDistanceScissor.clean();
-    log.info("Invalid distances (>=1) cut, edges cut = {}", edgesCut);
+    int edgesCut = invalidEdgeDistanceScissor.cut();
+    if (edgesCut > 0) {
+      log.info("Invalid distances (>=1) cut, edges cut = {}", edgesCut);
+    }
   }
 
   private void cutNonMinimalVertices() {
     NonMinimalEdgesScissor minimalEdgesScissor = new NonMinimalEdgesScissor(clusteringGraph, clusteringGraph.getSubGraphs().values());
-    minimalEdgesScissor.clean();
+    minimalEdgesScissor.cut();
     log.info("Wonder cut");
   }
 
-  private void cutLongestVertices() {
-    Map<Integer, SubGraph> subgraphs = clusteringGraph.getSubGraphs();
-    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs.values(), clusteringParameters.scutSdFactor);
+  private void cutLongestVertices(float scutSdFactor) {
+    Collection<SubGraph> subgraphs = buildEligibleSubgraphsList();
+    LongEdgesScissor longEdgesScissor = new LongEdgesScissor(clusteringGraph, subgraphs, scutSdFactor);
     stabilityLoopCount = 0;
     edgesCutTotalCount = 0;
     while(loopOnRemoveStaticallyLongestVertices(longEdgesScissor));
-    log.info("Scalpel cut, loops = {}, edges cut = {}", stabilityLoopCount, edgesCutTotalCount);
+    if (!clusteringParameters.sloop) {
+      log.info("Scalpel cut, loops = {}, edges cut = {}", stabilityLoopCount, edgesCutTotalCount);
+    }
+  }
+
+  private Collection<SubGraph> buildEligibleSubgraphsList() {
+    return clusteringGraph.getSubGraphs().values().stream()
+      .filter(subGraph -> {
+        // For "Scut loop" mode, keep on working on subgraph which contains no (first round) or more than one cluster
+        return !(subGraph.getClusterIndices().size() == 1);
+      })
+      .collect(Collectors.toList());
   }
 
   private boolean loopOnRemoveStaticallyLongestVertices(LongEdgesScissor longEdgesScissor) {
-    int edgesCut = longEdgesScissor.clean();
+    int edgesCut = longEdgesScissor.cut();
     stabilityLoopCount++;
     edgesCutTotalCount += edgesCut;
     log.debug("Subgraph scut iterations = {}, edges cut = {}", stabilityLoopCount, edgesCut);

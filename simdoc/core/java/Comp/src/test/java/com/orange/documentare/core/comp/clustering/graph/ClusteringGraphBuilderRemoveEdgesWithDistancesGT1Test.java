@@ -59,7 +59,7 @@ public class ClusteringGraphBuilderRemoveEdgesWithDistancesGT1Test {
     ClusteringParameters parameters = ClusteringParameters.builder().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     List<GraphEdge> edges = clusteringGraph.getSubGraphs().get(0).getEdges();
@@ -80,7 +80,7 @@ public class ClusteringGraphBuilderRemoveEdgesWithDistancesGT1Test {
     ClusteringParameters parameters = ClusteringParameters.builder().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     List<GraphEdge> edges = clusteringGraph.getSubGraphs().get(0).getEdges();
@@ -101,7 +101,7 @@ public class ClusteringGraphBuilderRemoveEdgesWithDistancesGT1Test {
     ClusteringParameters parameters = ClusteringParameters.builder().build();
 
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(clusteringItems, parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(clusteringItems, parameters);
 
     // then
     List<GraphEdge> edges = clusteringGraph.getSubGraphs().get(0).getEdges();

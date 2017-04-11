@@ -13,9 +13,9 @@ import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 
 import java.util.ArrayList;
 
-public class Items extends ArrayList<GraphItem> {
+public class GraphItems extends ArrayList<GraphItem> {
 
-  public Items() {
+  public GraphItems() {
     init();
   }
 

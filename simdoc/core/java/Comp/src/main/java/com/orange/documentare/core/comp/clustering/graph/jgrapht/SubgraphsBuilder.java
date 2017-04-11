@@ -26,15 +26,14 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class SubgraphsBuilder {
   private final ClusteringGraph clusteringGraph;
-  private final GraphBuilder graphBuilder;
 
-  public Graph computeSubGraphs() {
-    Graph graph = detectSubGraphs();
+  public Graph computeSubGraphs(GraphBuilder graphBuilder) {
+    Graph graph = detectSubGraphs(graphBuilder);
     setSubgraphsEdges(graph);
     return graph;
   }
 
-  private Graph detectSubGraphs() {
+  private Graph detectSubGraphs(GraphBuilder graphBuilder) {
     Graph graph = graphBuilder.getJGraphTFrom(clusteringGraph);
     List<Collection<Integer>> jSubGraphs = graphBuilder.getAndUpdateSubGraphs(graph);
     setSubGraphsFrom(jSubGraphs);

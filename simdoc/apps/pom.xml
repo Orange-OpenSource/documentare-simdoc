@@ -19,7 +19,7 @@
   <properties>
     <simdoc.version>1.0-SNAPSHOT</simdoc.version>
     <commons-io.version>2.4</commons-io.version>
-    <commons-cli.version>1.4-SNAPSHOT</commons-cli.version>
+    <commons-cli.version>1.4</commons-cli.version>
     <commons-lang.version>3.5</commons-lang.version>
 
     <zohhak.version>1.1.1</zohhak.version>

@@ -10,6 +10,7 @@ package com.orange.documentare.core.model.ref.clustering.graph;
  */
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 import java.util.ArrayList;
@@ -18,9 +19,9 @@ import java.util.List;
 import java.util.Map;
 
 @Getter
-@Setter
+@RequiredArgsConstructor
 public class ClusteringGraph {
-  private final List<GraphItem> items = new ArrayList<>();
+  private final List<GraphItem> items;
   private final Map<Integer, SubGraph> subGraphs = new HashMap<>();
   private final Map<Integer, GraphCluster> clusters = new HashMap<>();
 }

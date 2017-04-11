@@ -26,7 +26,9 @@ public class ClusteringParametersTest {
     Assertions.assertThat(parameters.acut()).isFalse();
     Assertions.assertThat(parameters.scut()).isFalse();
     Assertions.assertThat(parameters.ccut()).isFalse();
+    Assertions.assertThat(parameters.wcut).isFalse();
     Assertions.assertThat(parameters.knn()).isFalse();
+    Assertions.assertThat(parameters.sloop).isFalse();;
   }
 
   @Test
@@ -40,14 +42,18 @@ public class ClusteringParametersTest {
             .scut()
             .ccut()
             .wcut()
+            .sloop()
             .build();
 
     // Then
     Assertions.assertThat(parameters.qcut()).isTrue();
     Assertions.assertThat(parameters.acut()).isTrue();
     Assertions.assertThat(parameters.scut()).isTrue();
+    Assertions.assertThat(parameters.scutSdFactor).isEqualTo(ClusteringParameters.SCUT_DEFAULT_SD_FACTOR);
     Assertions.assertThat(parameters.ccut()).isTrue();
+    Assertions.assertThat(parameters.wcut).isTrue();
     Assertions.assertThat(parameters.knn()).isFalse();
+    Assertions.assertThat(parameters.sloop).isTrue();
   }
 
 
@@ -70,5 +76,34 @@ public class ClusteringParametersTest {
     Assertions.assertThat(parameters.scutSdFactor).isEqualTo(0.3f);
     Assertions.assertThat(parameters.ccutPercentile).isEqualTo(23);
     Assertions.assertThat(parameters.kNearestNeighboursThreshold).isEqualTo(12);
+  }
+
+  @Test
+  public void build_parameters_with_sloop() {
+    // Given
+
+    // When
+    ClusteringParameters parameters = ClusteringParameters.builder()
+      .sloop()
+      .build();
+
+    // Then
+    Assertions.assertThat(parameters.scutSdFactor).isEqualTo(ClusteringParameters.SLOOP_SCUT_SD_FACTOR_DEFAULT);
+    Assertions.assertThat(parameters.sloop).isTrue();
+  }
+
+  @Test
+  public void build_parameters_with_sloop_and_scut_std_factor_value() {
+    // Given
+
+    // When
+    ClusteringParameters parameters = ClusteringParameters.builder()
+      .sloop()
+      .scut(1.1f)
+      .build();
+
+    // Then
+    Assertions.assertThat(parameters.scutSdFactor).isEqualTo(1.1f);
+    Assertions.assertThat(parameters.sloop).isTrue();
   }
 }

@@ -11,7 +11,6 @@ package com.orange.documentare.core.comp.clustering.graph.clusters;
 
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.clustering.graph.scissors.clusterlongedges.ClusterLongEdgesScissor;
-import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,24 +20,15 @@ import lombok.extern.slf4j.Slf4j;
 public class ClusterTreatments {
   private final ClusteringGraph clusteringGraph;
   private final ClusteringParameters clusteringParameters;
-  private final ClusteringItem[] clusteringItems;
 
   public void cutLongestVertices() {
     ClusterLongEdgesScissor scissor = new ClusterLongEdgesScissor(clusteringGraph, clusteringGraph.getClusters().values(), clusteringParameters.ccutPercentile);
-    int edgesCutInGraph = scissor.clean();
+    int edgesCutInGraph = scissor.cut();
     log.info("Scalpel in clusters, {} edges cut", edgesCutInGraph);
   }
 
   public void updateClusterCenter() {
     ClusterCenter clusterCenter = new ClusterCenter(clusteringGraph.getItems(), clusteringGraph.getClusters().values());
     clusterCenter.updateCenter();
-    updateClusteringItemsCenters();
-  }
-
-  void updateClusteringItemsCenters() {
-    clusteringGraph.getItems().stream()
-            .filter(graphItem -> graphItem.isClusterCenter())
-            .mapToInt(graphItem -> graphItem.getVertex1Index())
-            .forEach(index -> clusteringItems[index].setClusterCenter(true));
   }
 }

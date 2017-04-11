@@ -9,7 +9,7 @@ package com.orange.documentare.core.comp.clustering.graph.trianglesingleton;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.Items;
+import com.orange.documentare.core.comp.clustering.graph.GraphItems;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
 import org.junit.Assert;
@@ -20,7 +20,7 @@ import java.util.List;
 
 public class TriangleScissorTriggerTest {
   private final ClusteringParameters parameters = ClusteringParameters.builder().acut(0.5f).qcut(0.8f).build();
-  private final List<GraphItem> items = new Items();
+  private final List<GraphItem> items = new GraphItems();
 
   private TriangleScissorTrigger scissorTrigger;
 

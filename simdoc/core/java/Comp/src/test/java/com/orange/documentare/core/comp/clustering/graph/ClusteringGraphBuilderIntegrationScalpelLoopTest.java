@@ -20,10 +20,10 @@ import org.junit.Test;
 import java.io.File;
 import java.io.IOException;
 
-public class ClusteringGraphBuilderIntegrationTest {
+public class ClusteringGraphBuilderIntegrationScalpelLoopTest {
   private static final String CLUSTERING_INPUT = "/bestioles_nearests_for_clustering.json.gz";
-  private static final String GRAPH_OUTPUT_REF = "/bestioles_graph_ref.json.gz";
-  private static final String GRAPH_OUTPUT = "bestioles_graph.json.gz";
+  private static final String GRAPH_OUTPUT_REF = "/bestioles_graph_scalpel_sloop_ref.json.gz";
+  private static final String GRAPH_OUTPUT = "bestioles_graph_scalpel_sloop.json.gz";
 
   @After
   public void cleanup() {
@@ -37,9 +37,13 @@ public class ClusteringGraphBuilderIntegrationTest {
     ImportModel importModel = (ImportModel) jsonGenericHandler.getObjectFromJsonGzipFile(ImportModel.class, new File(getClass().getResource(CLUSTERING_INPUT).getFile()));
     importModel.loadItemsBytes();
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringParameters parameters = ClusteringParameters.builder().acut().qcut().build();
+    ClusteringParameters clusteringParameters = ClusteringParameters.builder()
+            .acut()
+            .qcut()
+            .sloop()
+            .build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(importModel.getItems(), parameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(importModel.getItems(), clusteringParameters);
     File output = new File(GRAPH_OUTPUT);
     jsonGenericHandler.writeObjectToJsonGzipFile(clusteringGraph, output);
     // then

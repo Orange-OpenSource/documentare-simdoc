@@ -43,7 +43,7 @@ public class ClusteringGraphBuilderIntegrationScalpelTest {
             .scut(1)
             .build();
     // do
-    ClusteringGraph clusteringGraph = clusteringGraphBuilder.build(importModel.getItems(), clusteringParameters);
+    ClusteringGraph clusteringGraph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(importModel.getItems(), clusteringParameters);
     File output = new File(GRAPH_OUTPUT);
     jsonGenericHandler.writeObjectToJsonGzipFile(clusteringGraph, output);
     // then
