@@ -6,6 +6,7 @@ To pull and run the image: `docker run -p 8080:8080 -v /home/jojo/data:/data reg
  - -v /home/jojo/data:/data to mount host directory '/home/jojo/data' in container on '/data'
 
 Request example to test it with swagger UI (http://localhost:8080/):
+```
 {
   "acutSdFactor": 2,
   "debug": true,
@@ -13,6 +14,7 @@ Request example to test it with swagger UI (http://localhost:8080/):
   "outputDirectory": "/data/out",
   "qcutSdFactor": 2
 }
+```
 
 # Docker survival guide
 
