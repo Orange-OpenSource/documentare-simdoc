@@ -18,7 +18,7 @@ Request example to test it with swagger UI (http://localhost:8080/):
 
 # Docker survival guide
 
+ - to check if docker works correctly on the machine: `docker run hello-world`
  - to ps: `docker ps`
  - then to kill: `docker kill container-id`
  - then to run a shell in the container: `docker exec -ti container-id bash`
-
