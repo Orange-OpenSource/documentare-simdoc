@@ -35,7 +35,6 @@ public class ClusteringController implements ClusteringApi {
 
 
   public ClusteringRequestResult clustering(
-    @ApiParam(value = "Clustering request parameters", required=true)
     @RequestBody ClusteringRequest req, HttpServletResponse res) throws IOException {
 
     log.info("[Clustering request] " + req);
