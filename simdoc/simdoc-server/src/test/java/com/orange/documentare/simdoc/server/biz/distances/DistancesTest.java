@@ -55,7 +55,6 @@ public class DistancesTest {
   }
 
   @Test
-  @Ignore
   public void compute_element_to_elements_array_distances() throws Exception {
     // Given
     BytesData element = new BytesData("elem0", new byte[]{1, 2, 3, 4});
@@ -73,7 +72,7 @@ public class DistancesTest {
     DistancesRequestResult result = coreTest(req);
 
     // Then
-    Assertions.assertThat(result.distances[0]).isEqualTo(2);
+    Assertions.assertThat(result.distances[0]).isEqualTo(454545);
     Assertions.assertThat(result.distances[1]).isEqualTo(0);
   }
 
