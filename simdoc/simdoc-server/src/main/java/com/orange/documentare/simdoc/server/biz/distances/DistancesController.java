@@ -29,7 +29,11 @@ public class DistancesController implements DistancesApi {
       return error(res, validation.error);
     }
 
-    return compute(req);
+    try {
+      return compute(req);
+    } catch (IOException e) {
+      return error(res, e.getMessage());
+    }
   }
 
   private DistancesRequestResult compute(DistancesRequest req) throws IOException {

@@ -13,6 +13,7 @@ package com.orange.documentare.simdoc.server.biz.distances;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -27,8 +28,13 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
+import sun.net.www.protocol.file.FileURLConnection;
 
+import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -38,6 +44,13 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class DistancesTest {
+
+  private static final String[] ANIMALS = {
+    "pigmyChimpanzee", "chimpanzee", "platypus", "human"
+  };
+  private static final int[] EXPECTED_DISTANCES = {
+    547959, 552673, 950527, 0
+  };
 
   private final ObjectMapper mapper = new ObjectMapper();
 
@@ -55,13 +68,10 @@ public class DistancesTest {
   }
 
   @Test
-  public void compute_element_to_elements_array_distances() throws Exception {
+  public void compute_human_to_animals_distances() throws Exception {
     // Given
-    BytesData element = new BytesData("elem0", new byte[]{1, 2, 3, 4});
-    BytesData[] elements = new BytesData[] {
-      new BytesData("elem1", new byte[]{5, 6, 7, 8}),
-      new BytesData("elem2", new byte[]{1, 2, 3, 4})
-    };
+    BytesData element = load("human");
+    BytesData[] elements = loadAnimals();
 
     DistancesRequest req = DistancesRequest.builder()
       .element(element)
@@ -72,8 +82,21 @@ public class DistancesTest {
     DistancesRequestResult result = coreTest(req);
 
     // Then
-    Assertions.assertThat(result.distances[0]).isEqualTo(454545);
-    Assertions.assertThat(result.distances[1]).isEqualTo(0);
+    IntStream.range(0, ANIMALS.length).forEach( i ->
+      Assertions.assertThat(result.distances[i]).isEqualTo(EXPECTED_DISTANCES[i])
+    );
+  }
+
+  private BytesData load(String id) {
+    File file = new File(getClass().getResource("/animals-dna/" + id).getFile());
+    return new BytesData(id, file.getAbsolutePath());
+  }
+
+  private BytesData[] loadAnimals() {
+    return Arrays.stream(ANIMALS)
+      .map(this::load)
+      .collect(Collectors.toList())
+    .toArray(new BytesData[ANIMALS.length]);
   }
 
   private DistancesRequestResult coreTest(DistancesRequest req) throws Exception {
