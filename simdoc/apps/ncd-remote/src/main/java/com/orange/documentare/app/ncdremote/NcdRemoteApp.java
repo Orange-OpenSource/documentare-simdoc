@@ -1,4 +1,4 @@
-package com.orange.documentare.app.ncd;
+package com.orange.documentare.app.ncdremote;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,7 +9,7 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
+import com.orange.documentare.app.ncdremote.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
@@ -17,6 +17,7 @@ import com.orange.documentare.core.comp.measure.ProgressListener;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.prepdata.PreppedBytesData;
 import com.orange.documentare.core.system.measure.MemoryWatcher;
+import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.cli.ParseException;
 
@@ -73,7 +74,6 @@ public class NcdRemoteApp {
       bytesData1 = BytesData.loadFromDirectory(directory1, BytesData.relativePathIdProvider(directory1));
       bytesData2 = directory1.equals(directory2) ?
         bytesData1 : BytesData.loadFromDirectory(directory2, BytesData.relativePathIdProvider(directory2));
-
     } else {
       bytesData1 = loadPreppedBytesData(json1);
       bytesData2 = json1.equals(json2) ? bytesData1 : loadPreppedBytesData(json2);
@@ -82,6 +82,11 @@ public class NcdRemoteApp {
     //
     BytesDistances bytesDistances = new BytesDistances(progressListener);
     DistancesArray distancesArray = bytesDistances.computeDistancesBetweenCollections(bytesData1, bytesData2);
+
+    MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(bytesData1, bytesData2);
+    matrixDistancesSegments = matrixDistancesSegments.buildSegments();
+
+
     //
 
     ExportModel exportModel = new ExportModel(bytesData1, bytesData2, distancesArray);

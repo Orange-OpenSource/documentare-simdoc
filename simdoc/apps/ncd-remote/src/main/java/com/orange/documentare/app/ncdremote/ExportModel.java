@@ -1,4 +1,4 @@
-package com.orange.documentare.app.ncd;
+package com.orange.documentare.app.ncdremote;
 /*
  * Copyright (c) 2016 Orange
  *

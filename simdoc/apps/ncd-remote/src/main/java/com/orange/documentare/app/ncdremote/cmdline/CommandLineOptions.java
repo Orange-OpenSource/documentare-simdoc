@@ -1,4 +1,4 @@
-package com.orange.documentare.app.ncd.cmdline;
+package com.orange.documentare.app.ncdremote.cmdline;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -123,6 +123,6 @@ public class CommandLineOptions {
     System.out.println();
     System.out.println("Error: " + e.getMessage());
     HelpFormatter formatter = new HelpFormatter();
-    formatter.printHelp("ncd", options);
+    formatter.printHelp("ncdremote", options);
   }
 }
