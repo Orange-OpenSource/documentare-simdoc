@@ -11,18 +11,34 @@ package com.orange.documentare.app.ncdremote;
 
 import com.google.common.collect.ImmutableList;
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
+import java.util.ArrayList;
+import java.util.List;
+import java.util.concurrent.ForkJoinPool;
+
 public class RemoteDistancesSegments {
-  private final MatrixDistancesSegments matrixDistancesSegments;
-  private final AvailableRemoteServices availableRemoteServices;
+  private final List<MatrixDistancesSegment> segmentsToCompute;
+  private final List<MatrixDistancesSegment> currentComputedSegments = new ArrayList<>();
+  public final ImmutableList<MatrixDistancesSegment> computedSegments;
 
-  public RemoteDistancesSegments compute() {
-    return null;
+  public RemoteDistancesSegments(MatrixDistancesSegments matrixDistancesSegments) {
+    this(new ArrayList<>(matrixDistancesSegments.segments), null);
   }
 
-  public ImmutableList<MatrixDistancesSegment> segments() {
-    return matrixDistancesSegments.segments;
+  private RemoteDistancesSegments(List<MatrixDistancesSegment> segmentsToCompute, ImmutableList<MatrixDistancesSegment> computedSegments) {
+    this.segmentsToCompute = segmentsToCompute;
+    this.computedSegments = computedSegments;
+  }
+
+  public RemoteDistancesSegments compute() {
+    do {
+      dispatchSegmentsToCompute();
+    } while(!segmentsToCompute.isEmpty());
+
+    return new RemoteDistancesSegments(segmentsToCompute, ImmutableList.copyOf(currentComputedSegments));
+  }
+
+  private void dispatchSegmentsToCompute() {
+
   }
 }

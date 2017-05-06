@@ -22,17 +22,14 @@ public class RemoteDistancesSegmentsTest {
     MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(TestElements.elements1(), TestElements.elements2());
     matrixDistancesSegments = matrixDistancesSegments.buildSegments();
 
-    AvailableRemoteService[] services = { new AvailableRemoteService("localhost:8080", 4) };
-    AvailableRemoteServices availableRemoteServices = new AvailableRemoteServices(services);
-
     RemoteDistancesSegments remoteDistancesSegments =
-            new RemoteDistancesSegments(matrixDistancesSegments, availableRemoteServices);
+            new RemoteDistancesSegments(matrixDistancesSegments);
 
     // When
     remoteDistancesSegments = remoteDistancesSegments.compute();
 
     // Then
-    ImmutableList<MatrixDistancesSegment> segments = remoteDistancesSegments.segments();
+    ImmutableList<MatrixDistancesSegment> segments = remoteDistancesSegments.computedSegments;
     Assertions.assertThat(segments.get(0).distances).isEqualTo(new int[] {0});
   }
 }

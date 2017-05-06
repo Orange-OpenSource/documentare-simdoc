@@ -25,6 +25,10 @@ public class MatrixDistancesSegments {
     public final BytesData[] elements;
     public final int[] distances;
 
+    public boolean distancesComputed() {
+      return distances != null;
+    }
+
     private MatrixDistancesSegment(BytesData element, BytesData[] elements) {
       this(element, elements, null);
     }

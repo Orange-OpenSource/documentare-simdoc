@@ -9,7 +9,9 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
-public interface AvailableRemoteServices {
-  void update();
-  int threadsCount();
+import java.util.Optional;
+
+public interface RequestsProvider {
+  Optional<RequestExecutor> getPendingRequestExecutor();
+  boolean empty();
 }
