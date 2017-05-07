@@ -14,5 +14,4 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class AvailableRemoteService {
   public final String url;
-  public final int availableThreads;
 }

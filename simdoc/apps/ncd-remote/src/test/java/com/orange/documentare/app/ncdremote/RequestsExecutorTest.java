@@ -46,7 +46,6 @@ public class RequestsExecutorTest {
     );
   }
 
-  /** test impl to increment the number of threads at each call */
   private AvailableRemoteServices buildAvailableRemoteServices() {
     return new AvailableRemoteServices() {
       private int threadsCount = 1;
@@ -67,6 +66,11 @@ public class RequestsExecutorTest {
       public int threadsCount() {
         return threadsCount;
       }
+
+      @Override
+      public List<AvailableRemoteService> services() {
+        return null;
+      }
     };
   }
 
@@ -81,17 +85,12 @@ public class RequestsExecutorTest {
         }
         requestId++;
         return Optional.of(new RequestExecutor() {
-                             private final int id = requestId;
-                             @Override
-                             public void exec(RequestsProvider requestsProvider, ResponseCollector responseCollector, int threadId) {
-                               responseCollector.add(new Response(threadId, id));
-                               try {
-                                 Thread.sleep(200);
-                               } catch (InterruptedException e) {
-                                 e.printStackTrace();
-                               }
-                             }
-                           }
+            private final int id = requestId;
+            @Override
+            public void exec(ExecutorContext context) {
+              context.responseCollector.add(new Response(context.threadId, id));
+            }
+          }
         );
       }
       @Override
