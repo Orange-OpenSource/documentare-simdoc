@@ -9,9 +9,11 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
+import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
+@EqualsAndHashCode
 public class RemoteService {
   public final String url;
 }

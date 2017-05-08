@@ -12,16 +12,25 @@ package com.orange.documentare.app.ncdremote;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
 @RequiredArgsConstructor
 public class RequestsExecutor {
 
+  @RequiredArgsConstructor
+  class ServiceInUse {
+    public final RemoteService remoteService;
+    public boolean used;
+  }
+
   class AllocatedThreads {
     private int allocatedThreadsCount;
-    private List<RemoteService> services;
+    private List<ServiceInUse> servicesInUse = new ArrayList<>();
 
     public synchronized void add(int allocNbNewThread) {
       allocatedThreadsCount += allocNbNewThread;
@@ -38,7 +47,23 @@ public class RequestsExecutor {
     }
 
     public void updateServices(List<RemoteService> services) {
-      this.services = services;
+      List<ServiceInUse> servicesInUseToRemove = servicesInUse.stream()
+              .filter(serviceInUse -> !services.contains(serviceInUse.remoteService))
+              .collect(Collectors.toList());
+      servicesInUse.removeAll(servicesInUseToRemove);
+      services.forEach(service -> {
+        if (!servicesInUse.contains(service)) {
+          servicesInUse.add(new ServiceInUse(service));
+        }
+      });
+    }
+
+    public Optional<ServiceInUse> pickService() {
+      Optional<ServiceInUse> service = servicesInUse.stream()
+              .filter(serviceInUse -> !serviceInUse.used)
+              .findFirst();
+      service.ifPresent(serviceInUse -> serviceInUse.used = true);
+      return service;
     }
   }
 
@@ -61,18 +86,25 @@ public class RequestsExecutor {
     int currentThreadsCount = allocatedThreads.count();
     log.info("Allocate {} new threads to process requests, total = {}", allocNbNewThread, currentThreadsCount + allocNbNewThread);
     allocatedThreads.add(allocNbNewThread);
-    IntStream.range(currentThreadsCount, currentThreadsCount + allocNbNewThread).forEach(threadId ->
-            new Thread(run(threadId)).start()
+    IntStream.range(currentThreadsCount, currentThreadsCount + allocNbNewThread).forEach(threadId -> {
+              Optional<ServiceInUse> remoteService = allocatedThreads.pickService();
+              if (remoteService.isPresent()) {
+                new Thread(run(threadId, remoteService.get().remoteService)).start();
+              } else {
+                log.error("[ERROR]: failed to find a remote service...");
+              }
+            }
     );
   }
 
   // FIXME: remote services not handled yet
-  private Runnable run(int threadId) {
+  private Runnable run(int threadId, RemoteService remoteService) {
     return () -> {
       // Optional is empty if no more request are pending (request provider is empty)
       ExecutorContext context = ExecutorContext.builder()
               .requestsProvider(requestsProvider)
               .responseCollector(responseCollector)
+              .remoteService(remoteService)
               .threadId(threadId)
               .build();
       requestsProvider.getPendingRequestExecutor()

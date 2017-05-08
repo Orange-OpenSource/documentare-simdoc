@@ -17,6 +17,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 
 @Slf4j
@@ -34,7 +35,7 @@ public class RequestsExecutorTest {
       if (context.threadId == 0) {
         context.requestsProvider.failedToHandleRequest(id);
       } else {
-        context.responseCollector.add(new Response(context.threadId, id));
+        context.responseCollector.add(new Response(context.threadId, id, context.remoteService.url));
       }
     }
   }
@@ -43,6 +44,7 @@ public class RequestsExecutorTest {
   private class Response {
     final int threadId;
     final int requestId;
+    final String service;
   }
 
   @Test
@@ -86,7 +88,9 @@ public class RequestsExecutorTest {
 
       @Override
       public List<RemoteService> services() {
-        return null;
+        return IntStream.range(0, threadsCount)
+                .mapToObj(i -> new RemoteService("http://server" + i))
+                .collect(Collectors.toList());
       }
     };
   }
@@ -133,7 +137,7 @@ public class RequestsExecutorTest {
     @Override
     public synchronized void add(Response response) {
       responses.add(response);
-      log.info("[Thread {}] request {}", response.threadId, response.requestId);
+      log.info("[Thread {}] request {} @ {}", response.threadId, response.requestId, response.service);
     }
 
     public int get(int requestId) {

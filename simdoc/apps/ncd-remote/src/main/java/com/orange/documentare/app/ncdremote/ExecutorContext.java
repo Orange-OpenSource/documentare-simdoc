@@ -39,7 +39,7 @@ public class ExecutorContext {
       this.responseCollector = responseCollector;
       return this;
     }
-    public ExecutorContextBuilder availableRemoteService(RemoteService remoteService) {
+    public ExecutorContextBuilder remoteService(RemoteService remoteService) {
       this.remoteService = remoteService;
       return this;
     }
