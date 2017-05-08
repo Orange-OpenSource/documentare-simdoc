@@ -14,4 +14,5 @@ import java.util.Optional;
 public interface RequestsProvider {
   Optional<RequestExecutor> getPendingRequestExecutor();
   boolean empty();
+  void failedToHandleRequest(int requestId);
 }

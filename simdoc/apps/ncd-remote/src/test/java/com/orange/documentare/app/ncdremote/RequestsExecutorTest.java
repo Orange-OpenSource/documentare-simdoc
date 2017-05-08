@@ -28,8 +28,14 @@ public class RequestsExecutorTest {
     /** request data: here only an id */
     private final int id;
     @Override
+    /** for test purpose, just return a response with the id */
     public void exec(ExecutorContext context) {
-      context.responseCollector.add(new Response(context.threadId, id));
+      // Simulate error
+      if (context.threadId == 0) {
+        context.requestsProvider.failedToHandleRequest(id);
+      } else {
+        context.responseCollector.add(new Response(context.threadId, id));
+      }
     }
   }
 
@@ -61,6 +67,7 @@ public class RequestsExecutorTest {
       private int threadsCount = 1;
       private int zeroLoops;
       @Override
+      /** increment threads count, reset it, and simulate 'no threads available' case */
       public void update() {
         if (threadsCount >= 16) {
           threadsCount = 0;
@@ -96,6 +103,7 @@ public class RequestsExecutorTest {
         );
         return executorsList;
       }
+
       @Override
       public synchronized Optional<RequestExecutor> getPendingRequestExecutor() {
         if (empty()) {
@@ -105,6 +113,13 @@ public class RequestsExecutorTest {
         executors.remove(0);
         return Optional.of(executor);
       }
+
+      @Override
+      public void failedToHandleRequest(int requestId) {
+        log.warn("[ERROR] on request '{}', we will retry with another thread", requestId);
+        executors.add(new Executor(requestId));
+      }
+
       @Override
       public synchronized boolean empty() {
         return executors.isEmpty();
