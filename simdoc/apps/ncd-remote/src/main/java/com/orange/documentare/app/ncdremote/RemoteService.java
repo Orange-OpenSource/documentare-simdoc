@@ -12,6 +12,6 @@ package com.orange.documentare.app.ncdremote;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
-public class AvailableRemoteService {
+public class RemoteService {
   public final String url;
 }

@@ -14,5 +14,5 @@ import java.util.List;
 public interface AvailableRemoteServices {
   void update();
   int threadsCount();
-  List<AvailableRemoteService> services();
+  List<RemoteService> services();
 }

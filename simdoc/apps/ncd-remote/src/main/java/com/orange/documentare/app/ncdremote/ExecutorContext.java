@@ -6,14 +6,14 @@ import lombok.RequiredArgsConstructor;
 public class ExecutorContext {
   public final RequestsProvider requestsProvider;
   public final ResponseCollector responseCollector;
-  public final AvailableRemoteService availableRemoteService;
+  public final RemoteService remoteService;
   public final int threadId;
 
   private ExecutorContext() {
     // hide direct ctor: use builder instead
     requestsProvider = null;
     responseCollector = null;
-    availableRemoteService = null;
+    remoteService = null;
     threadId = -1;
   }
 
@@ -24,7 +24,7 @@ public class ExecutorContext {
   public static class ExecutorContextBuilder {
     private RequestsProvider requestsProvider;
     private ResponseCollector responseCollector;
-    private AvailableRemoteService availableRemoteService;
+    private RemoteService remoteService;
     private int threadId;
 
     private ExecutorContextBuilder() {
@@ -39,8 +39,8 @@ public class ExecutorContext {
       this.responseCollector = responseCollector;
       return this;
     }
-    public ExecutorContextBuilder availableRemoteService(AvailableRemoteService availableRemoteService) {
-      this.availableRemoteService = availableRemoteService;
+    public ExecutorContextBuilder availableRemoteService(RemoteService remoteService) {
+      this.remoteService = remoteService;
       return this;
     }
     public ExecutorContextBuilder threadId(int threadId) {
@@ -49,7 +49,7 @@ public class ExecutorContext {
     }
 
     public ExecutorContext build() {
-      return new ExecutorContext(requestsProvider, responseCollector, availableRemoteService, threadId);
+      return new ExecutorContext(requestsProvider, responseCollector, remoteService, threadId);
     }
   }
 }

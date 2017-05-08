@@ -24,6 +24,16 @@ public class RequestsExecutorTest {
   private static final int REQUESTS_COUNT = 100;
 
   @RequiredArgsConstructor
+  private class Executor implements RequestExecutor {
+    /** request data: here only an id */
+    private final int id;
+    @Override
+    public void exec(ExecutorContext context) {
+      context.responseCollector.add(new Response(context.threadId, id));
+    }
+  }
+
+  @RequiredArgsConstructor
   private class Response {
     final int threadId;
     final int requestId;
@@ -52,14 +62,14 @@ public class RequestsExecutorTest {
       private int zeroLoops;
       @Override
       public void update() {
-        if (threadsCount >= 8) {
+        if (threadsCount >= 16) {
           threadsCount = 0;
         }
         if (threadsCount == 0) {
           zeroLoops++;
         }
         if (zeroLoops == 0 || zeroLoops > 4) {
-          threadsCount += 2;
+          threadsCount += 4;
         }
       }
       @Override
@@ -68,7 +78,7 @@ public class RequestsExecutorTest {
       }
 
       @Override
-      public List<AvailableRemoteService> services() {
+      public List<RemoteService> services() {
         return null;
       }
     };
@@ -77,25 +87,27 @@ public class RequestsExecutorTest {
   /** request runner just add requestId to response collector */
   private RequestsProvider buildRequestProvider() {
     return new RequestsProvider() {
-      private int requestId;
+      private final List<Executor> executors = initExecutors();
+
+      private List<Executor> initExecutors() {
+        List<Executor> executorsList = new ArrayList<>();
+        IntStream.range(0, REQUESTS_COUNT).forEach(
+                i -> executorsList.add(new Executor(i))
+        );
+        return executorsList;
+      }
       @Override
       public synchronized Optional<RequestExecutor> getPendingRequestExecutor() {
         if (empty()) {
           return Optional.empty();
         }
-        requestId++;
-        return Optional.of(new RequestExecutor() {
-            private final int id = requestId;
-            @Override
-            public void exec(ExecutorContext context) {
-              context.responseCollector.add(new Response(context.threadId, id));
-            }
-          }
-        );
+        Executor executor = executors.get(0);
+        executors.remove(0);
+        return Optional.of(executor);
       }
       @Override
       public synchronized boolean empty() {
-        return requestId >= REQUESTS_COUNT;
+        return executors.isEmpty();
       }
     };
   }

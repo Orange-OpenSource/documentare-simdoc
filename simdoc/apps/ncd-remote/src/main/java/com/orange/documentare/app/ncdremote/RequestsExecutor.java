@@ -21,7 +21,7 @@ public class RequestsExecutor {
 
   class AllocatedThreads {
     private int allocatedThreadsCount;
-    private List<AvailableRemoteService> services;
+    private List<RemoteService> services;
 
     public synchronized void add(int allocNbNewThread) {
       allocatedThreadsCount += allocNbNewThread;
@@ -37,7 +37,7 @@ public class RequestsExecutor {
       return allocatedThreadsCount;
     }
 
-    public void updateServices(List<AvailableRemoteService> services) {
+    public void updateServices(List<RemoteService> services) {
       this.services = services;
     }
   }
