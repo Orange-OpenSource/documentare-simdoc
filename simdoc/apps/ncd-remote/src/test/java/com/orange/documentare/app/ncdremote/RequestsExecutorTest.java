@@ -32,7 +32,7 @@ public class RequestsExecutorTest {
     /** for test purpose, just return a response with the id */
     public void exec(ExecutorContext context) {
       // Simulate error
-      if (context.threadId == 0) {
+      if (context.threadId % 10 == 0) {
         context.requestsProvider.failedToHandleRequest(id);
       } else {
         context.responseCollector.add(new Response(context.threadId, id, context.remoteService.url));
@@ -42,7 +42,7 @@ public class RequestsExecutorTest {
 
   @RequiredArgsConstructor
   private class Response {
-    final int threadId;
+    final long threadId;
     final int requestId;
     final String service;
   }
@@ -77,8 +77,8 @@ public class RequestsExecutorTest {
         if (threadsCount == 0) {
           zeroLoops++;
         }
-        if (zeroLoops == 0 || zeroLoops > 4) {
-          threadsCount += 4;
+        if (zeroLoops == 0 || zeroLoops > 2) {
+          threadsCount += 15;
         }
       }
       @Override

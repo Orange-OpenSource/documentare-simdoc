@@ -7,7 +7,7 @@ public class ExecutorContext {
   public final RequestsProvider requestsProvider;
   public final ResponseCollector responseCollector;
   public final RemoteService remoteService;
-  public final int threadId;
+  public final long threadId;
 
   private ExecutorContext() {
     // hide direct ctor: use builder instead
@@ -25,7 +25,7 @@ public class ExecutorContext {
     private RequestsProvider requestsProvider;
     private ResponseCollector responseCollector;
     private RemoteService remoteService;
-    private int threadId;
+    private long threadId;
 
     private ExecutorContextBuilder() {
       // hide ctor
@@ -43,7 +43,7 @@ public class ExecutorContext {
       this.remoteService = remoteService;
       return this;
     }
-    public ExecutorContextBuilder threadId(int threadId) {
+    public ExecutorContextBuilder threadId(long threadId) {
       this.threadId = threadId;
       return this;
     }
