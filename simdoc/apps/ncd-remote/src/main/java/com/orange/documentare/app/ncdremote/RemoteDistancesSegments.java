@@ -14,12 +14,14 @@ import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistan
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ForkJoinPool;
+import java.util.Optional;
 
-public class RemoteDistancesSegments {
+public class RemoteDistancesSegments implements RequestsProvider {
   private final List<MatrixDistancesSegment> segmentsToCompute;
   private final List<MatrixDistancesSegment> currentComputedSegments = new ArrayList<>();
   public final ImmutableList<MatrixDistancesSegment> computedSegments;
+
+  private final ResponseCollector responseCollector = new ResponseCollectorImpl();
 
   public RemoteDistancesSegments(MatrixDistancesSegments matrixDistancesSegments) {
     this(new ArrayList<>(matrixDistancesSegments.segments), null);
@@ -39,6 +41,27 @@ public class RemoteDistancesSegments {
   }
 
   private void dispatchSegmentsToCompute() {
+    RequestsProvider requestsProvider = this;
+    AvailableRemoteServices availableRemoteServices = new LocalAvailableRemoteServices();
+    RequestsExecutor requestsExecutor = new RequestsExecutor(requestsProvider, responseCollector, availableRemoteServices);
+
+    requestsExecutor.exec();
+  }
+
+  @Override
+  public Optional<RequestExecutor> getPendingRequestExecutor() {
+    return Optional.of(context -> {
+
+    });
+  }
+
+  @Override
+  public boolean empty() {
+    return segmentsToCompute.isEmpty();
+  }
+
+  @Override
+  public void failedToHandleRequest(int requestId) {
 
   }
 }
