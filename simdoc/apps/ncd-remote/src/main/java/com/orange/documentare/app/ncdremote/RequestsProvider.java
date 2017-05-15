@@ -13,6 +13,7 @@ import java.util.Optional;
 
 public interface RequestsProvider {
   Optional<RequestExecutor> getPendingRequestExecutor();
+  int pendingRequestsCount();
   boolean empty();
   void failedToHandleRequest(int requestId);
 }

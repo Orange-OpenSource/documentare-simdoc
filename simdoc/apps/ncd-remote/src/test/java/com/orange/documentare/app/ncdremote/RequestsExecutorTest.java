@@ -119,7 +119,12 @@ public class RequestsExecutorTest {
       }
 
       @Override
-      public void failedToHandleRequest(int requestId) {
+      public synchronized int pendingRequestsCount() {
+        return executors.size();
+      }
+
+      @Override
+      public synchronized void failedToHandleRequest(int requestId) {
         log.warn("[ERROR] on request '{}', we will retry with another thread", requestId);
         executors.add(new Executor(requestId));
       }

@@ -35,9 +35,6 @@ public class RequestsExecutor {
       allocatedThreadsCount += allocNbNewThread;
     }
     public synchronized void subOne() {
-
-      log.warn("FIXME SHOULD NOT ALLOC MORE THREADS THAN COLUMNS... SUB THREAD {}", allocatedThreadsCount);
-
       allocatedThreadsCount--;
       if (allocatedThreadsCount < 0) {
         throw new IllegalStateException("allocatedThreadsCount = " + allocatedThreadsCount);
@@ -72,7 +69,10 @@ public class RequestsExecutor {
     }
 
     remoteServicesThreads.addAvailableRemoteServices(availableRemoteServices.services());
-    allocateNewThreads(availableRemoteServices.threadsCount());
+
+    // no need to allocate more threads than remaining requests
+    int newThreadsCount = Math.min(availableRemoteServices.threadsCount(), requestsProvider.pendingRequestsCount());
+    allocateNewThreads(newThreadsCount);
   }
 
   private void allocateNewThreads(int allocNbNewThread) {

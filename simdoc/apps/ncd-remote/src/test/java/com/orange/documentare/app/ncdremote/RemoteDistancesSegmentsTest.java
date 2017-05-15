@@ -10,18 +10,29 @@ package com.orange.documentare.app.ncdremote;
  */
 
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.model.json.JsonGenericHandler;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class RemoteDistancesSegmentsTest {
 
-  @Test
+  private final TestAnimalsElements testAnimalsElements = new TestAnimalsElements();
 
-  public void remote_computation_on_distinct_elements_arrays() {
+  @Test
+  public void remote_computation_on_distinct_elements_arrays() throws IOException {
     // Given
-    MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(TestElements.elements1(), TestElements.elements2());
+    // FIXME: do not use same array trick, first try without it
+    NcdOutputImporter ncdOutputImporter = readReference();
+
+    BytesData[] elements1 = testAnimalsElements.elements();
+    BytesData[] elements2 = testAnimalsElements.elements();
+    MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(elements1, elements2);
     matrixDistancesSegments = matrixDistancesSegments.buildSegments();
 
     RemoteDistancesSegments remoteDistancesSegments =
@@ -31,6 +42,20 @@ public class RemoteDistancesSegmentsTest {
     List<MatrixDistancesSegment> segments = remoteDistancesSegments.compute();
 
     // Then
-    Assertions.assertThat(segments.get(0).distances).isEqualTo(new int[] {0});
+    segments.stream().forEach(segment -> doAssertion(segment, ncdOutputImporter));
+  }
+
+  private void doAssertion(MatrixDistancesSegment segment, NcdOutputImporter ncdOutputImporter) {
+    String id = new File(segment.element.filepath).getName();
+    int refIndex = IntStream.range(0, ncdOutputImporter.items1.length)
+            .filter(index -> ncdOutputImporter.items1[index].relativeFilename.equals(id))
+            .findFirst()
+            .getAsInt();
+    Assertions.assertThat(segment.distances).isEqualTo(ncdOutputImporter.distancesArray.getDistancesFor(refIndex));
+  }
+
+  private NcdOutputImporter readReference() throws IOException {
+    File file = new File(getClass().getResource("/animals-dna-ncd_regular_files_model.json.gz").getFile());
+    return (NcdOutputImporter) (new JsonGenericHandler()).getObjectFromJsonGzipFile(NcdOutputImporter.class, file);
   }
 }

@@ -64,12 +64,18 @@ public class RemoteDistancesSegments implements RequestsProvider {
 
       try {
         DistancesRequestResult result = distanceRequest.distance(segment.get());
-        context.responseCollector.add(result);
+        // FIXME: do not handle server error
+        context.responseCollector.add(segment.get().withDistances(result.distances));
       } catch (FeignException e) {
         log.error("Request to {} failed with status {}: {}", context.remoteService.url, e.status(),  e.getMessage());
         context.requestsProvider.failedToHandleRequest(getKeyByValue(idMap, segment.get()));
       }
     });
+  }
+
+  @Override
+  public synchronized int pendingRequestsCount() {
+    return segmentsToCompute.size();
   }
 
   private synchronized Optional<MatrixDistancesSegment> nextSegment() {

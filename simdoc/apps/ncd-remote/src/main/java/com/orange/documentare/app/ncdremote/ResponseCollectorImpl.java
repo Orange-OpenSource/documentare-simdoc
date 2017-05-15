@@ -10,6 +10,7 @@ package com.orange.documentare.app.ncdremote;
  */
 
 import com.google.common.collect.ImmutableList;
+import feign.Headers;
 import feign.RequestLine;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesS
 
   interface Distance {
     @RequestLine("POST /distances")
+    @Headers("Content-Type: application/json")
     DistancesRequestResult distance(MatrixDistancesSegment segment);
   }
 
