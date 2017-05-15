@@ -25,10 +25,29 @@ public class RemoteDistancesSegmentsTest {
   private final TestAnimalsElements testAnimalsElements = new TestAnimalsElements();
 
   @Test
+  public void remote_computation_on_same_elements() throws IOException {
+    // Given
+    ExportModel referenceModel = readReferenceForSameArray();
+
+    BytesData[] elements = testAnimalsElements.elements();
+    MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(elements, elements);
+    matrixDistancesSegments = matrixDistancesSegments.buildSegments();
+
+    RemoteDistancesSegments remoteDistancesSegments =
+            new RemoteDistancesSegments(matrixDistancesSegments);
+
+    // When
+    List<MatrixDistancesSegment> segments = remoteDistancesSegments.compute();
+
+    // Then
+    ExportModel exportModel = new ExportModel(elements, elements, segments);
+    Assertions.assertThat(exportModel).isEqualTo(referenceModel);
+  }
+
+  @Test
   public void remote_computation_on_distinct_elements_arrays() throws IOException {
     // Given
-    // FIXME: do not use same array trick, first try without it
-    NcdOutputImporter ncdOutputImporter = readReference();
+    ExportModel referenceModel = readReferenceForDistinctArray();
 
     BytesData[] elements1 = testAnimalsElements.elements();
     BytesData[] elements2 = testAnimalsElements.elements();
@@ -42,20 +61,31 @@ public class RemoteDistancesSegmentsTest {
     List<MatrixDistancesSegment> segments = remoteDistancesSegments.compute();
 
     // Then
-    segments.stream().forEach(segment -> doAssertion(segment, ncdOutputImporter));
+    segments.stream().forEach(segment -> doAssertion(segment, referenceModel));
+
+    ExportModel exportModel = new ExportModel(elements1, elements2, segments);
+    Assertions.assertThat(exportModel).isEqualTo(referenceModel);
   }
 
-  private void doAssertion(MatrixDistancesSegment segment, NcdOutputImporter ncdOutputImporter) {
+  private void doAssertion(MatrixDistancesSegment segment, ExportModel model) {
     String id = new File(segment.element.filepath).getName();
-    int refIndex = IntStream.range(0, ncdOutputImporter.items1.length)
-            .filter(index -> ncdOutputImporter.items1[index].relativeFilename.equals(id))
+    int refIndex = IntStream.range(0, model.items1.length)
+            .filter(index -> model.items1[index].relativeFilename.equals(id))
             .findFirst()
             .getAsInt();
-    Assertions.assertThat(segment.distances).isEqualTo(ncdOutputImporter.distancesArray.getDistancesFor(refIndex));
+    Assertions.assertThat(segment.distances).isEqualTo(model.distancesArray.getDistancesFor(refIndex));
   }
 
-  private NcdOutputImporter readReference() throws IOException {
-    File file = new File(getClass().getResource("/animals-dna-ncd_regular_files_model.json.gz").getFile());
-    return (NcdOutputImporter) (new JsonGenericHandler()).getObjectFromJsonGzipFile(NcdOutputImporter.class, file);
+  private ExportModel readReferenceForSameArray() throws IOException {
+    return readReference("/animals-dna-same-array-ncd_regular_files_model.json.gz");
+  }
+
+  private ExportModel readReferenceForDistinctArray() throws IOException {
+    return readReference("/animals-dna-ncd_regular_files_model.json.gz");
+  }
+
+  private ExportModel readReference(String resId) throws IOException {
+    File file = new File(getClass().getResource(resId).getFile());
+    return (ExportModel) (new JsonGenericHandler()).getObjectFromJsonGzipFile(ExportModel.class, file);
   }
 }

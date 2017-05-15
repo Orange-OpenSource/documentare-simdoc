@@ -73,7 +73,7 @@ public class MatrixDistancesSegments {
 
   private ImmutableList<MatrixDistancesSegment> buildSegmentsForSameElements() {
     return ImmutableList.copyOf(
-            IntStream.range(0, bytesData1.length - 1)
+            IntStream.range(0, bytesData1.length)
                     .mapToObj(i -> new MatrixDistancesSegment(bytesData1[i], requiredComparisonElements(i)))
                     .collect(Collectors.toList())
     );

@@ -23,6 +23,7 @@ import org.apache.commons.cli.ParseException;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 public class NcdRemoteApp {
 
@@ -79,17 +80,13 @@ public class NcdRemoteApp {
       bytesData2 = json1.equals(json2) ? bytesData1 : loadPreppedBytesData(json2);
     }
 
-    //
-    BytesDistances bytesDistances = new BytesDistances(progressListener);
-    DistancesArray distancesArray = bytesDistances.computeDistancesBetweenCollections(bytesData1, bytesData2);
-
     MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(bytesData1, bytesData2);
     matrixDistancesSegments = matrixDistancesSegments.buildSegments();
 
+    RemoteDistancesSegments remoteDistancesSegments = new RemoteDistancesSegments(matrixDistancesSegments);
+    List<MatrixDistancesSegment> segments = remoteDistancesSegments.compute();
 
-    //
-
-    ExportModel exportModel = new ExportModel(bytesData1, bytesData2, distancesArray);
+    ExportModel exportModel = new ExportModel(bytesData1, bytesData2, segments);
     return new ResultToExport(exportModel, FILES_DISTANCES_EXPORT_FILE);
   }
 

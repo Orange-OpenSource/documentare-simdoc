@@ -28,12 +28,12 @@ public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesS
   private final List<MatrixDistancesSegment> segments = new ArrayList<>();
 
   @Override
-  public void add(MatrixDistancesSegment matrixDistancesSegment) {
+  public synchronized void add(MatrixDistancesSegment matrixDistancesSegment) {
     segments.add(matrixDistancesSegment);
   }
 
   @Override
-  public List<MatrixDistancesSegment> responses() {
+  public synchronized List<MatrixDistancesSegment> responses() {
     return ImmutableList.copyOf(segments);
   }
 }

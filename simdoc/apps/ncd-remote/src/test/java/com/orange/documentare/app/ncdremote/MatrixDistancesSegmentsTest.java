@@ -55,7 +55,7 @@ public class MatrixDistancesSegmentsTest {
     MatrixDistancesSegments result = matrixDistancesSegments.buildSegments();
 
     // Then
-    Assertions.assertThat(result.segments).hasSize(2);
+    Assertions.assertThat(result.segments).hasSize(3);
 
     MatrixDistancesSegment segment1 = result.segments.get(0);
     MatrixDistancesSegment segment2 = result.segments.get(1);
