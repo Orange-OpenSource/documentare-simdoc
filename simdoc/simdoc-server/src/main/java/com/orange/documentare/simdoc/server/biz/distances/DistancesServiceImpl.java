@@ -14,7 +14,9 @@ public class DistancesServiceImpl implements DistancesService {
 
   @Override
   public DistancesRequestResult compute(DistancesRequest req) throws IOException {
-    int[] distances = distance.compute(req.element, req.elements);
+    BytesData element = BytesData.withBytes(req.element);
+    BytesData[] elements = BytesData.withBytes(req.elements);
+    int[] distances = distance.compute(element, elements);
     return DistancesRequestResult.with(distances);
   }
 }

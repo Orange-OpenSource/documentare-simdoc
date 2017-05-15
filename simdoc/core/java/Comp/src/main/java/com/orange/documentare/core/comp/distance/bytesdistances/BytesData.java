@@ -69,6 +69,14 @@ public final class BytesData implements DistanceItem {
       .toArray(size -> new BytesData[size]);
   }
 
+  public static BytesData withBytes(BytesData b) {
+    return new BytesData(b.id, b.filepath, b.bytes, true);
+  }
+
+  public static BytesData loadWithoutBytes(String id, String filepath) {
+    return new BytesData(id, filepath, null, false);
+  }
+
   public static BytesData[] loadFromDirectory(File directory, FileIdProvider fileIdProvider) {
     return loadFromDirectory(directory, fileIdProvider, true);
   }

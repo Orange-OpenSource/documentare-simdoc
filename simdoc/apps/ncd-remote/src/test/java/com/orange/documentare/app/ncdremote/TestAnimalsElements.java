@@ -20,6 +20,6 @@ public class TestAnimalsElements {
 
   public BytesData[] elements() {
     File directory = new File(getClass().getResource("/animals-dna/").getFile());
-    return BytesData.loadFromDirectory(directory, file -> file.getName());
+    return BytesData.buildFromDirectoryWithoutBytes(directory, file -> file.getName());
   }
 }

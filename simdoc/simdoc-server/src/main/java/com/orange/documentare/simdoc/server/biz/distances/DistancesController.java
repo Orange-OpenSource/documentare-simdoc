@@ -1,6 +1,5 @@
 package com.orange.documentare.simdoc.server.biz.distances;
 
-import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
