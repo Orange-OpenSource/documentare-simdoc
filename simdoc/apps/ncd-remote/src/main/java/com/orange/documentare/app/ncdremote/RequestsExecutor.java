@@ -28,7 +28,9 @@ public class RequestsExecutor {
       this.availableRemoteServices.addAll(availableRemoteServices);
     }
     public RemoteService pickAvailableRemoteService() {
-      return availableRemoteServices.get(0);
+      RemoteService remoteService = availableRemoteServices.get(0);
+      availableRemoteServices.remove(remoteService);
+      return remoteService;
     }
 
     public synchronized void add(int allocNbNewThread) {

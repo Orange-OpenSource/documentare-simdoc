@@ -66,6 +66,7 @@ public class RemoteDistancesSegments implements RequestsProvider {
         DistancesRequestResult result = distanceRequest.distance(segment.get());
         // FIXME: do not handle server error
         context.responseCollector.add(segment.get().withDistances(result.distances));
+        log.info("[SUCCESS] from {}", context.remoteService.url);
       } catch (FeignException e) {
         log.error("Request to {} failed with status {}: {}", context.remoteService.url, e.status(),  e.getMessage());
         context.requestsProvider.failedToHandleRequest(getKeyByValue(idMap, segment.get()));
