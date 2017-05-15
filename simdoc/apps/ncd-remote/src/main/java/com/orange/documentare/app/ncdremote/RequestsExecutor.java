@@ -35,6 +35,9 @@ public class RequestsExecutor {
       allocatedThreadsCount += allocNbNewThread;
     }
     public synchronized void subOne() {
+
+      log.warn("FIXME SHOULD NOT ALLOC MORE THREADS THAN COLUMNS... SUB THREAD {}", allocatedThreadsCount);
+
       allocatedThreadsCount--;
       if (allocatedThreadsCount < 0) {
         throw new IllegalStateException("allocatedThreadsCount = " + allocatedThreadsCount);

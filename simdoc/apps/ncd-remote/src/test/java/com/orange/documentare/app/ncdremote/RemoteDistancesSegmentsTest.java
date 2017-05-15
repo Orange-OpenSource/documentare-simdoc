@@ -9,16 +9,16 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
-import com.google.common.collect.ImmutableList;
-import org.fest.assertions.Assertions;
-import org.junit.Ignore;
-import org.junit.Test;
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
+import org.fest.assertions.Assertions;
+import org.junit.Test;
+
+import java.util.List;
 
 public class RemoteDistancesSegmentsTest {
 
   @Test
-  @Ignore // FIXME
+
   public void remote_computation_on_distinct_elements_arrays() {
     // Given
     MatrixDistancesSegments matrixDistancesSegments = new MatrixDistancesSegments(TestElements.elements1(), TestElements.elements2());
@@ -28,10 +28,9 @@ public class RemoteDistancesSegmentsTest {
             new RemoteDistancesSegments(matrixDistancesSegments);
 
     // When
-    remoteDistancesSegments = remoteDistancesSegments.compute();
+    List<MatrixDistancesSegment> segments = remoteDistancesSegments.compute();
 
     // Then
-    ImmutableList<MatrixDistancesSegment> segments = remoteDistancesSegments.computedSegments;
     Assertions.assertThat(segments.get(0).distances).isEqualTo(new int[] {0});
   }
 }

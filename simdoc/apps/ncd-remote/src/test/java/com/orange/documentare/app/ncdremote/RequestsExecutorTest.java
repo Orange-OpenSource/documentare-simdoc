@@ -140,6 +140,11 @@ public class RequestsExecutorTest {
       log.info("[Thread {}] request {} @ {}", response.threadId, response.requestId, response.service);
     }
 
+    @Override
+    public List<Response> responses() {
+      return null;
+    }
+
     public int get(int requestId) {
       Optional<Response> optional = responses.stream()
               .filter(response -> response.requestId == requestId)

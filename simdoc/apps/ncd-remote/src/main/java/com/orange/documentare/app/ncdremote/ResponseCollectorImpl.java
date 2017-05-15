@@ -9,9 +9,29 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
-public class ResponseCollectorImpl implements ResponseCollector {
-  @Override
-  public void add(Object o) {
+import com.google.common.collect.ImmutableList;
+import feign.RequestLine;
 
+import java.util.ArrayList;
+import java.util.List;
+import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
+
+public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesSegment> {
+
+  interface Distance {
+    @RequestLine("POST /distances")
+    DistancesRequestResult distance(MatrixDistancesSegment segment);
+  }
+
+  private final List<MatrixDistancesSegment> segments = new ArrayList<>();
+
+  @Override
+  public void add(MatrixDistancesSegment matrixDistancesSegment) {
+    segments.add(matrixDistancesSegment);
+  }
+
+  @Override
+  public List<MatrixDistancesSegment> responses() {
+    return ImmutableList.copyOf(segments);
   }
 }

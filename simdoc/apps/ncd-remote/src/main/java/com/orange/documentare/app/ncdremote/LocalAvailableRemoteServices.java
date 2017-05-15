@@ -9,21 +9,40 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
+import com.google.common.collect.ImmutableList;
+import lombok.Setter;
+
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.IntStream;
 
 public class LocalAvailableRemoteServices implements AvailableRemoteServices {
+  @Setter
+  private RequestsExecutor requestExecutor;
+
+  private final List<RemoteService> availableServices = new ArrayList<>();
+
   @Override
   public void update() {
+    if (requestExecutor.idle()) {
+      addOneLocalServicePerCpuThread();
+    } else {
+      availableServices.clear();
+    }
+  }
 
+  private void addOneLocalServicePerCpuThread() {
+    IntStream.range(0, Runtime.getRuntime().availableProcessors())
+            .forEach(i -> availableServices.add(new RemoteService("http://localhost:8080")));
   }
 
   @Override
   public int threadsCount() {
-    return 0;
+    return availableServices.size();
   }
 
   @Override
   public List<RemoteService> services() {
-    return null;
+    return ImmutableList.copyOf(availableServices);
   }
 }

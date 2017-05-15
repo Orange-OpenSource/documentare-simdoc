@@ -9,6 +9,9 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
+import java.util.List;
+
 public interface ResponseCollector<T> {
   void add(T t);
+  List<T> responses();
 }
