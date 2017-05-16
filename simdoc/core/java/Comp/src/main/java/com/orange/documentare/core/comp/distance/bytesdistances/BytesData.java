@@ -13,12 +13,14 @@ import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import lombok.EqualsAndHashCode;
+import lombok.Synchronized;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.stream.IntStream;
+import java.util.HashMap;
+import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
@@ -27,6 +29,8 @@ public final class BytesData implements DistanceItem {
   public interface FileIdProvider {
     String idFor(File file);
   }
+
+  private static final Map<Integer, byte[]> fileCache = new HashMap<>();
 
   public final String id;
   public final String filepath;
@@ -123,9 +127,22 @@ public final class BytesData implements DistanceItem {
     this.bytes = loadBytes ? loadBytesFromFile(filepath) : bytes;
   }
 
-  private byte[] loadBytesFromFile(String filepath) {
+  /**
+   * Load bytes and manage file bytes cache
+   * Uses lombok static synchronized to protect the cache from multithreading issues
+   */
+  @Synchronized
+  private static byte[] loadBytesFromFile(String filepath) {
+    File file = new File(filepath);
+    int hash = file.hashCode();
+    if (fileCache.containsKey(hash)) {
+      return fileCache.get(hash);
+    }
+
     try {
-      return FileUtils.readFileToByteArray(new File(filepath));
+      byte[] bytes = FileUtils.readFileToByteArray(file);
+      fileCache.put(hash, bytes);
+      return bytes;
     } catch (IOException e) {
       throw new IllegalStateException(String.format("Failed to load file '%s': '%s'", filepath, e.getMessage()));
     }
