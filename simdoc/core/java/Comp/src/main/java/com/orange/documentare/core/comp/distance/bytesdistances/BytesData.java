@@ -129,8 +129,8 @@ public final class BytesData implements DistanceItem {
     };
   }
 
-  public static CacheStats cacheStats() {
-    return fileCache.stats();
+  public static String cacheStats() {
+    return fileCache.stats() + " - size = " + fileCache.size();
   }
 
   private BytesData(String id, String filepath, byte[] bytes, boolean loadBytes) {

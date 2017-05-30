@@ -45,8 +45,8 @@ public class Ncd {
 
     return ncd;  }
 
-  public static CacheStats cacheStats() {
-    return compressedLengthCache.stats();
+  public static String cacheStats() {
+    return compressedLengthCache.stats() + " - size = " + compressedLengthCache.size();
   }
 
   private byte[] buildTaggedArray(byte[] vanilla) {

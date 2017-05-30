@@ -16,7 +16,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class CachesStats {
   public static void log() {
-    log.info("Ncd C(x): " + Ncd.cacheStats().toString());
-    log.info("BytesData file load: " + BytesData.cacheStats().toString());
+    log.info("Ncd C(x): " + Ncd.cacheStats());
+    log.info("BytesData file load: " + BytesData.cacheStats());
   }
 }
