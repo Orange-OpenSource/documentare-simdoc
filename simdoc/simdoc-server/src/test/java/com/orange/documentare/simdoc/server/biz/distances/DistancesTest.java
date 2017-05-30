@@ -13,6 +13,7 @@ package com.orange.documentare.simdoc.server.biz.distances;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.comp.ncd.Ncd;
 import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;

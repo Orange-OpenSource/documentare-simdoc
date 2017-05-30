@@ -9,12 +9,14 @@ package com.orange.documentare.core.comp.ncd;
  * the Free Software Foundation.
  */
 
+import com.google.common.cache.Cache;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheStats;
 import com.orange.documentare.core.comp.bwt.SaisBwt;
 import com.orange.documentare.core.comp.rle.RunLength;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.concurrent.ExecutionException;
 
 @Slf4j
 public class Ncd {
@@ -23,7 +25,10 @@ public class Ncd {
   private final SaisBwt bwt = new SaisBwt();
   private final CompressedLengthMethod compressedLengthMethod = new RunLength();
 
-  final Map<byte[], Integer> compressedLengthCache = new HashMap<>();
+  static final Cache<byte[], Integer> compressedLengthCache = CacheBuilder.newBuilder()
+    .recordStats()
+    .maximumSize(100000)
+    .build();
 
   public float computeNcd(byte[] vanillaX, byte[] vanillaY) {
     byte[] taggedX = buildTaggedArray(vanillaX);
@@ -39,6 +44,10 @@ public class Ncd {
     float ncd = computeNcd(xCompressedLength, yCompressedLength, xyCompressedLength);
 
     return ncd;  }
+
+  public static CacheStats cacheStats() {
+    return compressedLengthCache.stats();
+  }
 
   private byte[] buildTaggedArray(byte[] vanilla) {
     byte[] taggedVanilla = new byte[vanilla.length + SIMDOC_MAGIC_NUMBER.length];
@@ -61,17 +70,14 @@ public class Ncd {
   }
 
   private int computeCompressedLengthOf(byte[] tagged, byte[] vanilla) {
-    Integer cacheCompressedLength = compressedLengthCache.get(vanilla);
-    if (cacheCompressedLength == null) {
-      cacheCompressedLength = doComputeCompressedLengthOf(tagged);
-      updateCompressedLengthCache(vanilla, cacheCompressedLength);
+    try {
+      return compressedLengthCache.get(vanilla,
+        () -> doComputeCompressedLengthOf(tagged));
+    } catch (ExecutionException e) {
+      String msg = "[ERROR] cache error: " + e.getMessage();
+      log.error(msg);
+      throw new IllegalStateException(msg);
     }
-    return cacheCompressedLength;
-  }
-
-  // synchronized to make sure map access are atomic
-  private synchronized void updateCompressedLengthCache(byte[] bytes, Integer cacheCompressedLength) {
-    compressedLengthCache.put(bytes, cacheCompressedLength);
   }
 
   private int doComputeCompressedLengthOf(byte[] bytes) {

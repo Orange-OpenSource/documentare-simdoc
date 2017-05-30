@@ -29,7 +29,7 @@ public class NcdComputeDistanceTest {
     // do
     ncd.computeNcd(bytes, bytes);
     // then
-    Assertions.assertThat(ncd.compressedLengthCache.get(bytes)).isEqualTo(210);
+    Assertions.assertThat(ncd.compressedLengthCache.getIfPresent(bytes)).isEqualTo(210);
   }
 
   @Test
@@ -71,10 +71,10 @@ public class NcdComputeDistanceTest {
     Assertions.assertThat(ncdResult01).isEqualTo(0f);
     Assertions.assertThat(ncdResult23).isEqualTo(0.5714286f);
     Assertions.assertThat(ncdResult45).isEqualTo(0.45454547f);
-    Assertions.assertThat(ncd.compressedLengthCache.get(inputs[0])).isEqualTo(210);
-    Assertions.assertThat(ncd.compressedLengthCache.get(inputs[1])).isEqualTo(210);
-    Assertions.assertThat(ncd.compressedLengthCache.get(inputs[2])).isEqualTo(210);
-    Assertions.assertThat(ncd.compressedLengthCache.get(inputs[3])).isEqualTo(100);
+    Assertions.assertThat(ncd.compressedLengthCache.getIfPresent(inputs[0])).isEqualTo(210);
+    Assertions.assertThat(ncd.compressedLengthCache.getIfPresent(inputs[1])).isEqualTo(210);
+    Assertions.assertThat(ncd.compressedLengthCache.getIfPresent(inputs[2])).isEqualTo(210);
+    Assertions.assertThat(ncd.compressedLengthCache.getIfPresent(inputs[3])).isEqualTo(100);
   }
 
   private byte[][] buildInputs() {

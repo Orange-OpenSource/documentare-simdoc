@@ -11,16 +11,16 @@ package com.orange.documentare.core.comp.distance.bytesdistances;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.CacheStats;
+import com.google.common.cache.LoadingCache;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import lombok.EqualsAndHashCode;
-import lombok.Synchronized;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @EqualsAndHashCode
@@ -30,7 +30,15 @@ public final class BytesData implements DistanceItem {
     String idFor(File file);
   }
 
-  private static final Map<Integer, byte[]> fileCache = new HashMap<>();
+  private static final LoadingCache<File, byte[]> fileCache = CacheBuilder.newBuilder()
+    .softValues()
+    .recordStats()
+    .build(new CacheLoader<File, byte[]>() {
+      @Override
+      public byte[] load(File file) throws Exception {
+        return FileUtils.readFileToByteArray(file);
+      }
+    });
 
   public final String id;
   public final String filepath;
@@ -121,30 +129,21 @@ public final class BytesData implements DistanceItem {
     };
   }
 
+  public static CacheStats cacheStats() {
+    return fileCache.stats();
+  }
+
   private BytesData(String id, String filepath, byte[] bytes, boolean loadBytes) {
     this.id = id;
     this.filepath = filepath;
     this.bytes = loadBytes ? loadBytesFromFile(filepath) : bytes;
   }
 
-  /**
-   * Load bytes and manage file bytes cache
-   * Uses lombok static synchronized to protect the cache from multithreading issues
-   */
-  @Synchronized
   private static byte[] loadBytesFromFile(String filepath) {
     File file = new File(filepath);
-    int hash = file.hashCode();
-    if (fileCache.containsKey(hash)) {
-      return fileCache.get(hash);
+    if (!file.isFile()) {
+      throw new IllegalStateException("Not a file: " + file.getAbsolutePath());
     }
-
-    try {
-      byte[] bytes = FileUtils.readFileToByteArray(file);
-      fileCache.put(hash, bytes);
-      return bytes;
-    } catch (IOException e) {
-      throw new IllegalStateException(String.format("Failed to load file '%s': '%s'", filepath, e.getMessage()));
-    }
+    return fileCache.getUnchecked(file);
   }
 }

@@ -1,5 +1,6 @@
 package com.orange.documentare.simdoc.server.biz.distances;
 
+import com.orange.documentare.simdoc.server.biz.CachesStats;
 import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +30,9 @@ public class DistancesController implements DistancesApi {
     }
 
     try {
-      return compute(req);
+      DistancesRequestResult result = compute(req);
+      CachesStats.log();
+      return result;
     } catch (IOException e) {
       return error(res, e.getMessage());
     }
