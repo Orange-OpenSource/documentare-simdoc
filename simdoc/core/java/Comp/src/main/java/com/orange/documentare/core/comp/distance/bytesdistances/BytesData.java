@@ -19,6 +19,7 @@ import lombok.EqualsAndHashCode;
 import org.apache.commons.io.FileUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.Arrays;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
@@ -132,6 +133,12 @@ public final class BytesData implements DistanceItem {
     if (!file.isFile()) {
       throw new IllegalStateException("Not a file: " + file.getAbsolutePath());
     }
-    return fileCache.getUnchecked(file);
+    // FIXME cache is disabled
+    try {
+      return FileUtils.readFileToByteArray(file);
+    } catch (IOException e) {
+      throw new IllegalStateException("Not a file: " + file.getAbsolutePath());
+    }
+    //return fileCache.getUnchecked(file);
   }
 }

@@ -23,6 +23,8 @@ public class DistancesController implements DistancesApi {
   public DistancesRequestResult distances(
     @RequestBody DistancesRequest req, HttpServletResponse res) throws IOException {
 
+    log.info("[DISTANCES REQ] for element id: " + req.element.id);
+
     RequestValidation validation = req.validate();
     if (!validation.ok) {
       return error(res, validation.error);

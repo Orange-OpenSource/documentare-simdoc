@@ -16,6 +16,7 @@ import com.orange.documentare.core.comp.bwt.SaisBwt;
 import com.orange.documentare.core.comp.rle.RunLength;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.concurrent.ExecutionException;
 
 @Slf4j
@@ -25,7 +26,7 @@ public class Ncd {
   private final SaisBwt bwt = new SaisBwt();
   private final CompressedLengthMethod compressedLengthMethod = new RunLength();
 
-  static final Cache<byte[], Integer> compressedLengthCache = CacheBuilder.newBuilder()
+  static final Cache<Integer, Integer> compressedLengthCache = CacheBuilder.newBuilder()
     .recordStats()
     .maximumSize(100000)
     .build();
@@ -71,7 +72,7 @@ public class Ncd {
 
   private int computeCompressedLengthOf(byte[] tagged, byte[] vanilla) {
     try {
-      return compressedLengthCache.get(vanilla,
+      return compressedLengthCache.get(Arrays.hashCode(vanilla),
         () -> doComputeCompressedLengthOf(tagged));
     } catch (ExecutionException e) {
       String msg = "[ERROR] cache error: " + e.getMessage();
