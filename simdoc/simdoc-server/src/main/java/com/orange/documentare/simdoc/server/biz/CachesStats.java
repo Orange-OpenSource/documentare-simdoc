@@ -11,11 +11,13 @@ package com.orange.documentare.simdoc.server.biz;
 
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.comp.ncd.Ncd;
+import com.orange.documentare.core.system.measure.MemoryState;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CachesStats {
   public static void log() {
+    log.info("Memory: " + (new MemoryState()).displayString());
     log.info("Ncd C(x): " + Ncd.cacheStats());
     log.info("BytesData file load: " + BytesData.cacheStats());
   }
