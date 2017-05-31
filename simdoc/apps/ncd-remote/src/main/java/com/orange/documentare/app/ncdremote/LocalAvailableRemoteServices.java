@@ -34,10 +34,10 @@ public class LocalAvailableRemoteServices implements AvailableRemoteServices {
   private void addOneLocalServicePerCpuThread() {
     IntStream.range(0, Runtime.getRuntime().availableProcessors())
             .forEach(i -> availableServices.add(new RemoteService("http://localhost:8080")));
-    IntStream.range(0, Runtime.getRuntime().availableProcessors())
-            .forEach(i -> availableServices.add(new RemoteService("http://g-z620-4lfq:8080")));
-    IntStream.range(0, /* FIXME Runtime.getRuntime().availableProcessors() */ 8)
-            .forEach(i -> availableServices.add(new RemoteService("http://g-z440-cm:8080")));
+    //IntStream.range(0, Runtime.getRuntime().availableProcessors())
+    //        .forEach(i -> availableServices.add(new RemoteService("http://g-z620-4lfq:8080")));
+    //IntStream.range(0, /* FIXME Runtime.getRuntime().availableProcessors() */ 8)
+    //        .forEach(i -> availableServices.add(new RemoteService("http://g-z440-cm:8080")));
   }
 
   @Override

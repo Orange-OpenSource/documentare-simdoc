@@ -72,9 +72,9 @@ public class NcdRemoteApp {
     BytesData[] bytesData1;
     BytesData[] bytesData2;
     if (json1 == null) {
-      bytesData1 = BytesData.buildFromDirectoryWithoutBytes(directory1, BytesData.relativePathIdProvider(directory1));
+      bytesData1 = BytesData.loadFromDirectory(directory1, BytesData.relativePathIdProvider(directory1));
       bytesData2 = directory1.equals(directory2) ?
-        bytesData1 : BytesData.buildFromDirectoryWithoutBytes(directory2, BytesData.relativePathIdProvider(directory2));
+        bytesData1 : BytesData.loadFromDirectory(directory2, BytesData.relativePathIdProvider(directory2));
     } else {
       bytesData1 = loadPreppedBytesData(json1);
       bytesData2 = json1.equals(json2) ? bytesData1 : loadPreppedBytesData(json2);

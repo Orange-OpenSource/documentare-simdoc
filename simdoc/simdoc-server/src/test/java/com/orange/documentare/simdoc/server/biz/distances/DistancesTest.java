@@ -86,7 +86,7 @@ public class DistancesTest {
 
   private BytesData load(String id) {
     File file = new File(getClass().getResource("/animals-dna/" + id).getFile());
-    return BytesData.loadWithoutBytes(id, file.getAbsolutePath());
+    return new BytesData(id, file.getAbsolutePath());
   }
 
   private BytesData[] loadAnimals() {
