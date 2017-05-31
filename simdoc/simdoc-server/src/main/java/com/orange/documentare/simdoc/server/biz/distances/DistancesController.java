@@ -22,7 +22,6 @@ public class DistancesController implements DistancesApi {
   @Override
   public DistancesRequestResult distances(
     @RequestBody DistancesRequest req, HttpServletResponse res) throws IOException {
-    log.info("[Distances request] " + req);
 
     RequestValidation validation = req.validate();
     if (!validation.ok) {
