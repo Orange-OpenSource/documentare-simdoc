@@ -1,5 +1,6 @@
 package com.orange.documentare.simdoc.server.biz.distances;
 
+import com.orange.documentare.core.comp.distance.Distance;
 import com.orange.documentare.simdoc.server.biz.CachesStats;
 import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;
 import lombok.extern.slf4j.Slf4j;
@@ -15,9 +16,6 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 @Slf4j
 @RestController
 public class DistancesController implements DistancesApi {
-
-  @Autowired
-  DistancesService distancesService;
 
   @Override
   public DistancesRequestResult distances(
@@ -40,7 +38,9 @@ public class DistancesController implements DistancesApi {
   }
 
   private DistancesRequestResult compute(DistancesRequest req) throws IOException {
-    return distancesService.compute(req);
+    Distance distance = new Distance();
+    int[] distances = distance.compute(req.element, req.elements);
+    return DistancesRequestResult.with(distances);
   }
 
   private DistancesRequestResult error(HttpServletResponse res, String error) throws IOException {

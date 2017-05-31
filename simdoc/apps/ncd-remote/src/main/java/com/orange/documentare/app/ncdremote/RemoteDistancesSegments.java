@@ -12,6 +12,8 @@ package com.orange.documentare.app.ncdremote;
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
 import feign.Feign;
 import feign.FeignException;
+import feign.Request;
+import feign.Retryer;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import lombok.extern.slf4j.Slf4j;
@@ -60,6 +62,9 @@ public class RemoteDistancesSegments implements RequestsProvider {
       ResponseCollectorImpl.Distance distanceRequest = Feign.builder()
               .encoder(new JacksonEncoder())
               .decoder(new JacksonDecoder())
+              // Just wait for the job to be done
+              .options(new Request.Options(10000, Integer.MAX_VALUE))
+              .retryer(Retryer.NEVER_RETRY)
               .target(ResponseCollectorImpl.Distance.class, context.remoteService.url);
 
       try {
