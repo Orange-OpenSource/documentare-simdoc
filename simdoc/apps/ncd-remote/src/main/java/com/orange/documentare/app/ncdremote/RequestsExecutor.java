@@ -66,7 +66,6 @@ public class RequestsExecutor {
   private void checkIfNewRemoteServicesAreAvailable() {
     availableRemoteServices.update();
     if (availableRemoteServices.threadsCount() == 0) {
-      log.warn("No remote services available, will wait...");
       return;
     }
 
