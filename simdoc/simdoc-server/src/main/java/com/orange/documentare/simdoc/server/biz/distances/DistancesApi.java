@@ -1,5 +1,6 @@
 package com.orange.documentare.simdoc.server.biz.distances;
 
+import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -19,7 +20,7 @@ public interface DistancesApi {
     value = "/distances",
     produces =  "application/json",
     method = RequestMethod.POST)
-  DistancesRequestResult distances(
+  RemoteTask distances(
     @ApiParam(value = "Distances request parameters", required=true)
     @RequestBody
       DistancesRequest req, HttpServletResponse res) throws IOException;

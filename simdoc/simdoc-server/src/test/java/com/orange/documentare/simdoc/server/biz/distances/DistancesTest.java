@@ -77,7 +77,7 @@ public class DistancesTest {
 
     // do
     RemoteTask remoteTask = postRequestAndRetrievePendingTaskId(req);
-    Assertions.assertThat(remoteTask.id).isGreaterThan(0);
+    Assertions.assertThat(remoteTask.id).isNotEmpty();
 
     DistancesRequestResult result = waitForRemoteTaskToBeDone(remoteTask);
 

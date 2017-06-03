@@ -9,6 +9,7 @@ package com.orange.documentare.simdoc.server.biz.task;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.simdoc.server.biz.distances.DistancesRequestResult;
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
@@ -44,5 +45,20 @@ public class TasksTest {
     Task task = tasks.pop(id);
     Assertions.assertThat(tasks.present(id)).isFalse();
     Assertions.assertThat(task.result.get()).isEqualTo(result);
+  }
+
+  @Test
+  public void add_error_result() {
+    // Given
+    Tasks tasks = new Tasks();
+    DistancesRequestResult result = DistancesRequestResult.error("err");
+    String id = tasks.newTask();
+
+    // When
+    tasks.addErrorResult(id, result);
+    Task task = tasks.pop(id);
+
+    // Then
+    Assertions.assertThat(task.error).isTrue();
   }
 }

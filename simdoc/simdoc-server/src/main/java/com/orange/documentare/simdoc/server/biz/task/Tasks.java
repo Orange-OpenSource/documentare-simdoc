@@ -9,6 +9,7 @@ package com.orange.documentare.simdoc.server.biz.task;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.simdoc.server.biz.distances.DistancesRequestResult;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -31,6 +32,10 @@ public class Tasks {
 
   public synchronized void addResult(String id, Object result) {
     tasks.put(id, tasks.get(id).withResult(result));
+  }
+
+  public void addErrorResult(String id, Object result) {
+    tasks.put(id, tasks.get(id).withErrorResult(result));
   }
 
   public synchronized Task pop(String id) {

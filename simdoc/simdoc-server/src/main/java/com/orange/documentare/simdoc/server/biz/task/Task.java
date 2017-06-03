@@ -15,17 +15,23 @@ import java.util.UUID;
 public class Task {
   public final String id;
   public final Optional<Object> result;
+  public final boolean error;
 
   public Task withResult(Object result) {
-    return new Task(id, Optional.of(result));
+    return new Task(id, Optional.of(result), false);
+  }
+
+  public Task withErrorResult(Object result) {
+    return new Task(id, Optional.of(result), true);
   }
 
   Task() {
-    this(UUID.randomUUID().toString(), Optional.empty());
+    this(UUID.randomUUID().toString(), Optional.empty(), false);
   }
 
-  private Task(String id, Optional<Object> result) {
+  private Task(String id, Optional<Object> result, boolean error) {
     this.id = id;
     this.result = result;
+    this.error = error;
   }
 }

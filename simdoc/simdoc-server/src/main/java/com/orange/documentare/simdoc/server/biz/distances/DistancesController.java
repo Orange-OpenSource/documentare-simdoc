@@ -2,7 +2,9 @@ package com.orange.documentare.simdoc.server.biz.distances;
 
 import com.orange.documentare.core.comp.distance.Distance;
 import com.orange.documentare.simdoc.server.biz.CachesStats;
+import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;
+import com.orange.documentare.simdoc.server.biz.task.Tasks;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,23 +19,35 @@ import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
 @RestController
 public class DistancesController implements DistancesApi {
 
-  @Override
-  public DistancesRequestResult distances(
-    @RequestBody DistancesRequest req, HttpServletResponse res) throws IOException {
+  @Autowired
+  Tasks tasks;
 
+  @Override
+  public RemoteTask distances(
+    @RequestBody DistancesRequest req, HttpServletResponse res) throws IOException {
     log.info("[DISTANCES REQ] for element id: " + req.element.id);
+
+    String taskId = tasks.newTask();
 
     RequestValidation validation = req.validate();
     if (!validation.ok) {
-      return error(res, validation.error);
+      res.sendError(SC_BAD_REQUEST, validation.error);
+      return new RemoteTask(taskId);
     }
 
+    (new Thread(() -> run(taskId, req))).start();
+
+    return new RemoteTask(taskId);
+  }
+
+  private void run(String taskId, DistancesRequest req) {
     try {
       DistancesRequestResult result = compute(req);
+      tasks.addResult(taskId, result);
       CachesStats.log();
-      return result;
     } catch (IOException e) {
-      return error(res, e.getMessage());
+      DistancesRequestResult result = DistancesRequestResult.error(e.getMessage());
+      tasks.addErrorResult(taskId, result);
     }
   }
 
@@ -41,10 +55,5 @@ public class DistancesController implements DistancesApi {
     Distance distance = new Distance();
     int[] distances = distance.compute(req.element, req.elements);
     return DistancesRequestResult.with(distances);
-  }
-
-  private DistancesRequestResult error(HttpServletResponse res, String error) throws IOException {
-    res.sendError(SC_BAD_REQUEST, error);
-    return DistancesRequestResult.error(error);
   }
 }

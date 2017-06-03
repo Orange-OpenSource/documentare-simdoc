@@ -10,10 +10,14 @@ package com.orange.documentare.simdoc.server.biz;
  * the Free Software Foundation.
  */
 
-public class RemoteTask {
-  public final long id;
+import lombok.RequiredArgsConstructor;
 
-  RemoteTask() {
-    id = -1;
+@RequiredArgsConstructor
+public class RemoteTask {
+  public final String id;
+
+  // for deserialization framework
+  public RemoteTask() {
+    this.id = "";
   }
 }
