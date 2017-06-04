@@ -10,14 +10,13 @@ package com.orange.documentare.app.ncdremote;
  */
 
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
-import feign.Feign;
-import feign.FeignException;
-import feign.Request;
-import feign.Retryer;
+import feign.*;
+import feign.Response;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.stream.IntStream;
 
@@ -59,24 +58,44 @@ public class RemoteDistancesSegments implements RequestsProvider {
         return;
       }
 
+      long t0 = System.currentTimeMillis();
+
       ResponseCollectorImpl.Distance distanceRequest = Feign.builder()
               .encoder(new JacksonEncoder())
               .decoder(new JacksonDecoder())
-              // Just wait for the job to be done
-              .options(new Request.Options(10000, Integer.MAX_VALUE))
-              .retryer(Retryer.NEVER_RETRY)
-              .target(ResponseCollectorImpl.Distance.class, context.remoteService.url);
+             .target(ResponseCollectorImpl.Distance.class, context.remoteService.url);
 
       try {
-        DistancesRequestResult result = distanceRequest.distance(segment.get());
-        // FIXME: do not handle server error
+        RemoteTask remoteTask = distanceRequest.distance(segment.get());
+        DistancesRequestResult result = waitForResult(remoteTask.id, context.remoteService.url);
         context.responseCollector.add(segment.get().withDistances(result.distances));
-        log.info("[SUCCESS {}%] from {}", progress(), context.remoteService.url);
-      } catch (FeignException e) {
-        log.error("Request to {} failed with status {}: {}", context.remoteService.url, e.status(),  e.getMessage());
+
+        log.info("[SUCCESS {}%] from {} took {}s", progress(), context.remoteService.url, (System.currentTimeMillis() - t0)/1000);
+      } catch (FeignException|IOException|InterruptedException e) {
+        if (e instanceof FeignException) {
+          log.error("Request to {} failed with status {}: {}", context.remoteService.url, ((FeignException)e).status(), e.getMessage());
+        } else {
+          log.error("Request to {} failed: {}", context.remoteService.url, e.getMessage());
+        }
         context.requestsProvider.failedToHandleRequest(getKeyByValue(idMap, segment.get()));
       }
     });
+  }
+
+  private DistancesRequestResult waitForResult(String taskId, String remoteServiceUrl) throws IOException, InterruptedException {
+    WaitingPeriod waitingPeriod = new WaitingPeriod();
+    ResponseCollectorImpl.DistanceResult distanceResult = Feign.builder()
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder())
+            .target(ResponseCollectorImpl.DistanceResult.class, remoteServiceUrl);
+    Response response;
+    do {
+      waitingPeriod.sleep();
+      response = distanceResult.distanceResult(taskId);
+    } while (response.status() == 204);
+
+    return (DistancesRequestResult) (new JacksonDecoder())
+            .decode(response, DistancesRequestResult.class);
   }
 
   private int progress() {

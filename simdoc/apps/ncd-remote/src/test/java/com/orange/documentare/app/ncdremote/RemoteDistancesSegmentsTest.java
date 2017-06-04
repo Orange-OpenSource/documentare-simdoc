@@ -13,6 +13,7 @@ import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistan
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import org.fest.assertions.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 
 import java.io.File;
@@ -25,6 +26,7 @@ public class RemoteDistancesSegmentsTest {
   private final TestAnimalsElements testAnimalsElements = new TestAnimalsElements();
 
   @Test
+  @Ignore // a running simdoc-server is mandatory for this test
   public void remote_computation_on_same_elements() throws IOException {
     // Given
     ExportModel referenceModel = readReferenceForSameArray();
@@ -45,6 +47,7 @@ public class RemoteDistancesSegmentsTest {
   }
 
   @Test
+  @Ignore // a running simdoc-server is mandatory for this test
   public void remote_computation_on_distinct_elements_arrays() throws IOException {
     // Given
     ExportModel referenceModel = readReferenceForDistinctArray();

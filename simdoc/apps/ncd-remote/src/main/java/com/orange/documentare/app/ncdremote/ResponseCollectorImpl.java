@@ -11,18 +11,25 @@ package com.orange.documentare.app.ncdremote;
 
 import com.google.common.collect.ImmutableList;
 import feign.Headers;
+import feign.Param;
 import feign.RequestLine;
 
 import java.util.ArrayList;
 import java.util.List;
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
+import feign.Response;
 
 public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesSegment> {
 
   interface Distance {
     @RequestLine("POST /distances")
     @Headers("Content-Type: application/json")
-    DistancesRequestResult distance(MatrixDistancesSegment segment);
+    RemoteTask distance(MatrixDistancesSegment segment);
+  }
+
+  interface DistanceResult {
+    @RequestLine("GET /task/{taskId}")
+    Response distanceResult(@Param("taskId") String taskId);
   }
 
   private final List<MatrixDistancesSegment> segments = new ArrayList<>();
