@@ -27,16 +27,32 @@ class ClusteringModel {
             kNearestNeighbours <= 0 ? items.length : kNearestNeighbours;
 
     DistancesArray distancesArray = regularFilesDistances.getDistancesArray();
-    initWithTriangulationVertices(distancesArray);
+    setupItems(distancesArray);
   }
 
+  private void setupItems(DistancesArray distancesArray) {
+    List<NcdItem> itemsList = Arrays.asList(items);
+    for (int i = 0; i < items.length; i++) {
+      NearestItem vertex2 = distancesArray.nearestItemOf(i);
+      NearestItem vertex3 = distancesArray.nearestItemOfBut(vertex2.getIndex(), i);
+      NearestItem[] nearestArray = distancesArray.nearestItemsFor(itemsList, i);
+
+      items[i].setTriangleVertices(new TriangleVertices(nearestArray, vertex3, kNearestNeighbours));
+      // FIXME: added to test clustering of singletons as a second step
+      items[i].setNearestItems(nearestArray);
+    }
+  }
+
+  //
+  // FIXME, previous method, optimal since nearest arrays were not kept
+  //
   /** Memory in place creation, it is optimal since we do not allocate nearest arrays */
-  private void initWithTriangulationVertices(DistancesArray distancesArray) {
+  /*private void setupItems(DistancesArray distancesArray) {
     List<NcdItem> itemsList = Arrays.asList(items);
     for (int i = 0; i < items.length; i++) {
       NearestItem vertex2 = distancesArray.nearestItemOf(i);
       NearestItem vertex3 = distancesArray.nearestItemOfBut(vertex2.getIndex(), i);
       items[i].setTriangleVertices(new TriangleVertices(distancesArray.nearestItemsFor(itemsList, i), vertex3, kNearestNeighbours));
     }
-  }
+  }*/
 }
