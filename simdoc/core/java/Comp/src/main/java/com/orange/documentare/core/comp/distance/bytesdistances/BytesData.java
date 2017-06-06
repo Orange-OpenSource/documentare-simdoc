@@ -9,8 +9,11 @@ package com.orange.documentare.core.comp.distance.bytesdistances;
  * the Free Software Foundation.
  */
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.google.common.cache.CacheBuilder;
+import com.google.common.cache.CacheLoader;
+import com.google.common.cache.LoadingCache;
 import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import lombok.EqualsAndHashCode;
 import org.apache.commons.io.FileUtils;
@@ -18,9 +21,9 @@ import org.apache.commons.io.FileUtils;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.stream.IntStream;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE, setterVisibility = JsonAutoDetect.Visibility.NONE)
 @EqualsAndHashCode
 public final class BytesData implements DistanceItem {
 
@@ -28,32 +31,46 @@ public final class BytesData implements DistanceItem {
     String idFor(File file);
   }
 
+  private static final LoadingCache<File, byte[]> fileCache = CacheBuilder.newBuilder()
+    .softValues()
+    .recordStats()
+    .build(new CacheLoader<File, byte[]>() {
+      @Override
+      public byte[] load(File file) throws Exception {
+        return FileUtils.readFileToByteArray(file);
+      }
+    });
+
   public final String id;
   public final String filepath;
   public final byte[] bytes;
 
   @Override
-  @JsonIgnore
   public String getHumanReadableId() {
     return id;
   }
 
   @Override
+  // in file mode, bytes should always be null and we should rely on the file cache to retrieve dat
+  // => indeed, we rely on the cache to free file data under memory pressure
   public byte[] getBytes() {
-    return bytes;
+    return bytes != null ? bytes : loadBytesFromFile(filepath);
   }
 
   public BytesData(String id, String filepath) {
-    this(id, filepath, null, true);
+    this(id, filepath, null);
+    if (!(new File(filepath)).isFile()) {
+      throw new IllegalStateException("File is not a file: " + filepath);
+    }
   }
 
   public BytesData(String id, byte[] bytes) {
-    this(id, null, bytes, false);
+    this(id, null, bytes);
   }
 
   // required by jackson to deserialize the object
   public BytesData() {
-    this(null, null, null, false);
+    this(null, null, null);
   }
 
   /**
@@ -65,27 +82,19 @@ public final class BytesData implements DistanceItem {
    */
   public static BytesData[] withBytes(BytesData[] bytesData) {
     return Arrays.stream(bytesData)
-      .map(b -> new BytesData(b.id, b.filepath, b.bytes, true))
+      .map(BytesData::withBytes)
       .toArray(size -> new BytesData[size]);
   }
 
-  public static BytesData[] loadFromDirectory(File directory, FileIdProvider fileIdProvider) {
-    return loadFromDirectory(directory, fileIdProvider, true);
+  public static BytesData withBytes(BytesData b) {
+    return new BytesData(b.id, b.filepath, loadBytesFromFile(b.filepath));
   }
 
   public static BytesData[] loadFromDirectory(File directory) {
-    return loadFromDirectory(directory, null, true);
+    return loadFromDirectory(directory, null);
   }
 
-  public static BytesData[] buildFromDirectoryWithoutBytes(File directory) {
-    return loadFromDirectory(directory, null, false);
-  }
-
-  public static BytesData[] buildFromDirectoryWithoutBytes(File directory, FileIdProvider fileIdProvider) {
-    return loadFromDirectory(directory, fileIdProvider, false);
-  }
-
-  private static BytesData[] loadFromDirectory(File directory, FileIdProvider fileIdProvider, boolean withBytes) {
+  public static BytesData[] loadFromDirectory(File directory, FileIdProvider fileIdProvider) {
     if (!directory.isDirectory()) {
       throw new IllegalStateException(String.format("Failed to load data from invalid directory '%s': not a directory", directory.getAbsolutePath()));
     }
@@ -94,7 +103,7 @@ public final class BytesData implements DistanceItem {
     return FileUtils.listFiles(directory, null, true).stream()
       .filter(file -> !file.isHidden())
       .sorted() // For the sake of tests: it is mandatory to keep same order across different test platform...
-      .map(file -> new BytesData(idProvider.idFor(file), file.getAbsolutePath(), null, withBytes))
+      .map(file -> new BytesData(idProvider.idFor(file), file.getAbsolutePath(), null))
       .toArray(size -> new BytesData[size]);
   }
 
@@ -109,17 +118,27 @@ public final class BytesData implements DistanceItem {
     };
   }
 
-  private BytesData(String id, String filepath, byte[] bytes, boolean loadBytes) {
-    this.id = id;
-    this.filepath = filepath;
-    this.bytes = loadBytes ? loadBytesFromFile(filepath) : bytes;
+  public static String cacheStats() {
+    return fileCache.stats() + " - size = " + fileCache.size();
   }
 
-  private byte[] loadBytesFromFile(String filepath) {
-    try {
-      return FileUtils.readFileToByteArray(new File(filepath));
-    } catch (IOException e) {
-      throw new IllegalStateException(String.format("Failed to load file '%s': '%s'", filepath, e.getMessage()));
+  private BytesData(String id, String filepath, byte[] bytes) {
+    this.id = id;
+    this.filepath = filepath;
+    this.bytes = bytes;
+  }
+
+  private static byte[] loadBytesFromFile(String filepath) {
+    File file = new File(filepath);
+    if (!file.isFile()) {
+      throw new IllegalStateException("Not a file: " + file.getAbsolutePath());
     }
+    // FIXME cache is disabled
+    try {
+      return FileUtils.readFileToByteArray(file);
+    } catch (IOException e) {
+      throw new IllegalStateException("Not a file: " + file.getAbsolutePath());
+    }
+    //return fileCache.getUnchecked(file);
   }
 }

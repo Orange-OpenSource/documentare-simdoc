@@ -10,6 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.simdoc.server.biz.CachesStats;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import io.swagger.annotations.ApiParam;
@@ -35,7 +36,6 @@ public class ClusteringController implements ClusteringApi {
 
 
   public ClusteringRequestResult clustering(
-    @ApiParam(value = "Clustering request parameters", required=true)
     @RequestBody ClusteringRequest req, HttpServletResponse res) throws IOException {
 
     log.info("[Clustering request] " + req);
@@ -51,7 +51,10 @@ public class ClusteringController implements ClusteringApi {
       return error(res, validation.error);
     }
 
-    return doClustering(fileIO, req);
+    ClusteringRequestResult result = doClustering(fileIO, req);
+
+    CachesStats.log();
+    return result;
   }
 
   private ClusteringRequestResult doClustering(FileIO fileIO, ClusteringRequest req) throws IOException {

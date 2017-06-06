@@ -68,9 +68,10 @@ public class PrepData {
   private void prepBytesData(File inDir) {
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
 
-    BytesData[] bytesData = withBytes ?
-      BytesData.loadFromDirectory(inDir, BytesData.relativePathIdProvider(inDir)) :
-      BytesData.buildFromDirectoryWithoutBytes(inDir, BytesData.relativePathIdProvider(inDir));
+    BytesData[] bytesData = BytesData.loadFromDirectory(inDir, BytesData.relativePathIdProvider(inDir));
+    if (withBytes) {
+      bytesData = BytesData.withBytes(bytesData);
+    }
 
     PreppedBytesData preppedBytesData = new PreppedBytesData(bytesData);
 

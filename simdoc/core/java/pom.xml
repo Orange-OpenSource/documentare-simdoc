@@ -19,6 +19,7 @@
     <opencv.version>2.4.9-7</opencv.version>
     <jackson.version>2.7.5</jackson.version>
     <commons-io.version>2.4</commons-io.version>
+    <guava.version>22.0</guava.version>
     <commons-codec.version>1.10</commons-codec.version>
     <commons-math3.version>3.5</commons-math3.version>
     <jgrapht.version>0.9.1</jgrapht.version>
@@ -86,6 +87,11 @@
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
         <version>${commons-io.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
       </dependency>
       <dependency>
         <groupId>org.apache.commons</groupId>

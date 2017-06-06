@@ -10,6 +10,7 @@
     <module>line-detection</module>
     <module>prep-data</module>
     <module>ncd</module>
+    <module>ncd-remote</module>
     <module>prep-clustering</module>
     <module>similarity-clustering</module>
     <module>graph</module>
