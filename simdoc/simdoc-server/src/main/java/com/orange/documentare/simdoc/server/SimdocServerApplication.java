@@ -51,13 +51,13 @@ public class SimdocServerApplication {
       .contact(new Contact("Joël Gardes & Christophe Maldivi & Denis Boisset", "https://github.com/Orange-OpenSource/documentare-simdoc", "christophe.maldivi@orange.com"))
       .license("GPLv2")
       .licenseUrl("https://github.com/Orange-OpenSource/documentare-simdoc/blob/master/LICENSE")
-      .version("0.1")
+      .version("0.2")
       .build();
   }
 
   private Predicate<String> paths() {
     return Predicates.or(
-      regex("/clustering")
+      regex("/clustering"), regex("/distances"), regex("/task.*")
     );
   }
 }
