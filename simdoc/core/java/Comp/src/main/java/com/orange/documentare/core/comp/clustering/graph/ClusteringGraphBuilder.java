@@ -22,12 +22,17 @@ import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
+import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import com.orange.documentare.core.system.measure.Progress;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.io.FileUtils;
 import org.jgrapht.Graph;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * For each clustering item, computes the triangle surface and equilaterality factor
@@ -51,9 +56,44 @@ public class ClusteringGraphBuilder {
     ClusteringGraph clusteringGraph = doBuild(clusteringItems);
     updateClusterIdAndCenter(clusteringItems, clusteringGraph.getItems());
 
+    ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
+
+/*
+    ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
+    ClusteringGraph clusteringGraphFromSingletons = doBuild(singletons);
+    updateClusterIdAndCenter(clusteringItems, clusteringGraphFromSingletons.getItems());
+
+    ClusteringGraph mergedGraphs = merge(clusteringGraph, clusteringGraphFromSingletons);
+*/
     percent = 100;
     onProgress(TreatmentStep.DONE);
+    //return mergedGraphs;
     return clusteringGraph;
+  }
+
+  private ClusteringGraph merge(ClusteringGraph clusteringGraph, ClusteringGraph clusteringGraphFromSingletons) {
+    return null;
+  }
+
+  ClusteringItem[] retrieveSingletonsItemsFrom(ClusteringItem[] clusteringItems, ClusteringGraph clusteringGraph) {
+    List<ClusteringItem> singletonList = clusteringGraph.getSubGraphs().values().stream()
+      .filter(subGraph -> subGraph.getItemIndices().size() == 1)
+      .map(subGraph -> subGraph.getItemIndices().get(0))
+      .map(singletonIndex -> clusteringItems[singletonIndex])
+      .collect(Collectors.toList());
+
+    // FIXME: write singleton name in text file for Jojo debug Please remove me
+    String singletonText = "";
+    for(ClusteringItem clusteringItem:singletonList) {
+      singletonText = singletonText + clusteringItem.getHumanReadableId() + '\n';
+    }
+    try {
+      FileUtils.writeStringToFile(new File("singleton.txt"), singletonText);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+
+    return singletonList.toArray(new ClusteringItem[singletonList.size()]);
   }
 
 
