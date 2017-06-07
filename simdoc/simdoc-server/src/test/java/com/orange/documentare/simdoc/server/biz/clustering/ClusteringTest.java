@@ -12,6 +12,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.documentare.core.comp.ncd.Ncd;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;

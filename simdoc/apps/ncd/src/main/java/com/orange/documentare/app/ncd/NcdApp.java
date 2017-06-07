@@ -9,11 +9,13 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
+import com.google.common.cache.CacheStats;
 import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
 import com.orange.documentare.core.comp.measure.ProgressListener;
+import com.orange.documentare.core.comp.ncd.Ncd;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
@@ -43,6 +45,7 @@ public class NcdApp {
 
   private static final ProgressListener progressListener =
     (step, progress) -> System.out.print("\r" + progress.displayString(step.toString()));
+
 
   private static JsonGenericHandler jsonGenericHandler = new JsonGenericHandler(true);
 
