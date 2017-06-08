@@ -67,16 +67,9 @@ public class ClusteringGraphBuilder {
       ClusteringGraph clusteringGraphFromSingletons = doBuild(singletonsCopy);
       updateClusterIdAndCenter(singletonsCopy, clusteringGraphFromSingletons.getItems());
     }
-/*
-    ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
-    ClusteringGraph clusteringGraphFromSingletons = doBuild(singletons);
-    updateClusterIdAndCenter(clusteringItems, clusteringGraphFromSingletons.getItems());
 
-    ClusteringGraph mergedGraphs = merge(clusteringGraph, clusteringGraphFromSingletons);
-*/
     percent = 100;
     onProgress(TreatmentStep.DONE);
-    //return mergedGraphs;
     return clusteringGraph;
   }
 
@@ -92,10 +85,6 @@ public class ClusteringGraphBuilder {
       .collect(Collectors.toList());
 
     return singletonsCopy.toArray(new SingletonForReGraph[singletonsCopy.size()]);
-  }
-
-  private ClusteringGraph merge(ClusteringGraph clusteringGraph, ClusteringGraph clusteringGraphFromSingletons) {
-    return null;
   }
 
   ClusteringItem[] retrieveSingletonsItemsFrom(ClusteringItem[] clusteringItems, ClusteringGraph clusteringGraph) {
