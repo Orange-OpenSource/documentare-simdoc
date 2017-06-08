@@ -68,7 +68,11 @@ public class ClusteringController implements ClusteringApi {
   private void run(String taskId, ClusteringRequest req, FileIO fileIO) {
     try {
       ClusteringRequestResult result = doClustering(fileIO, req);
-      tasks.addResult(taskId, result);
+      if (result != null) {
+        tasks.addResult(taskId, result);
+      } else {
+        tasks.addErrorResult(taskId, ClusteringRequestResult.error("Result is null"));
+      }
       CachesStats.log();
     } catch (IOException e) {
       ClusteringRequestResult result = ClusteringRequestResult.error(e.getMessage());

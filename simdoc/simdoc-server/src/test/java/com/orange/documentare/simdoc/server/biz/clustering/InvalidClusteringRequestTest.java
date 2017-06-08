@@ -12,7 +12,6 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -22,7 +21,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
@@ -150,11 +148,11 @@ public class InvalidClusteringRequestTest {
   @Test
   public void clustering_api_return_bad_request_if_request_contains_unknown_field() throws Exception {
     // Given
-    String expectedMessage = "Request JSON body contains an unknown property";
-    test(new InvalidRequest(), expectedMessage);
+    String expectedMessage = "Request body not readable";
+    test(null, expectedMessage);
   }
 
-  private void test(Object req, String expectedMessage) throws Exception {
+  private void test(ClusteringRequest req, String expectedMessage) throws Exception {
     MvcResult result = mockMvc
       // When
       .perform(
@@ -164,27 +162,14 @@ public class InvalidClusteringRequestTest {
       // Then
       .andExpect(status().isBadRequest())
       .andReturn();
-
-    MockHttpServletResponse res = result.getResponse();
-    ClusteringRequestResult clusteringRequestResult = toClusteringResult(res);
-    Assertions.assertThat(res.getErrorMessage()).contains(expectedMessage);
-    Assertions.assertThat(clusteringRequestResult.error).isTrue();
-    Assertions.assertThat(clusteringRequestResult.errorMessage).contains(expectedMessage);
+    Assertions.assertThat(result.getResponse().getErrorMessage()).contains(expectedMessage);
   }
 
   private String json(Object req) throws JsonProcessingException {
     return mapper.writeValueAsString(req);
   }
 
-  private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
-    return mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
-  }
-
   private void createInputDirectory() {
     (new File(INPUT_DIRECTORY)).mkdir();
-  }
-
-  private class InvalidRequest {
-    public int x;
   }
 }
