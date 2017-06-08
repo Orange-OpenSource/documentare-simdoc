@@ -22,7 +22,6 @@ import com.orange.documentare.core.comp.measure.TreatmentStep;
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.clustering.graph.GraphItem;
-import com.orange.documentare.core.model.ref.clustering.graph.SubGraph;
 import com.orange.documentare.core.system.measure.Progress;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -31,8 +30,12 @@ import org.jgrapht.Graph;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 /**
  * For each clustering item, computes the triangle surface and equilaterality factor
@@ -57,6 +60,10 @@ public class ClusteringGraphBuilder {
     updateClusterIdAndCenter(clusteringItems, clusteringGraph.getItems());
 
     ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
+    SingletonForReGraph[] singletonsCopy = buildSingletonsForRegraph(clusteringItems, singletons);
+
+    ClusteringGraph clusteringGraphFromSingletons = doBuild(singletonsCopy);
+    updateClusterIdAndCenter(singletonsCopy, clusteringGraphFromSingletons.getItems());
 
 /*
     ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
@@ -69,6 +76,20 @@ public class ClusteringGraphBuilder {
     onProgress(TreatmentStep.DONE);
     //return mergedGraphs;
     return clusteringGraph;
+  }
+
+  private SingletonForReGraph[] buildSingletonsForRegraph(ClusteringItem[] clusteringItems, ClusteringItem[] singletons) {
+    List<ClusteringItem> originalItemsList = Arrays.asList(clusteringItems);
+    Map<Integer, Integer> singletonsOldToNewIndexMap = new HashMap<>();
+    IntStream.range(0, singletons.length).forEach(i ->
+      singletonsOldToNewIndexMap.put(originalItemsList.indexOf(singletons[i]), i)
+    );
+
+    List<SingletonForReGraph> singletonsCopy = Arrays.stream(singletons)
+      .map(singleton -> new SingletonForReGraph(singleton, originalItemsList.indexOf(singleton), singletonsOldToNewIndexMap))
+      .collect(Collectors.toList());
+
+    return singletonsCopy.toArray(new SingletonForReGraph[singletonsCopy.size()]);
   }
 
   private ClusteringGraph merge(ClusteringGraph clusteringGraph, ClusteringGraph clusteringGraphFromSingletons) {
