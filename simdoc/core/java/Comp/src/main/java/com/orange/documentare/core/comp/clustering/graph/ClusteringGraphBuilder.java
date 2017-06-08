@@ -60,11 +60,13 @@ public class ClusteringGraphBuilder {
     updateClusterIdAndCenter(clusteringItems, clusteringGraph.getItems());
 
     ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
-    SingletonForReGraph[] singletonsCopy = buildSingletonsForRegraph(clusteringItems, singletons);
 
-    ClusteringGraph clusteringGraphFromSingletons = doBuild(singletonsCopy);
-    updateClusterIdAndCenter(singletonsCopy, clusteringGraphFromSingletons.getItems());
+    if (singletons.length > 3) {
+      SingletonForReGraph[] singletonsCopy = buildSingletonsForRegraph(clusteringItems, singletons);
 
+      ClusteringGraph clusteringGraphFromSingletons = doBuild(singletonsCopy);
+      updateClusterIdAndCenter(singletonsCopy, clusteringGraphFromSingletons.getItems());
+    }
 /*
     ClusteringItem[] singletons = retrieveSingletonsItemsFrom(clusteringItems, clusteringGraph);
     ClusteringGraph clusteringGraphFromSingletons = doBuild(singletons);
@@ -78,7 +80,7 @@ public class ClusteringGraphBuilder {
     return clusteringGraph;
   }
 
-  private SingletonForReGraph[] buildSingletonsForRegraph(ClusteringItem[] clusteringItems, ClusteringItem[] singletons) {
+  SingletonForReGraph[] buildSingletonsForRegraph(ClusteringItem[] clusteringItems, ClusteringItem[] singletons) {
     List<ClusteringItem> originalItemsList = Arrays.asList(clusteringItems);
     Map<Integer, Integer> singletonsOldToNewIndexMap = new HashMap<>();
     IntStream.range(0, singletons.length).forEach(i ->
