@@ -44,6 +44,8 @@ public class ClusteringRequest {
   public final Boolean wcut;
   @ApiModelProperty(example = "5")
   public final Integer kNearestNeighboursThreshold;
+  @ApiModelProperty(example = "false")
+  public final Boolean sloop;
 
   public RequestValidation validate() {
     boolean valid = false;
@@ -78,6 +80,10 @@ public class ClusteringRequest {
     if (kNearestNeighboursThreshold!= null) {
       builder.knn(kNearestNeighboursThreshold);
     }
+    if (sloop != null && sloop) {
+      builder.sloop();
+    }
+
     return builder.build();
   }
 
@@ -100,13 +106,14 @@ public class ClusteringRequest {
     private Integer ccutPercentile;
     private Boolean wcut;
     private Integer kNearestNeighboursThreshold;
+    private Boolean sloop;
 
     private ClusteringRequestBuilder() {
     }
 
     public ClusteringRequest build() {
       boolean bytesDataMode = bytesData != null;
-      return new ClusteringRequest(inputDirectory, bytesData, bytesDataMode, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold);
+      return new ClusteringRequest(inputDirectory, bytesData, bytesDataMode, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
 
@@ -157,6 +164,11 @@ public class ClusteringRequest {
 
     public ClusteringRequestBuilder k(int kNearestNeighboursThreshold) {
       this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
+      return this;
+    }
+
+    public ClusteringRequestBuilder sloop() {
+      sloop = true;
       return this;
     }
   }

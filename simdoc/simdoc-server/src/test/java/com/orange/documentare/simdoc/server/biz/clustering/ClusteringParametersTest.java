@@ -127,6 +127,7 @@ public class ClusteringParametersTest {
       .ccut(ccut)
       .wcut()
       .k(k)
+      .sloop()
       .build();
 
     ExpectedParameters expectedParameters = new ExpectedParameters(
@@ -137,6 +138,7 @@ public class ClusteringParametersTest {
         .ccut(ccut)
         .wcut()
         .knn(k)
+        .sloop()
         .build(), false);
 
     // When/Then
