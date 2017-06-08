@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 
 @Slf4j
 @RestController
@@ -27,15 +28,20 @@ public class DistancesController implements DistancesApi {
     @RequestBody DistancesRequest req, HttpServletResponse res) throws IOException {
     log.info("[DISTANCES REQ] for element id: " + req.element.id);
 
-    String taskId = tasks.newTask();
-
     RequestValidation validation = req.validate();
     if (!validation.ok) {
       res.sendError(SC_BAD_REQUEST, validation.error);
-      return new RemoteTask(taskId);
+      return new RemoteTask();
     }
 
-    (new Thread(() -> run(taskId, req))).start();
+    String taskId;
+    if (tasks.canAcceptNewTask()) {
+      taskId = tasks.newTask();
+      tasks.run(() -> run(taskId, req));
+    } else {
+      res.sendError(SC_SERVICE_UNAVAILABLE, "can not accept more tasks");
+      return new RemoteTask();
+    }
 
     return new RemoteTask(taskId);
   }

@@ -13,6 +13,8 @@ import com.orange.documentare.simdoc.server.biz.distances.DistancesRequestResult
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
 
+import java.util.stream.IntStream;
+
 public class TasksTest {
 
   @Test
@@ -60,5 +62,26 @@ public class TasksTest {
 
     // Then
     Assertions.assertThat(task.error).isTrue();
+  }
+
+  @Test
+  public void reach_max_number_of_tasks() {
+    // Given
+    Tasks tasks = new Tasks();
+
+    // When / Then
+    IntStream.range(0, 10).forEach(j -> {
+
+      IntStream.range(0, Runtime.getRuntime().availableProcessors()).forEach(i -> {
+          Assertions.assertThat(tasks.canAcceptNewTask()).isTrue();
+          tasks.run(() -> {
+            do { System.out.print("*");} while (true);
+          });
+        }
+      );
+
+      Assertions.assertThat(tasks.canAcceptNewTask()).isFalse();
+      tasks.reset();
+    });
   }
 }

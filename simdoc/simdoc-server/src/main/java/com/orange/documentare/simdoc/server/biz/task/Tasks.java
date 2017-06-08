@@ -11,13 +11,17 @@ package com.orange.documentare.simdoc.server.biz.task;
 
 import org.springframework.stereotype.Component;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Component
-public class Tasks {
+public class Tasks implements TaskThread.ActiveThreadListener {
 
   private final Map<String, Task> tasks = new HashMap<>();
+  private final int maxTasks = Runtime.getRuntime().availableProcessors();
+  private final List<Thread> activeThreads = new ArrayList<>();
 
   public synchronized String newTask() {
     Task task = new Task();
@@ -45,5 +49,26 @@ public class Tasks {
 
   public synchronized boolean present(String id) {
     return tasks.containsKey(id);
+  }
+
+  public synchronized void run(Runnable runnable) {
+    Thread thread = new TaskThread(runnable, this);
+    activeThreads.add(thread);
+    thread.start();
+  }
+
+  @Override
+  public synchronized void finished(Thread thread) {
+    activeThreads.remove(thread);
+  }
+
+  public boolean canAcceptNewTask() {
+    return activeThreads.size() < maxTasks;
+  }
+
+  public void reset() {
+    tasks.clear();
+    activeThreads.forEach(thread -> thread.stop());
+    activeThreads.clear();
   }
 }
