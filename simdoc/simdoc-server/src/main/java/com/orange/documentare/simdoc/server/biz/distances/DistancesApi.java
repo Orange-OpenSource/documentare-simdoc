@@ -12,10 +12,9 @@ import java.io.IOException;
 @Api(value = "Distances", description = "Distances API")
 public interface DistancesApi {
 
-  @ApiOperation(value = "Compute distances", response = DistancesRequestResult.class)
+  @ApiOperation(value = "Enqueue distance computation task", response = RemoteTask.class)
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "successful operation", response = DistancesRequestResult.class),
-    @ApiResponse(code = 400, message = "bad request, check response error message", response = DistancesRequestResult.class) })
+    @ApiResponse(code = 200, message = "successful operation", response = RemoteTask.class) })
   @RequestMapping(
     value = "/distances",
     produces =  "application/json",
