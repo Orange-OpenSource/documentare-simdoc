@@ -51,8 +51,7 @@ public class BytesDataTest {
     // then
     Assertions.assertThat(bytesDataFile.id).isEqualTo(id1);
     Assertions.assertThat(bytesDataFile.filepath).isEqualTo(FILE_PATH);
-    Assertions.assertThat(bytesDataFile.bytes).isEqualTo(FILE_CONTENT.getBytes());
-
+    Assertions.assertThat(bytesDataFile.bytes).isNull();
   }
 
   @Test
@@ -91,6 +90,9 @@ public class BytesDataTest {
 
     // Then
     Assertions.assertThat(bytesDataArray).hasSize(2);
+    // check bytes are null, since we are doing lazy loading through a cache
+    Assertions.assertThat(bytesDataArray[0].bytes).isNull();
+    Assertions.assertThat(bytesDataArray[1].bytes).isNull();
   }
 
   @Test
@@ -136,23 +138,10 @@ public class BytesDataTest {
   }
 
   @Test
-  public void build_data_array_from_directory_content_without_bytes() {
-    // Given
-    File directory = new File(getClass().getResource(INPUT_DIR).getFile());
-
-    // When
-    BytesData[] bytesDataArray = BytesData.buildFromDirectoryWithoutBytes(directory);
-
-    // Then
-    Assertions.assertThat(bytesDataArray).hasSize(2);
-    Assertions.assertThat(bytesDataArray[0].bytes).isNull();
-  }
-
-  @Test
   public void build_data_array_from_directory_content_without_bytes_then_add_bytes_in_new_array() {
     // Given
     File directory = new File(getClass().getResource(INPUT_DIR).getFile());
-    BytesData[] bytesDataArray = BytesData.buildFromDirectoryWithoutBytes(directory);
+    BytesData[] bytesDataArray = BytesData.loadFromDirectory(directory);
 
     // When
     BytesData[] bytesDataArrayWithBytes = BytesData.withBytes(bytesDataArray);

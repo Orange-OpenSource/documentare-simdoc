@@ -13,6 +13,7 @@ cp simdoc/simdoc-server/target/simdoc-server-1.0.0-SNAPSHOT.jar simdoc-server-$T
 cp simdoc/apps/line-detection/target/line*.jar line-detection-$TAG.jar && \
 cp simdoc/apps/prep-data/target/prep*.jar prep-data-$TAG.jar && \
 cp simdoc/apps/ncd/target/ncd*.jar ncd-$TAG.jar && \
+cp simdoc/apps/ncd-remote/target/ncd*.jar ncd-remote-$TAG.jar && \
 cp simdoc/apps/prep-clustering/target/prep*.jar prep-clustering-$TAG.jar && \
 cp simdoc/apps/similarity-clustering/target/sim*.jar similarity-clustering-$TAG.jar && \
 cp simdoc/apps/graph/target/graph*.jar graph-$TAG.jar && \

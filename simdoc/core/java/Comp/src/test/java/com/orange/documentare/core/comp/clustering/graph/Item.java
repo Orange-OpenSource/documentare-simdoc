@@ -60,7 +60,8 @@ public class Item implements ClusteringItem {
       items[i].setTriangleVertices(new TriangleVertices(items[i], items, knn));
     }
     // Ensure we can only rely on vertices
-    Arrays.asList(items).stream().forEach(item -> item.setNearestItems(null));
+    // FIXME: keep nearest for Jojo test and singletons regraph
+    //Arrays.asList(items).stream().forEach(item -> item.setNearestItems(null));
     return items;
   }
 
