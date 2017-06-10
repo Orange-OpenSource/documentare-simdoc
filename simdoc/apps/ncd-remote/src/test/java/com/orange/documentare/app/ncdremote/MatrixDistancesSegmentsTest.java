@@ -9,12 +9,10 @@ package com.orange.documentare.app.ncdremote;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
-
-import java.util.stream.IntStream;
-import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
 
 public class MatrixDistancesSegmentsTest {
 

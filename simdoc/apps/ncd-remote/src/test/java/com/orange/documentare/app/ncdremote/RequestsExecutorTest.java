@@ -50,7 +50,7 @@ public class RequestsExecutorTest {
   @Test
   public void dispatch_requests_with_all_available_microservices() {
     // Given
-    TestResponseCollector responseCollector = new TestResponseCollector();
+    TestResponseCollector responseCollector = new TestResponseCollector(REQUESTS_COUNT);
     RequestsProvider requestsProvider = buildRequestProvider();
     AvailableRemoteServices availableRemoteServices = buildAvailableRemoteServices();
     RequestsExecutor requestsExecutor = new RequestsExecutor(requestsProvider, responseCollector, availableRemoteServices);
@@ -80,10 +80,6 @@ public class RequestsExecutorTest {
         if (zeroLoops == 0 || zeroLoops > 2) {
           threadsCount += 15;
         }
-      }
-      @Override
-      public int threadsCount() {
-        return threadsCount;
       }
 
       @Override
@@ -119,11 +115,6 @@ public class RequestsExecutorTest {
       }
 
       @Override
-      public synchronized int pendingRequestsCount() {
-        return executors.size();
-      }
-
-      @Override
       public synchronized void failedToHandleRequest(int requestId) {
         log.warn("[ERROR] on request '{}', we will retry with another thread", requestId);
         executors.add(new Executor(requestId));
@@ -136,7 +127,9 @@ public class RequestsExecutorTest {
     };
   }
 
+  @RequiredArgsConstructor
   private class TestResponseCollector implements ResponseCollector<Response> {
+    private final int expectedResponses;
     private List<Response> responses = new ArrayList<>();
 
     @Override
@@ -148,6 +141,11 @@ public class RequestsExecutorTest {
     @Override
     public List<Response> responses() {
       return null;
+    }
+
+    @Override
+    public boolean allResponsesCollected() {
+      return expectedResponses == responses.size();
     }
 
     public int get(int requestId) {

@@ -1,4 +1,13 @@
 package com.orange.documentare.app.ncdremote;
+/*
+ * Copyright (c) 2017 Orange
+ *
+ * Authors: Christophe Maldivi & Joel Gardes
+ *
+ * This program is free software; you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License version 2 as published by
+ * the Free Software Foundation.
+ */
 
 import lombok.RequiredArgsConstructor;
 
@@ -7,6 +16,7 @@ public class ExecutorContext {
   public final RequestsProvider requestsProvider;
   public final ResponseCollector responseCollector;
   public final RemoteService remoteService;
+  public final ServiceStatusListener serviceStatusListener;
   public final long threadId;
 
   private ExecutorContext() {
@@ -14,6 +24,7 @@ public class ExecutorContext {
     requestsProvider = null;
     responseCollector = null;
     remoteService = null;
+    serviceStatusListener = null;
     threadId = -1;
   }
 
@@ -25,6 +36,7 @@ public class ExecutorContext {
     private RequestsProvider requestsProvider;
     private ResponseCollector responseCollector;
     private RemoteService remoteService;
+    private ServiceStatusListener serviceStatusListener;
     private long threadId;
 
     private ExecutorContextBuilder() {
@@ -43,13 +55,17 @@ public class ExecutorContext {
       this.remoteService = remoteService;
       return this;
     }
+    public ExecutorContextBuilder serviceStatusListener(ServiceStatusListener serviceStatusListener) {
+      this.serviceStatusListener = serviceStatusListener;
+      return this;
+    }
     public ExecutorContextBuilder threadId(long threadId) {
       this.threadId = threadId;
       return this;
     }
 
     public ExecutorContext build() {
-      return new ExecutorContext(requestsProvider, responseCollector, remoteService, threadId);
+      return new ExecutorContext(requestsProvider, responseCollector, remoteService, serviceStatusListener, threadId);
     }
   }
 }

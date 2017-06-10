@@ -22,13 +22,13 @@ import java.util.stream.IntStream;
 
 @Slf4j
 public class RemoteDistancesSegments implements RequestsProvider {
-  private final List<MatrixDistancesSegment> segmentsToCompute;
   private final Map<Integer, MatrixDistancesSegment> idMap = new HashMap<>();
-
-  private final ResponseCollector<MatrixDistancesSegment> responseCollector = new ResponseCollectorImpl();
+  private final List<MatrixDistancesSegment> segmentsToCompute;
+  private final ResponseCollector<MatrixDistancesSegment> responseCollector;
 
   public RemoteDistancesSegments(MatrixDistancesSegments matrixDistancesSegments) {
     this.segmentsToCompute = new ArrayList<>(matrixDistancesSegments.segments);
+    responseCollector = new ResponseCollectorImpl(segmentsToCompute.size());
     IntStream.range(0, segmentsToCompute.size())
             .forEach(index -> idMap.put(index, segmentsToCompute.get(index)));
   }
@@ -45,8 +45,6 @@ public class RemoteDistancesSegments implements RequestsProvider {
     RequestsProvider requestsProvider = this;
     LocalAvailableRemoteServices availableRemoteServices = new LocalAvailableRemoteServices();
     RequestsExecutor requestsExecutor = new RequestsExecutor(requestsProvider, responseCollector, availableRemoteServices);
-    availableRemoteServices.setRequestExecutor(requestsExecutor);
-
     requestsExecutor.exec();
   }
 
@@ -57,29 +55,51 @@ public class RemoteDistancesSegments implements RequestsProvider {
       if (!segment.isPresent()) {
         return;
       }
-
-      long t0 = System.currentTimeMillis();
-
-      ResponseCollectorImpl.Distance distanceRequest = Feign.builder()
-              .encoder(new JacksonEncoder())
-              .decoder(new JacksonDecoder())
-             .target(ResponseCollectorImpl.Distance.class, context.remoteService.url);
-
-      try {
-        RemoteTask remoteTask = distanceRequest.distance(segment.get());
-        DistancesRequestResult result = waitForResult(remoteTask.id, context.remoteService.url);
-        context.responseCollector.add(segment.get().withDistances(result.distances));
-
-        log.info("[SUCCESS {}%] from {} took {}s", progress(), context.remoteService.url, (System.currentTimeMillis() - t0)/1000);
-      } catch (FeignException|IOException|InterruptedException e) {
-        if (e instanceof FeignException) {
-          log.error("Request to {} failed with status {}: {}", context.remoteService.url, ((FeignException)e).status(), e.getMessage());
-        } else {
-          log.error("Request to {} failed: {}", context.remoteService.url, e.getMessage());
-        }
-        context.requestsProvider.failedToHandleRequest(getKeyByValue(idMap, segment.get()));
-      }
+      request(context, segment);
     });
+  }
+
+  private void request(ExecutorContext context, Optional<MatrixDistancesSegment> segment) {
+    long t0 = System.currentTimeMillis();
+
+    ResponseCollectorImpl.Distance distanceRequest = buildFeignRequest(context);
+    try {
+      doRequest(context, segment, distanceRequest);
+      long dt = (System.currentTimeMillis() - t0) / 1000;
+      log.info(String.format("[SUCCESS %d%s] from %s took %ds (%.2fs/elem)", progress(), '%', context.remoteService.url, dt, (float)dt/segment.get().elements.length));
+    } catch (FeignException |IOException |InterruptedException e) {
+      handleError(context, segment, e);
+    }
+  }
+
+  private void doRequest(ExecutorContext context, Optional<MatrixDistancesSegment> segment, ResponseCollectorImpl.Distance distanceRequest) throws IOException, InterruptedException {
+    log.info("[POST REQUEST] {}", context.remoteService.url);
+    RemoteTask remoteTask = distanceRequest.distance(segment.get());
+    DistancesRequestResult result = waitForResult(remoteTask.id, context.remoteService.url);
+    context.responseCollector.add(segment.get().withDistances(result.distances));
+    context.serviceStatusListener.serviceProvidedTaskResult(context.remoteService);
+  }
+
+  private void handleError(ExecutorContext context, Optional<MatrixDistancesSegment> segment, Exception e) {
+    context.requestsProvider.failedToHandleRequest(getKeyByValue(idMap, segment.get()));
+    if (e instanceof FeignException) {
+      int status = ((FeignException) e).status();
+      if (status == 503) {
+        context.serviceStatusListener.serviceCanNotHandleMoreTasks(context.remoteService);
+        log.info("Service {} can not handle more tasks", context.remoteService.url, status, e.getMessage());
+      } else {
+        log.error("Request to {} failed with status {}: {}", context.remoteService.url, status, e.getMessage());
+      }
+    } else {
+      log.error("Request to {} failed: {}", context.remoteService.url, e.getMessage());
+    }
+  }
+
+  private ResponseCollectorImpl.Distance buildFeignRequest(ExecutorContext context) {
+    return Feign.builder()
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder())
+           .target(ResponseCollectorImpl.Distance.class, context.remoteService.url);
   }
 
   private DistancesRequestResult waitForResult(String taskId, String remoteServiceUrl) throws IOException, InterruptedException {
@@ -100,11 +120,6 @@ public class RemoteDistancesSegments implements RequestsProvider {
 
   private int progress() {
     return 100 - ((segmentsToCompute.size() * 100) / idMap.size());
-  }
-
-  @Override
-  public synchronized int pendingRequestsCount() {
-    return segmentsToCompute.size();
   }
 
   private synchronized Optional<MatrixDistancesSegment> nextSegment() {

@@ -58,14 +58,10 @@ public class NcdRemoteApp {
   }
 
   private static void doTheJob(CommandLineOptions o) throws IOException {
-    MemoryWatcher.watch();
-
     ResultToExport resultToExport = doTheJobForRegularFiles(o.getD1(), o.getD2(), o.getJ1(), o.getJ2());
     System.out.println("\n[Export model]");
     // Optim: bytes allocated in do* functions are available for the garbage collector now!
     exportToJson(resultToExport);
-
-    MemoryWatcher.stopWatching();
   }
 
   private static ResultToExport doTheJobForRegularFiles(File directory1, File directory2, File json1, File json2) throws IOException {
