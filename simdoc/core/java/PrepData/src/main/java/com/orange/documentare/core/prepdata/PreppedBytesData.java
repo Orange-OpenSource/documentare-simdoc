@@ -15,4 +15,9 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class PreppedBytesData {
   public final BytesData[] bytesData;
+
+  /** for jackson unserialization */
+  public PreppedBytesData() {
+    bytesData = null;
+  }
 }
