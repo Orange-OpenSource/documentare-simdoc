@@ -46,9 +46,6 @@ public class TasksResetTest {
   private static final String[] ANIMALS = {
     "pigmyChimpanzee", "chimpanzee", "platypus", "human"
   };
-  private static final int[] EXPECTED_DISTANCES = {
-    547959, 552673, 950527, 0
-  };
 
   private final ObjectMapper mapper = new ObjectMapper();
 
