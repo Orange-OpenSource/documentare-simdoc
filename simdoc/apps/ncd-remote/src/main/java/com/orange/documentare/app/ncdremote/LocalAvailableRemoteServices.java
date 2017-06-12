@@ -19,10 +19,10 @@ public class LocalAvailableRemoteServices implements AvailableRemoteServices {
   private final List<RemoteService> availableServices = new ArrayList<>();
 
   LocalAvailableRemoteServices() {
-    //availableServices.add(new RemoteService("http://g-z820-cm:8080"));
-    //availableServices.add(new RemoteService("http://g-z620-4lfq:8080"));
-    //availableServices.add(new RemoteService("http://g-z440-cm:8080"));
-    availableServices.add(new RemoteService("http://localhost:8080"));
+    availableServices.add(new RemoteService("http://g-z820-cm:8080"));
+    availableServices.add(new RemoteService("http://g-z620-4lfq:8080"));
+    availableServices.add(new RemoteService("http://g-z440-cm:8080"));
+    //availableServices.add(new RemoteService("http://localhost:8080"));
   }
 
   @Override
