@@ -9,6 +9,7 @@ package com.orange.documentare.simdoc.server.biz.task;
  * the Free Software Foundation.
  */
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+@Slf4j
 @Component
 public class Tasks implements TaskThread.ActiveThreadListener {
 
@@ -23,14 +25,25 @@ public class Tasks implements TaskThread.ActiveThreadListener {
   private final int maxTasks = Runtime.getRuntime().availableProcessors();
   private final List<Thread> activeThreads = new ArrayList<>();
 
+
+
   public synchronized String newTask() {
     Task task = new Task();
     tasks.put(task.id, task);
     return task.id;
   }
 
+  public synchronized boolean exists(String id) {
+    return tasks.get(id) != null;
+  }
+
   public synchronized boolean isDone(String id) {
-    return tasks.get(id).result.isPresent();
+    Task task = tasks.get(id);
+    if (task == null) {
+      log.warn("Invalid task id: " + id);
+      return false;
+    }
+    return task.result.isPresent();
   }
 
   public synchronized void addResult(String id, Object result) {
@@ -66,9 +79,15 @@ public class Tasks implements TaskThread.ActiveThreadListener {
     return activeThreads.size() < maxTasks;
   }
 
-  public void reset() {
+  public synchronized void killAll() {
     tasks.clear();
-    activeThreads.forEach(thread -> thread.stop());
+    activeThreads.forEach(thread -> {
+      try {
+        thread.stop();
+      } catch (ThreadDeath e) {
+        // catch silently
+      }
+    });
     activeThreads.clear();
   }
 }

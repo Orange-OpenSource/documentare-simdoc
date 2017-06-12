@@ -31,6 +31,18 @@ public class TasksTest {
   }
 
   @Test
+  public void invalid_task_id() {
+    // Given
+    Tasks tasks = new Tasks();
+
+    // When
+    tasks.isDone("invalid");
+
+    // Then
+    Assertions.assertThat(tasks.exists("invalid")).isFalse();
+  }
+
+  @Test
   public void add_task_then_flag_it_as_finished_then_remove_it_when_retrieved() {
     // Given
     Tasks tasks = new Tasks();
@@ -81,7 +93,7 @@ public class TasksTest {
       );
 
       Assertions.assertThat(tasks.canAcceptNewTask()).isFalse();
-      tasks.reset();
+      tasks.killAll();
     });
   }
 }
