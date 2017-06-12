@@ -9,19 +9,15 @@ package com.orange.documentare.app.ncd;
  * the Free Software Foundation.
  */
 
-import com.google.common.cache.CacheStats;
 import com.orange.documentare.app.ncd.cmdline.CommandLineOptions;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
 import com.orange.documentare.core.comp.measure.ProgressListener;
-import com.orange.documentare.core.comp.ncd.Ncd;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.segmentation.DigitalType;
 import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
 import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
-import com.orange.documentare.core.prepdata.Metadata;
-import com.orange.documentare.core.prepdata.PrepData;
 import com.orange.documentare.core.prepdata.PreppedBytesData;
 import com.orange.documentare.core.system.measure.MemoryWatcher;
 import lombok.RequiredArgsConstructor;
@@ -30,7 +26,6 @@ import org.apache.commons.cli.ParseException;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.function.Function;
 
 public class NcdApp {
 
