@@ -14,6 +14,8 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.ncd.Ncd;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
+import com.orange.documentare.simdoc.server.biz.RemoteTask;
+import com.orange.documentare.simdoc.server.biz.distances.DistancesRequestResult;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -30,11 +32,13 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -123,6 +127,15 @@ public class ClusteringTest {
   }
 
   private void coreTest(ClusteringRequest req) throws Exception {
+    RemoteTask remoteTask = postRequestAndRetrievePendingTaskId(req);
+    Assertions.assertThat(remoteTask.id).isNotEmpty();
+
+    ClusteringRequestResult result = waitForRemoteTaskToBeDone(remoteTask);
+    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(req.bytesDataMode));
+    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode));
+  }
+
+  private RemoteTask postRequestAndRetrievePendingTaskId(ClusteringRequest req) throws Exception {
     MvcResult result = mockMvc
       // When
       .perform(
@@ -134,10 +147,28 @@ public class ClusteringTest {
       .andReturn();
 
     MockHttpServletResponse res = result.getResponse();
-    ClusteringRequestResult clusteringRequestResult = toClusteringResult(res);
+    return toRemoteTask(res);
+  }
 
-    Assertions.assertThat(clusteringRequestResult).isEqualTo(expectedClusteringResult(req.bytesDataMode));
-    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode));
+  private RemoteTask toRemoteTask(MockHttpServletResponse res) throws IOException {
+    RemoteTask remoteTask = mapper.readValue(res.getContentAsString(), RemoteTask.class);
+    return remoteTask;
+  }
+
+  private ClusteringRequestResult waitForRemoteTaskToBeDone(RemoteTask remoteTask) throws Exception {
+    MvcResult result;
+    do {
+      result = mockMvc
+        // When
+        .perform(
+          get("/task/" + remoteTask.id))
+        // Then
+        .andExpect(status().is2xxSuccessful())
+        .andReturn();
+    } while (result.getResponse().getStatus() == HttpServletResponse.SC_NO_CONTENT);
+
+    MockHttpServletResponse res = result.getResponse();
+    return toClusteringResult(res);
   }
 
   private String inputDirectory() throws IOException {
