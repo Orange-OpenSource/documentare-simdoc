@@ -9,7 +9,6 @@ package com.orange.documentare.simdoc.server.biz.task;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.simdoc.server.biz.distances.DistancesRequestResult;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

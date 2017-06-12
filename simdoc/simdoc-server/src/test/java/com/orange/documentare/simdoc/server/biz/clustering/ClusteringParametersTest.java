@@ -14,9 +14,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.simdoc.server.biz.FileIO;
+import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import com.orange.documentare.simdoc.server.biz.SharedDirectory;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
+import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -26,14 +28,18 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -87,11 +93,8 @@ public class ClusteringParametersTest {
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    ExpectedParameters expectedParameters =
-      new ExpectedParameters(ClusteringParameters.builder().build(), false);
-
     // When/Then
-    test(req, expectedParameters);
+    test(req);
   }
 
   @Test
@@ -103,11 +106,8 @@ public class ClusteringParametersTest {
       .debug()
       .build();
 
-    ExpectedParameters expectedParameters =
-      new ExpectedParameters(ClusteringParameters.builder().build(), true);
-
     // When/Then
-    test(req, expectedParameters);
+    test(req);
   }
 
   @Test
@@ -127,39 +127,24 @@ public class ClusteringParametersTest {
       .ccut(ccut)
       .wcut()
       .k(k)
+      .sloop()
       .build();
 
-    ExpectedParameters expectedParameters = new ExpectedParameters(
-      ClusteringParameters.builder()
-        .acut(acut)
-        .qcut(qcut)
-        .scut(scut)
-        .ccut(ccut)
-        .wcut()
-        .knn(k)
-        .build(), false);
-
     // When/Then
-    test(req, expectedParameters);
+    test(req);
   }
 
-  private void test(ClusteringRequest req, ExpectedParameters expectedParameters) throws Exception {
+  private void test(ClusteringRequest req) throws Exception {
     createInputDirectory();
     createOutputDirectory();
 
-    mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isOk());
-
+    RemoteTask remoteTask = postRequestAndRetrievePendingTaskId(req);
+    waitForRemoteTaskToBeDone(remoteTask);
     Mockito.verify(clusteringService).build(
       new FileIO(sharedDirectory, req),
       req);
   }
+
 
   private String json(Object req) throws JsonProcessingException {
     return mapper.writeValueAsString(req);
@@ -170,5 +155,44 @@ public class ClusteringParametersTest {
   }
   private void createOutputDirectory() {
     (new File(OUTPUT_DIRECTORY)).mkdir();
+  }
+
+  private RemoteTask postRequestAndRetrievePendingTaskId(ClusteringRequest req) throws Exception {
+    MvcResult result = mockMvc
+      // When
+      .perform(
+        post("/clustering")
+          .contentType(MediaType.APPLICATION_JSON)
+          .content(json(req)))
+      // Then
+      .andExpect(status().isOk())
+      .andReturn();
+
+    MockHttpServletResponse res = result.getResponse();
+    return toRemoteTask(res);
+  }
+
+  private RemoteTask toRemoteTask(MockHttpServletResponse res) throws IOException {
+    RemoteTask remoteTask = mapper.readValue(res.getContentAsString(), RemoteTask.class);
+    return remoteTask;
+  }
+
+  private ClusteringRequestResult waitForRemoteTaskToBeDone(RemoteTask remoteTask) throws Exception {
+    MvcResult result;
+    do {
+      result = mockMvc
+        // When
+        .perform(
+          get("/task/" + remoteTask.id))
+        // Then
+        .andReturn();
+    } while (result.getResponse().getStatus() == HttpServletResponse.SC_NO_CONTENT);
+
+    MockHttpServletResponse res = result.getResponse();
+    return toClusteringResult(res);
+  }
+  private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
+    ClusteringRequestResult clusteringRequestResult = mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
+    return clusteringRequestResult;
   }
 }

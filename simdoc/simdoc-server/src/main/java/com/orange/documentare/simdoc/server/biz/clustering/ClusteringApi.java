@@ -10,6 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import io.swagger.annotations.*;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,15 +22,14 @@ import java.io.IOException;
 @Api(value = "Clustering", description = "Clustering API")
 public interface ClusteringApi {
 
-  @ApiOperation(value = "Build clustering", response = ClusteringRequestResult.class)
+  @ApiOperation(value = "Enqueue Build clustering task", response = RemoteTask.class)
   @ApiResponses(value = {
-    @ApiResponse(code = 200, message = "successful operation", response = ClusteringRequestResult.class),
-    @ApiResponse(code = 400, message = "bad request, check response error message", response = ClusteringRequestResult.class) })
+    @ApiResponse(code = 200, message = "successful operation", response = RemoteTask.class) })
   @RequestMapping(
     value = "/clustering",
     produces =  "application/json",
     method = RequestMethod.POST)
-  ClusteringRequestResult clustering(
+  RemoteTask clustering(
     @ApiParam(value = "Clustering request parameters", required=true)
     @RequestBody
       ClusteringRequest req, HttpServletResponse res) throws IOException;
