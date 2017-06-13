@@ -23,6 +23,10 @@ import lombok.Setter;
 public class SimClusteringItem implements ClusteringItem, DistanceItem {
   /** Keep the relative path name, and useful for items comparison when distance are equal */
   private final String humanReadableId;
+
+  // FIXME we keep nearest items for singletons experimentation on Jo's side
+  private NearestItem[] nearestItems;
+
   private TriangleVertices triangleVertices;
   private Integer clusterId;
   private boolean clusterCenter;
@@ -33,10 +37,6 @@ public class SimClusteringItem implements ClusteringItem, DistanceItem {
   }
 
   /** Not used */
-  @Override
-  public NearestItem[] getNearestItems() {
-    return null;
-  }
   @Override
   public byte[] getBytes() {
     return null;

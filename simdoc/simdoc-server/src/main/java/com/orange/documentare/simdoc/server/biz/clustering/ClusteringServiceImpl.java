@@ -123,8 +123,13 @@ public class ClusteringServiceImpl implements ClusteringService {
     for (int i = 0; i < simClusteringItems.length; i++) {
       NearestItem vertex2 = distancesArray.nearestItemOf(i);
       NearestItem vertex3 = distancesArray.nearestItemOfBut(vertex2.getIndex(), i);
+      NearestItem[] vertex1Nearest = distancesArray.nearestItemsFor(itemsList, i);
+
+      // FIXME we keep nearest items for singletons experimentation on Jo's side
+      simClusteringItems[i].setNearestItems(vertex1Nearest);
+
       simClusteringItems[i].setTriangleVertices(
-        new TriangleVertices(distancesArray.nearestItemsFor(itemsList, i), vertex3, k));
+        new TriangleVertices(vertex1Nearest, vertex3, k));
     }
   }
 }

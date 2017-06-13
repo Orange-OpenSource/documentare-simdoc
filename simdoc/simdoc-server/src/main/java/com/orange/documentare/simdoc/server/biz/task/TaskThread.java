@@ -31,7 +31,8 @@ class TaskThread extends Thread {
     try {
       super.run();
     } catch (Exception e) {
-      log.error("Thread crashed: " + e.getMessage());
+      e.printStackTrace();
+      log.error("Thread crashed", e);
     }
 
     listener.finished(this);
