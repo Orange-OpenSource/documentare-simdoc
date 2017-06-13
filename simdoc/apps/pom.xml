@@ -15,6 +15,7 @@
     <module>similarity-clustering</module>
     <module>graph</module>
     <module>base64</module>
+    <module>clustering-remote</module>
   </modules>
 
   <properties>
