@@ -124,6 +124,7 @@ public class DistancesTest {
         // Then
         .andExpect(status().is2xxSuccessful())
         .andReturn();
+      Thread.sleep(200);
     } while (result.getResponse().getStatus() == HttpServletResponse.SC_NO_CONTENT);
 
     MockHttpServletResponse res = result.getResponse();
