@@ -23,4 +23,11 @@ public interface TaskApi {
     @ApiParam(value = "Task id", required = true)
     @PathVariable
       String id, HttpServletResponse res) throws IOException;
+
+  @ApiOperation(value = "Kill all current tasks")
+  @RequestMapping(
+    value = "/kill-all-tasks",
+    method = RequestMethod.POST)
+  void killAll();
+
 }

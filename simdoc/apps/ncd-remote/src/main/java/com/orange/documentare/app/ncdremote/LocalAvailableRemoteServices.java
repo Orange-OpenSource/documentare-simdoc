@@ -14,35 +14,22 @@ import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class LocalAvailableRemoteServices implements AvailableRemoteServices {
-  @Setter
-  private RequestsExecutor requestExecutor;
-
   private final List<RemoteService> availableServices = new ArrayList<>();
+
+  LocalAvailableRemoteServices() {
+    availableServices.add(new RemoteService("http://g-z820-cm:8080"));
+    availableServices.add(new RemoteService("http://g-z620-4lfq:8080"));
+    availableServices.add(new RemoteService("http://g-z440-cm:8080"));
+    //availableServices.add(new RemoteService("http://localhost:8080"));
+  }
 
   @Override
   public void update() {
-    if (requestExecutor.idle()) {
-      addOneLocalServicePerCpuThread();
-    } else {
-      availableServices.clear();
-    }
-  }
-
-  private void addOneLocalServicePerCpuThread() {
-    IntStream.range(0, 32)
-            .forEach(i -> availableServices.add(new RemoteService("http://g-z820-cm:8080")));
-    IntStream.range(0, 32)
-            .forEach(i -> availableServices.add(new RemoteService("http://g-z620-4lfq:8080")));
-    IntStream.range(0,  8)
-            .forEach(i -> availableServices.add(new RemoteService("http://g-z440-cm:8080")));
-  }
-
-  @Override
-  public int threadsCount() {
-    return availableServices.size();
+    // FIXME, in next version:
+    // - here we should clear the available services
+    // - and update it through a request the service discovery server
   }
 
   @Override

@@ -3,7 +3,6 @@ package com.orange.documentare.simdoc.server.biz.task;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
@@ -20,6 +19,11 @@ public class TaskController implements TaskApi {
   public Object task(@PathVariable String id, HttpServletResponse res) throws IOException {
     log.info("[TASK REQ] for task id: " + id);
 
+    if(!tasks.exists(id)) {
+      res.setStatus(HttpServletResponse.SC_NOT_FOUND);
+      return null;
+    }
+
     if (!tasks.isDone(id)) {
       res.setStatus(HttpServletResponse.SC_NO_CONTENT);
       return null;
@@ -31,5 +35,10 @@ public class TaskController implements TaskApi {
     }
 
     return task.result.get();
+  }
+
+  @Override
+  public void killAll() {
+    tasks.killAll();
   }
 }

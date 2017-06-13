@@ -18,7 +18,9 @@ import java.util.ArrayList;
 import java.util.List;
 import com.orange.documentare.app.ncdremote.MatrixDistancesSegments.MatrixDistancesSegment;
 import feign.Response;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesSegment> {
 
   interface Distance {
@@ -34,6 +36,8 @@ public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesS
 
   private final List<MatrixDistancesSegment> segments = new ArrayList<>();
 
+  private final int expectedCount;
+
   @Override
   public synchronized void add(MatrixDistancesSegment matrixDistancesSegment) {
     segments.add(matrixDistancesSegment);
@@ -42,5 +46,10 @@ public class ResponseCollectorImpl implements ResponseCollector<MatrixDistancesS
   @Override
   public synchronized List<MatrixDistancesSegment> responses() {
     return ImmutableList.copyOf(segments);
+  }
+
+  @Override
+  public boolean allResponsesCollected() {
+    return segments.size() == expectedCount;
   }
 }

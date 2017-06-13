@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST;
+import static javax.servlet.http.HttpServletResponse.SC_SERVICE_UNAVAILABLE;
 
 @Slf4j
 @RestController
@@ -45,22 +46,27 @@ public class ClusteringController implements ClusteringApi {
     @RequestBody ClusteringRequest req, HttpServletResponse res) throws IOException {
     log.info("[Clustering request] " + req);
 
-    String taskId = tasks.newTask();
-
     RequestValidation validation = req.validate();
     if (!validation.ok) {
       res.sendError(SC_BAD_REQUEST, validation.error);
-      return new RemoteTask(taskId);
+      return new RemoteTask();
     }
 
     FileIO fileIO = new FileIO(sharedDirectory, req);
     validation = fileIO.validate();
     if (!validation.ok) {
       res.sendError(SC_BAD_REQUEST, validation.error);
-      return new RemoteTask(taskId);
+      return new RemoteTask();
     }
 
-    (new Thread(() -> run(taskId, req, fileIO))).start();
+    String taskId;
+    if (tasks.canAcceptNewTask()) {
+      taskId = tasks.newTask();
+      tasks.run(() -> run(taskId, req, fileIO));
+    } else {
+      res.sendError(SC_SERVICE_UNAVAILABLE, "can not accept more tasks");
+      return new RemoteTask();
+    }
 
     return new RemoteTask(taskId);
   }

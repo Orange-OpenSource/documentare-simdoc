@@ -14,81 +14,50 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.IntStream;
 
 @Slf4j
 @RequiredArgsConstructor
 public class RequestsExecutor {
 
-  class RemoteServicesThreads {
-    private final List<RemoteService> availableRemoteServices = new ArrayList<>();
-    private int allocatedThreadsCount;
+  class ServiceStatus implements ServiceStatusListener {
+    private final List<RemoteService> overloadedServices = new ArrayList<>();
 
-    public void addAvailableRemoteServices(List<RemoteService> availableRemoteServices) {
-      this.availableRemoteServices.addAll(availableRemoteServices);
+    @Override
+    public synchronized void serviceProvidedTaskResult(RemoteService remoteService) {
+      overloadedServices.remove(remoteService);
     }
-    public RemoteService pickAvailableRemoteService() {
-      RemoteService remoteService = availableRemoteServices.get(0);
-      availableRemoteServices.remove(remoteService);
-      return remoteService;
-    }
-
-    public synchronized void add(int allocNbNewThread) {
-      allocatedThreadsCount += allocNbNewThread;
-    }
-    public synchronized void subOne() {
-      allocatedThreadsCount--;
-      if (allocatedThreadsCount < 0) {
-        throw new IllegalStateException("allocatedThreadsCount = " + allocatedThreadsCount);
+    @Override
+    public synchronized void serviceCanNotHandleMoreTasks(RemoteService remoteService) {
+      if (!overloadedServices.contains(remoteService)) {
+        overloadedServices.add(remoteService);
       }
     }
-    public synchronized int count() {
-      return allocatedThreadsCount;
+    boolean isServiceAvailable(RemoteService remoteService) {
+      return !overloadedServices.contains(remoteService);
     }
   }
 
-  private final RemoteServicesThreads remoteServicesThreads = new RemoteServicesThreads();
+  private static final String[] PROMPT = {"J", "O"};
+
+  private final ServiceStatus serviceStatus = new ServiceStatus();
   private final RequestsProvider requestsProvider;
   private final ResponseCollector responseCollector;
   private final AvailableRemoteServices availableRemoteServices;
 
-  public boolean idle() {
-    return remoteServicesThreads.count() == 0;
-  }
+  private int promptIndex;
 
   public void exec() {
     do {
-      checkIfNewRemoteServicesAreAvailable();
+      availableRemoteServices.update();
+      tryToDispatchNewRequests();
       sleepForAWhile();
-    } while(!requestsProvider.empty() || remoteServicesThreads.count() != 0);
+    } while(!requestsProvider.empty() || !responseCollector.allResponsesCollected());
   }
 
-  private void checkIfNewRemoteServicesAreAvailable() {
-    availableRemoteServices.update();
-    if (availableRemoteServices.threadsCount() == 0) {
-      return;
-    }
-
-    remoteServicesThreads.addAvailableRemoteServices(availableRemoteServices.services());
-
-    // no need to allocate more threads than remaining requests
-    int newThreadsCount = Math.min(availableRemoteServices.threadsCount(), requestsProvider.pendingRequestsCount());
-    allocateNewThreads(newThreadsCount);
-  }
-
-  private void allocateNewThreads(int allocNbNewThread) {
-    if (requestsProvider.empty()) {
-      return;
-    }
-    int currentThreadsCount = remoteServicesThreads.count();
-    log.info("Allocate {} new threads to process requests, total = {}", allocNbNewThread, currentThreadsCount + allocNbNewThread);
-    remoteServicesThreads.add(allocNbNewThread);
-
-    IntStream.range(0, allocNbNewThread).forEach(i -> {
-              RemoteService remoteService = remoteServicesThreads.pickAvailableRemoteService();
-              new Thread(run(remoteService)).start();
-            }
-    );
+  private void tryToDispatchNewRequests() {
+    availableRemoteServices.services().stream()
+      .filter(remoteService -> serviceStatus.isServiceAvailable(remoteService))
+      .forEach(remoteService -> new Thread(run(remoteService)).start());
   }
 
   private Runnable run(RemoteService remoteService) {
@@ -98,19 +67,19 @@ public class RequestsExecutor {
               .requestsProvider(requestsProvider)
               .responseCollector(responseCollector)
               .remoteService(remoteService)
+              .serviceStatusListener(serviceStatus)
               .threadId(Thread.currentThread().getId())
               .build();
       requestsProvider.getPendingRequestExecutor()
         .ifPresent(executor -> executor.exec(context));
-
-      remoteServicesThreads.subOne();
     };
   }
 
-  /** Let threads do their job, and check if new microservices are around or have disappeared */
   private void sleepForAWhile() {
     try {
-      Thread.sleep(1000);
+      System.out.print(PROMPT[promptIndex] + "\r");
+      promptIndex = (promptIndex + 1) % 2;
+      Thread.sleep(100);
     } catch (InterruptedException e) {
       log.warn("Waiting thread was interrupted: " + e.getMessage());
     }
