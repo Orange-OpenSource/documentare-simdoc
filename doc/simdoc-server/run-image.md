@@ -1,9 +1,9 @@
 # Simdoc server docker usage
 
-To pull and run the image: `docker run -p 8080:8080 -v /home/jojo/data:/clustering -e JAVA_MEM=10g registry.gitlab.com/orange-opensource/documentare-simdoc:clustering-1.36.0`
+To pull and run the image: `docker run -p 8080:8080 -v /home/jojo/data:/clustering -e JAVA_MEM=10g registry.gitlab.com/orange-opensource/documentare-simdoc:clustering-1.41.2`
 
  - `-p 8080:8080` to expose container port 8080 to localhost on port 8080
- - `-v /home/jojo/data:/clustering` to mount host directory (i.e. your client computer) '/home/jojo/data' on '/clustering' which is mounted directory name in container (i.e. the docker container which is a virtual machine running on a distant server). All classical mounting rules are applicables here.
+ - `-v /home/jojo/data:/clustering` to mount host directory (i.e. your client computer) '/home/jojo/data' on '/clustering' which is mounted directory name in container (i.e. the docker container which is a virtual machine running on a distant server). All classical mounting rules are applicables here and you have to adapt this parameter depending your environment.
  - `-e JAVA_MEM=10g` to start the server with 10 giga bytes of memory
 
 Request example to test it with swagger UI (http://localhost:8080/):
