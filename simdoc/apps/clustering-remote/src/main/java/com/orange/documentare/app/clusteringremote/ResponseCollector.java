@@ -1,6 +1,6 @@
 package com.orange.documentare.app.clusteringremote;
 /*
- * Copyright (c) 2016 Orange
+ * Copyright (c) 2017 Orange
  *
  * Authors: Christophe Maldivi & Joel Gardes
  *
@@ -9,13 +9,10 @@ package com.orange.documentare.app.clusteringremote;
  * the Free Software Foundation.
  */
 
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import java.util.List;
 
-@Getter
-@Setter
-@NoArgsConstructor
-public class ImportModel {
-  private InputItem[] items;
+public interface ResponseCollector<T> {
+  void add(T t);
+  List<T> responses();
+  boolean allResponsesCollected();
 }

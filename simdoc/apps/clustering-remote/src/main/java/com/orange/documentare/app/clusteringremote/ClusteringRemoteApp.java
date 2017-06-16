@@ -9,16 +9,8 @@ package com.orange.documentare.app.clusteringremote;
  * the Free Software Foundation.
  */
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.orange.documentare.app.clusteringremote.cmdline.CommandLineOptions;
 import com.orange.documentare.app.clusteringremote.cmdline.ClusteringRemoteOptions;
-import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
-import com.orange.documentare.core.model.json.JsonGenericHandler;
-import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
-import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.core.model.ref.segmentation.DigitalType;
-import com.orange.documentare.core.model.ref.segmentation.DigitalTypes;
-import com.orange.documentare.core.model.ref.segmentation.ImageSegmentation;
+import com.orange.documentare.app.clusteringremote.cmdline.CommandLineOptions;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 
@@ -50,14 +42,29 @@ public class ClusteringRemoteApp {
 
   private static void doTheJob() throws IOException {
     System.out.println("Clustering parameters, " + options.clusteringParameters.toString());
-    if (options.simdoc) {
+    ClusteringRequest req = ClusteringRequest.builder()
+      .inputDirectory(options.inputDirectory)
+      .outputDirectory(options.outputDirectory)
+      .acut(options.clusteringParameters.acutSdFactor)
+      .qcut(options.clusteringParameters.qcutSdFactor)
+      .scut(options.clusteringParameters.scutSdFactor)
+      .ccut(options.clusteringParameters.ccutPercentile)
+      .wcut()
+      .k(options.clusteringParameters.kNearestNeighboursThreshold)
+      .sloop()
+      .build();
+
+    RemoteClustering remoteClustering = new RemoteClustering();
+    remoteClustering.request("http://localhost:8080", req);
+
+  /*  if (options.simdoc) {
       doTheJobForSimDoc();
     } else {
       doTheJobForRegularFiles();
-    }
+    }*/
   }
 
-  private static void doTheJobForSimDoc() throws IOException {
+/*  private static void doTheJobForSimDoc() throws IOException {
     ImageSegmentation imageSegmentation = segmentationOf();
     DigitalTypes copyWithoutSpaces = imageSegmentation.getDigitalTypes().copyWithoutSpaces();
     ClusteringItem[] items = copyWithoutSpaces.toArray(new DigitalType[copyWithoutSpaces.size()]);
@@ -94,5 +101,5 @@ public class ClusteringRemoteApp {
   private static ClusteringGraph getClusteringGraphFor(ClusteringItem[] items) {
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     return clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(items, options.clusteringParameters);
-  }
+  }*/
 }

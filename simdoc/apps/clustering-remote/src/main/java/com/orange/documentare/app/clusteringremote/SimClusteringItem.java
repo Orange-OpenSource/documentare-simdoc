@@ -10,31 +10,35 @@ package com.orange.documentare.app.clusteringremote;
  */
 
 import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
+import com.orange.documentare.core.model.ref.comp.DistanceItem;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
-public class InputItem implements ClusteringItem {
-  private String humanReadableId;
-
-  private NearestItem[] nearestItems;
+@RequiredArgsConstructor
+public class SimClusteringItem implements ClusteringItem, DistanceItem {
+  /** Keep the relative path name, and useful for items comparison when distance are equal */
+  private final String humanReadableId;
   private TriangleVertices triangleVertices;
-
   private Integer clusterId;
-  private Boolean clusterCenter;
-
-  private byte[] bytes;
-
-  @Override
-  public void setClusterCenter(boolean isCenter) {
-    clusterCenter = isCenter;
-  }
+  private boolean clusterCenter;
 
   @Override
   public boolean triangleVerticesAvailable() {
-    return triangleVertices != null;
+    return true;
+  }
+
+  /** Not used */
+  @Override
+  public NearestItem[] getNearestItems() {
+    return null;
+  }
+  @Override
+  public byte[] getBytes() {
+    return null;
   }
 }

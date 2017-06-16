@@ -75,6 +75,13 @@ public class CommandLineOptions {
       if (commandLine.hasOption(WONDER_CUT)) {
         builder.wcut();
       }
+
+      if (commandLine.hasOption(INPUT_DIRECTORY)) {
+        optionsBuilder.inputDirectory(commandLine.getOptionValue(INPUT_DIRECTORY));
+      }
+      if (commandLine.hasOption(OUTPUT_DIRECTORY)) {
+        optionsBuilder.outputDirectory(commandLine.getOptionValue(OUTPUT_DIRECTORY));
+      }
     }
   }
 

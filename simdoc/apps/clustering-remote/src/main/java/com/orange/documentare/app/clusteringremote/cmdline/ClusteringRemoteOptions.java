@@ -15,16 +15,16 @@ import com.orange.documentare.core.system.CommandLineException;
 import java.io.File;
 
 public class ClusteringRemoteOptions {
-  public final boolean simdoc;
-  public final File regularFile;
-  public final File simdocFile;
+  //public final boolean simdoc;
+  public final String inputDirectory;
+  public final String outputDirectory;
   public final ClusteringParameters clusteringParameters;
 
-  private ClusteringRemoteOptions(File regularFile, File simdocFile, ClusteringParameters clusteringParameters) {
-    this.regularFile = regularFile;
-    this.simdocFile = simdocFile;
+  private ClusteringRemoteOptions(String inputDirectory, String outputDirectory, ClusteringParameters clusteringParameters) {
+    this.outputDirectory = outputDirectory;
+    this.inputDirectory = inputDirectory;
     this.clusteringParameters = clusteringParameters;
-    simdoc = simdocFile != null;
+    //simdoc = simdocFile != null;
   }
 
   public static SimClusteringOptionsBuilder builder() {
@@ -33,28 +33,28 @@ public class ClusteringRemoteOptions {
 
   public static class SimClusteringOptionsBuilder {
     public final ClusteringParameters.ClusteringParametersBuilder clusteringParametersBuilder = ClusteringParameters.builder();
-    private File regularFile;
-    private File simdocFile;
+    private String inputDirectory;
+    private String outputDirectory;
 
     private SimClusteringOptionsBuilder() {
 
     }
 
-    public void regularFile(String optionValue) {
-      regularFile = new File(optionValue);
+    public void inputDirectory(String optionValue) {
+      inputDirectory = optionValue;
     }
 
-    public void simdocFile(String optionValue) {
-      simdocFile = new File(optionValue);
+    public void outputDirectory(String optionValue) {
+      outputDirectory = optionValue;
     }
 
     public ClusteringRemoteOptions build() {
       checkOptions();
-      return new ClusteringRemoteOptions(regularFile, simdocFile, clusteringParametersBuilder.build());
+      return new ClusteringRemoteOptions(inputDirectory, outputDirectory, clusteringParametersBuilder.build());
     }
 
     private void checkOptions() {
-      if ((regularFile == null || !regularFile.exists()) && (simdocFile == null || !simdocFile.exists())) {
+      if ((inputDirectory == null ) && (outputDirectory == null )) {
         throw new CommandLineException("Missing input file");
       }
     }
