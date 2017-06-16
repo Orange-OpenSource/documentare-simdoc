@@ -56,6 +56,8 @@ public class RemoteClustering  {
   }
   private ResponseCollectorImpl.Clustering buildFeignRequest(String url) {
     return Feign.builder()
+            .encoder(new JacksonEncoder())
+            .decoder(new JacksonDecoder())
            .target(ResponseCollectorImpl.Clustering.class, url);
   }
 

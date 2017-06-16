@@ -16,8 +16,25 @@ import feign.RequestLine;
 import feign.Response;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 @RequiredArgsConstructor
-public class ResponseCollectorImpl  {
+public class ResponseCollectorImpl  implements ResponseCollector<ClusteringRequest>{
+
+  @Override
+  public void add(ClusteringRequest clusteringRequest) {
+
+  }
+
+  @Override
+  public List<ClusteringRequest> responses() {
+    return null;
+  }
+
+  @Override
+  public boolean allResponsesCollected() {
+    return false;
+  }
 
   interface Clustering {
     @RequestLine("POST /clustering")
