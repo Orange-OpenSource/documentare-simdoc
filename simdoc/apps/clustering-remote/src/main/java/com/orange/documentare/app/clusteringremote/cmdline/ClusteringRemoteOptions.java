@@ -15,16 +15,17 @@ import com.orange.documentare.core.system.CommandLineException;
 import java.io.File;
 
 public class ClusteringRemoteOptions {
-  //public final boolean simdoc;
   public final String inputDirectory;
   public final String outputDirectory;
+  public Boolean debug = false;
   public final ClusteringParameters clusteringParameters;
 
-  private ClusteringRemoteOptions(String inputDirectory, String outputDirectory, ClusteringParameters clusteringParameters) {
+
+  private ClusteringRemoteOptions(String inputDirectory, String outputDirectory, Boolean debug, ClusteringParameters clusteringParameters) {
     this.outputDirectory = outputDirectory;
     this.inputDirectory = inputDirectory;
+    this.debug = debug;
     this.clusteringParameters = clusteringParameters;
-    //simdoc = simdocFile != null;
   }
 
   public static SimClusteringOptionsBuilder builder() {
@@ -35,6 +36,7 @@ public class ClusteringRemoteOptions {
     public final ClusteringParameters.ClusteringParametersBuilder clusteringParametersBuilder = ClusteringParameters.builder();
     private String inputDirectory;
     private String outputDirectory;
+    private Boolean debug = false;
 
     private SimClusteringOptionsBuilder() {
 
@@ -48,15 +50,20 @@ public class ClusteringRemoteOptions {
       outputDirectory = optionValue;
     }
 
+
     public ClusteringRemoteOptions build() {
       checkOptions();
-      return new ClusteringRemoteOptions(inputDirectory, outputDirectory, clusteringParametersBuilder.build());
+      return new ClusteringRemoteOptions(inputDirectory, outputDirectory, debug, clusteringParametersBuilder.build());
     }
 
     private void checkOptions() {
       if ((inputDirectory == null ) && (outputDirectory == null )) {
         throw new CommandLineException("Missing input file");
       }
+    }
+
+    public void debug() {
+      debug = true;
     }
   }
 }

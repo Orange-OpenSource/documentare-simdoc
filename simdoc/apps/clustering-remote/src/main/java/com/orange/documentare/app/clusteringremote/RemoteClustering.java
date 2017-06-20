@@ -29,8 +29,6 @@ public class RemoteClustering  {
     ResponseCollectorImpl.Clustering clustering  = buildFeignRequest(url);
     try {
       doRequest(url, clustering, clusteringRequest);
-      long dt = (System.currentTimeMillis() - t0) / 1000;
-//      log.info(String.format("[SUCCESS %d%s] from %s took %ds (%.2fs/elem)", progress(), '%', context.remoteService.url, dt, (float)dt/segment.get().elements.length));
     } catch (FeignException |IOException |InterruptedException e) {
       handleError(url, e);
     }

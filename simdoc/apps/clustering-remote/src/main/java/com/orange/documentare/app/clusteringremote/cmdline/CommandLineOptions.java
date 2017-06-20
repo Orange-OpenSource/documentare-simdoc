@@ -19,6 +19,7 @@ public class CommandLineOptions {
   private static final String HELP = "h";
   private static final String INPUT_DIRECTORY = "d1";
   private static final String OUTPUT_DIRECTORY = "d2";
+  private static final String DEBUG = "d";
 
   private static final String ACUT = "acut";
   private static final String QCUT = "qcut";
@@ -26,6 +27,7 @@ public class CommandLineOptions {
   private static final String SCUT = "scut";
   private static final String SLOOP = "sloop";
   private static final String CCUT = "ccut";
+  private static final String KNN = "knn";
 
   private static final Options options = new Options();
 
@@ -75,7 +77,13 @@ public class CommandLineOptions {
       if (commandLine.hasOption(WONDER_CUT)) {
         builder.wcut();
       }
+      if (commandLine.hasOption(KNN)) {
+        builder.knn(Integer.parseInt(commandLine.getOptionValue(KNN)));
+      }
 
+      if (commandLine.hasOption(DEBUG)) {
+        optionsBuilder.debug();
+      }
       if (commandLine.hasOption(INPUT_DIRECTORY)) {
         optionsBuilder.inputDirectory(commandLine.getOptionValue(INPUT_DIRECTORY));
       }
@@ -87,6 +95,8 @@ public class CommandLineOptions {
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
+
+    Option d = new Option(DEBUG, "debug");
 
     Option d1 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory d1").create(INPUT_DIRECTORY);
     Option d2 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory d2, not mandatory (we assume d2=d1)").create(OUTPUT_DIRECTORY);
@@ -121,7 +131,14 @@ public class CommandLineOptions {
 
     Option subGraphsWonderCutPost = new Option(WONDER_CUT, "enable subgraphs wonder cut post treatments");
 
+    Option kNearestNeighboursThreshold  = Option.builder(KNN)
+              .optionalArg(true)
+              .hasArgs()
+              .desc("kNearestNeighboursThreshold")
+              .build();
+
     options.addOption(help);
+    options.addOption(d);
     options.addOption(d1);
     options.addOption(d2);
     options.addOption(sloop);
@@ -130,6 +147,7 @@ public class CommandLineOptions {
     options.addOption(sSdOpt);
     options.addOption(cTileOpt);
     options.addOption(subGraphsWonderCutPost);
+    options.addOption(kNearestNeighboursThreshold);
     CommandLineParser parser = new DefaultParser();
     return parser.parse(options, args);
   }
