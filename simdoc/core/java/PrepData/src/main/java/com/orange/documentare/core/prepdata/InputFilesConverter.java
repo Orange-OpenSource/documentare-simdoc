@@ -1,4 +1,4 @@
-package com.orange.documentare.core.system.inputfilesconverter;
+package com.orange.documentare.core.prepdata;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -9,6 +9,10 @@ package com.orange.documentare.core.system.inputfilesconverter;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.system.inputfilesconverter.FileConverter;
+import com.orange.documentare.core.system.inputfilesconverter.FileConverterException;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.RequiredArgsConstructor;
@@ -17,6 +21,8 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -26,6 +32,7 @@ import java.util.stream.IntStream;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class InputFilesConverter {
   private final File sourceDirectory;
+  private final BytesData[] bytesData;
   private final File destinationDirectory;
   private final FileConverter converter;
 
@@ -40,7 +47,7 @@ public class InputFilesConverter {
 
   private FilesMap convertFiles() {
     List<File> files =
-      FileUtils.listFiles(sourceDirectory, null, true).stream()
+      listFiles().stream()
       .filter(file -> !file.isHidden())
       .sorted()
       .collect(Collectors.toList());
@@ -50,6 +57,16 @@ public class InputFilesConverter {
       converter.convert(source, destination);
     }
     return buildMap(files);
+  }
+
+  private Collection<File> listFiles() {
+    return sourceDirectory != null ?
+      FileUtils.listFiles(sourceDirectory, null, true)
+      :
+      Arrays.stream(bytesData)
+        .filter(bytesDataElem -> bytesDataElem.filepath != null)
+        .map(bytesDataElem -> new File(bytesDataElem.filepath))
+        .collect(Collectors.toList());
   }
 
   private FilesMap buildMap(List<File> srcFiles) {
@@ -74,11 +91,17 @@ public class InputFilesConverter {
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   public static class InputFilesConverterBuilder {
     private File sourceDirectory;
+    private BytesData[] bytesData;
     private File destinationDirectory;
     private FileConverter fileConverter;
 
     public InputFilesConverterBuilder sourceDirectory(File sourceDirectory) {
       this.sourceDirectory = sourceDirectory;
+      return this;
+    }
+
+    public InputFilesConverterBuilder bytesData(BytesData[] bytesData) {
+      this.bytesData = bytesData;
       return this;
     }
 
@@ -94,9 +117,9 @@ public class InputFilesConverter {
 
     public InputFilesConverter build() {
       Optional<String> error = Optional.empty();
-      if (sourceDirectory == null) {
-        error = Optional.of("source directory is null");
-      } else if (!sourceDirectory.isDirectory()) {
+      if (sourceDirectory == null && bytesData == null) {
+        error = Optional.of("source directory and bytes data are null");
+      } else if (bytesData == null && !sourceDirectory.isDirectory()) {
         error = Optional.of("source directory is not a directory: " + sourceDirectory.getAbsolutePath());
       } else if (destinationDirectory == null) {
         error = Optional.of("destination directory is null");
@@ -106,7 +129,7 @@ public class InputFilesConverter {
       if (error.isPresent()) {
         throw new FileConverterException("[InputFilesConverter] init error: " + error.get());
       }
-      return new InputFilesConverter(sourceDirectory, destinationDirectory, fileConverter);
+      return new InputFilesConverter(sourceDirectory, bytesData, destinationDirectory, fileConverter);
     }
   }
 }

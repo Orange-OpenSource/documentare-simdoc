@@ -12,7 +12,6 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
-import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
