@@ -62,7 +62,7 @@ public class ClusteringController implements ClusteringApi {
     String taskId;
     if (tasks.canAcceptNewTask()) {
       taskId = tasks.newTask();
-      tasks.run(() -> run(taskId, req, fileIO));
+      tasks.run(() -> run(taskId, req, fileIO), taskId);
     } else {
       res.sendError(SC_SERVICE_UNAVAILABLE, "can not accept more tasks");
       return new RemoteTask();

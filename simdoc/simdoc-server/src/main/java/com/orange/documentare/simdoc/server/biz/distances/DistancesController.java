@@ -37,7 +37,7 @@ public class DistancesController implements DistancesApi {
     String taskId;
     if (tasks.canAcceptNewTask()) {
       taskId = tasks.newTask();
-      tasks.run(() -> run(taskId, req));
+      tasks.run(() -> run(taskId, req), taskId);
     } else {
       res.sendError(SC_SERVICE_UNAVAILABLE, "can not accept more tasks");
       return new RemoteTask();

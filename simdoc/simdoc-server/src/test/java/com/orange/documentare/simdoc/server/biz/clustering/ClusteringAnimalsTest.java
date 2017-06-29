@@ -45,7 +45,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class ClusteringTest {
+public class ClusteringAnimalsTest {
 
   private static final String OUTPUT_DIRECTORY = "out";
 
@@ -178,7 +178,7 @@ public class ClusteringTest {
   private ClusteringRequestResult expectedClusteringResult(boolean bytesDataMode) throws IOException {
     return mapper.readValue(
       context.getResource(
-        bytesDataMode ? "classpath:expected-clustering-result-bytes-data.json" : "classpath:expected-clustering-result.json").getFile(),
+        bytesDataMode ? "classpath:expected-clustering-result-bytes-data-animals-dna.json" : "classpath:expected-clustering-result-animals-dna.json").getFile(),
       ClusteringRequestResult.class
     );
   }

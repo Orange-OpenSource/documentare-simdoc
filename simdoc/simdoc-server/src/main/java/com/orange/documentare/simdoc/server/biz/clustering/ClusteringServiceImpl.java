@@ -15,6 +15,7 @@ import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
 import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
+import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
 import com.orange.documentare.core.model.ref.comp.NearestItem;
 import com.orange.documentare.core.model.ref.comp.TriangleVertices;
@@ -30,6 +31,10 @@ import java.util.List;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
+
+  static {
+    OpencvLoader.load();
+  }
 
   @RequiredArgsConstructor
   private class DistancesComputationResult {
@@ -54,25 +59,10 @@ public class ClusteringServiceImpl implements ClusteringService {
     return clusteringRequestResult;
   }
 
-  private void createSafeWorkingDirectory(FileIO fileIO) {
-    PrepData prepData = PrepData.builder()
-      .inputDirectory(fileIO.inputDirectory())
-      .safeWorkingDirConverter()
-      .safeWorkingDirectory(fileIO.safeWorkingDirectory())
-      .metadataOutputFile(fileIO.metadataFile())
-      .build();
-    prepData.prep();
-  }
-
   private ClusteringOutput buildClustering(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    BytesData[] bytesDataArray;
-    if (clusteringRequest.bytesDataMode) {
-      bytesDataArray = clusteringRequest.bytesData;
-    } else {
-      createSafeWorkingDirectory(fileIO);
-      File safeWorkingDirectory = fileIO.safeWorkingDirectory();
-      bytesDataArray = BytesData.loadFromDirectory(safeWorkingDirectory, BytesData.relativePathIdProvider(safeWorkingDirectory));
-    }
+    createSafeWorkingDirectory(fileIO, clusteringRequest.bytesData);
+    File safeWorkingDirectory = fileIO.safeWorkingDirectory();
+    BytesData[] bytesDataArray = BytesData.loadFromDirectory(safeWorkingDirectory, BytesData.relativePathIdProvider(safeWorkingDirectory));
 
     DistancesComputationResult distancesComputationResult = computeDistances(bytesDataArray);
 
@@ -81,6 +71,18 @@ public class ClusteringServiceImpl implements ClusteringService {
     ClusteringGraph graph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(simClusteringItems, clusteringRequest.clusteringParameters());
 
     return new ClusteringOutput(simClusteringItems, graph);
+  }
+
+  private void createSafeWorkingDirectory(FileIO fileIO, BytesData[] bytesData) {
+    PrepData prepData = PrepData.builder()
+      .inputDirectory(fileIO.inputDirectory()) // may be null
+      .bytesData(bytesData) // may be null
+      .withRawConverter(true)
+      .safeWorkingDirConverter()
+      .safeWorkingDirectory(fileIO.safeWorkingDirectory())
+      .metadataOutputFile(fileIO.metadataFile())
+      .build();
+    prepData.prep();
   }
 
 
