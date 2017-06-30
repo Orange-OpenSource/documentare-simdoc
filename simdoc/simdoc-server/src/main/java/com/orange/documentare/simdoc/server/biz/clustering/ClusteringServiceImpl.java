@@ -60,9 +60,7 @@ public class ClusteringServiceImpl implements ClusteringService {
   }
 
   private ClusteringOutput buildClustering(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    createSafeWorkingDirectory(fileIO, clusteringRequest.bytesData);
-    File safeWorkingDirectory = fileIO.safeWorkingDirectory();
-    BytesData[] bytesDataArray = BytesData.loadFromDirectory(safeWorkingDirectory, BytesData.relativePathIdProvider(safeWorkingDirectory));
+    BytesData[] bytesDataArray = prepData(fileIO, clusteringRequest);
 
     DistancesComputationResult distancesComputationResult = computeDistances(bytesDataArray);
 
@@ -71,6 +69,17 @@ public class ClusteringServiceImpl implements ClusteringService {
     ClusteringGraph graph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(simClusteringItems, clusteringRequest.clusteringParameters());
 
     return new ClusteringOutput(simClusteringItems, graph);
+  }
+
+  private BytesData[] prepData(FileIO fileIO, ClusteringRequest clusteringRequest) {
+    // if bytes are already loaded, there is no directory to prep
+    boolean nothingToPrep = clusteringRequest.bytesDataMode && clusteringRequest.bytesData[0].bytes != null;
+    if (nothingToPrep) {
+      return clusteringRequest.bytesData;
+    }
+    createSafeWorkingDirectory(fileIO, clusteringRequest.bytesData);
+    File safeWorkingDirectory = fileIO.safeWorkingDirectory();
+    return BytesData.loadFromDirectory(safeWorkingDirectory, BytesData.relativePathIdProvider(safeWorkingDirectory));
   }
 
   private void createSafeWorkingDirectory(FileIO fileIO, BytesData[] bytesData) {
