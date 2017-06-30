@@ -1,3 +1,3 @@
 #!/bin/sh
 
-dpkg-buildpackage -us -uc
+dpkg-buildpackage -us -uc -b
