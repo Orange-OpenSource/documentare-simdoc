@@ -37,7 +37,7 @@ public class FileIO {
   private final boolean bytesDataMode;
 
   public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
-    this.bytesDataMode = req.bytesDataMode;
+    this.bytesDataMode = req.bytesDataMode();
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
       sharedDirectory.sharedDirectoryRootPath() :
       "";

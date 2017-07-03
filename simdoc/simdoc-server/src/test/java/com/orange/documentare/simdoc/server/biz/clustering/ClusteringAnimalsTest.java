@@ -107,8 +107,8 @@ public class ClusteringAnimalsTest {
     Assertions.assertThat(remoteTask.id).isNotEmpty();
 
     ClusteringRequestResult result = coreTest.waitForRemoteTaskToBeDone(remoteTask);
-    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(req.bytesDataMode));
-    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode));
+    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(req.bytesDataMode()));
+    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode()));
   }
 
   private String inputDirectory() throws IOException {

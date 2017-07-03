@@ -45,7 +45,7 @@ public class ClusteringServiceImpl implements ClusteringService {
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
     ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
-    ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode ?
+    ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode() ?
       prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput) :
       prepClusteringRequestResultInFilesMode(fileIO, clusteringOutput);
 
@@ -73,7 +73,7 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   private BytesData[] prepData(FileIO fileIO, ClusteringRequest clusteringRequest) {
     // if bytes are already loaded, there is no directory to prep
-    boolean nothingToPrep = clusteringRequest.bytesDataMode && clusteringRequest.bytesData[0].bytes != null;
+    boolean nothingToPrep = clusteringRequest.bytesDataMode() && clusteringRequest.bytesData[0].bytes != null;
     if (nothingToPrep) {
       return clusteringRequest.bytesData;
     }
