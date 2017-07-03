@@ -2,15 +2,15 @@ VERSION=`git describe`
 
 # Quick build without tests
 build-notest:
-	#(cd simdoc/core/java/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
-	#(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
-	#(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
+	(cd simdoc/core/java/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
+	(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
+	(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
 
 # Used to build the debian package
 build:
-	#(cd simdoc/core/java/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
-	#(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
-	#(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
+	(cd simdoc/core/java/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
+	(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
+	(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
 
 # Build debian package
 deb:

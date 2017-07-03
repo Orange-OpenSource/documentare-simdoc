@@ -6,9 +6,9 @@ export LANG=C.UTF-8
 TAG=`git describe`
 echo git tag is: $TAG
 
-(cd simdoc && ./prep-simdoc.sh) && \
-(cd simdoc/simdoc-server && ./mvnw clean install) && \
-(cd simdoc/apps && ./refIntegrationTest.sh) && \
+make build-notest && \
+make build && \
+(cd simdoc/apps/ && ./refIntegrationTest.sh) && \
 cp simdoc/simdoc-server/target/simdoc-server-1.0.0-SNAPSHOT.jar simdoc-server-$TAG.jar && \
 cp simdoc/apps/line-detection/target/line*.jar line-detection-$TAG.jar && \
 cp simdoc/apps/prep-data/target/prep*.jar prep-data-$TAG.jar && \
