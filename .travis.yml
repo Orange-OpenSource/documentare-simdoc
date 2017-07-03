@@ -9,6 +9,7 @@ jdk:
 addons:
   apt:
     packages:
+    - maven
     - libgts-0.7-5
     - devscripts
     - fakeroot
