@@ -10,10 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
-import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
@@ -23,54 +20,32 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.http.MediaType;
-import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
-import java.util.Arrays;
-import java.util.List;
 import java.util.zip.CRC32;
 
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static com.orange.documentare.simdoc.server.biz.clustering.CoreTest.OUTPUT_DIRECTORY;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ClusteringGlyphsTest {
-
-  private static final String OUTPUT_DIRECTORY = "out";
-
-  private final ObjectMapper mapper = new ObjectMapper();
-
   @Autowired
   WebApplicationContext context;
 
-  MockMvc mockMvc;
+  private CoreTest coreTest;
 
   @Before
   public void setup() throws IOException {
-    cleanup();
-    new File(OUTPUT_DIRECTORY).mkdir();
-
-    mockMvc = MockMvcBuilders
-      .webAppContextSetup(context)
-      .alwaysDo(print())
-      .build();
+    coreTest = new CoreTest(context);
   }
 
   @After
   public void cleanup() {
-    FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
+    coreTest.cleanup();
   }
 
   @Test
@@ -121,46 +96,10 @@ public class ClusteringGlyphsTest {
   }
 
   private ClusteringRequestResult coreTest(ClusteringRequest req) throws Exception {
-    RemoteTask remoteTask = postRequestAndRetrievePendingTaskId(req);
+    RemoteTask remoteTask = coreTest.postRequestAndRetrievePendingTaskId(req);
     Assertions.assertThat(remoteTask.id).isNotEmpty();
 
-    return waitForRemoteTaskToBeDone(remoteTask);
-  }
-
-  private RemoteTask postRequestAndRetrievePendingTaskId(ClusteringRequest req) throws Exception {
-    MvcResult result = mockMvc
-      // When
-      .perform(
-        post("/clustering")
-          .contentType(MediaType.APPLICATION_JSON)
-          .content(json(req)))
-      // Then
-      .andExpect(status().isOk())
-      .andReturn();
-
-    MockHttpServletResponse res = result.getResponse();
-    return toRemoteTask(res);
-  }
-
-  private RemoteTask toRemoteTask(MockHttpServletResponse res) throws IOException {
-    RemoteTask remoteTask = mapper.readValue(res.getContentAsString(), RemoteTask.class);
-    return remoteTask;
-  }
-
-  private ClusteringRequestResult waitForRemoteTaskToBeDone(RemoteTask remoteTask) throws Exception {
-    MvcResult result;
-    do {
-      result = mockMvc
-        // When
-        .perform(
-          get("/task/" + remoteTask.id))
-        // Then
-        .andExpect(status().is2xxSuccessful())
-        .andReturn();
-    } while (result.getResponse().getStatus() == HttpServletResponse.SC_NO_CONTENT);
-
-    MockHttpServletResponse res = result.getResponse();
-    return toClusteringResult(res);
+    return coreTest.waitForRemoteTaskToBeDone(remoteTask);
   }
 
   private String inputDirectory() throws IOException {
@@ -168,18 +107,9 @@ public class ClusteringGlyphsTest {
   }
 
   private ClusteringRequestResult expectedClusteringResult() throws IOException {
-    return mapper.readValue(
+    return coreTest.mapper.readValue(
       context.getResource("classpath:expected-clustering-result-glyphs.json").getFile(),
       ClusteringRequestResult.class
     );
-  }
-
-  private String json(Object req) throws JsonProcessingException {
-    return mapper.writeValueAsString(req);
-  }
-
-  private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
-    ClusteringRequestResult clusteringRequestResult = mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
-    return clusteringRequestResult;
   }
 }
