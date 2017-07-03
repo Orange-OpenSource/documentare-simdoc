@@ -12,6 +12,10 @@ addons:
     - libgts-0.7-5
     - devscripts
     - fakeroot
+    - debhelper
+    - libopencv-core2.4v5
+    - libopencv2.4-java
+
 
 install: true
 
