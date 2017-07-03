@@ -6,5 +6,5 @@ export DEBFULLNAME="Christophe Maldivi"
 VERSION=`git describe`
 PACKAGENAME=simdoc-server
 
-dh_make -p $PACKAGENAME"_"$VERSION -c gpl2 --native -s
+dh_make -p ${PACKAGENAME}_${VERSION} -c gpl2 --native -s
 

@@ -1,3 +1,4 @@
 #!/bin/sh
 
-dpkg-buildpackage -us -uc -b
+debuild -us -uc -b --lintian-opts -i
+#dpkg-buildpackage -us -uc -b
