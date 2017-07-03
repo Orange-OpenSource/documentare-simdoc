@@ -12,6 +12,9 @@ build:
 	(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
 	(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
 
+integration-test:
+	(cd simdoc/apps/ && ./refIntegrationTest.sh)
+
 # Build debian package
 deb:
 	debuild -uc -us -b
