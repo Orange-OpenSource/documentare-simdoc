@@ -11,6 +11,7 @@ addons:
     packages:
     - libgts-0.7-5
     - devscripts
+    - fakeroot
 
 install: true
 
