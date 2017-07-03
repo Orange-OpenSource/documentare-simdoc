@@ -13,7 +13,7 @@ addons:
     - devscripts
     - fakeroot
     - debhelper
-    - libopencv-core2.4v5
+    - libopencv-core2.4
     - libopencv2.4-java
 
 
