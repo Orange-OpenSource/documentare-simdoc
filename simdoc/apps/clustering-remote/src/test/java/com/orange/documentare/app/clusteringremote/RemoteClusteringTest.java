@@ -9,27 +9,17 @@ package com.orange.documentare.app.clusteringremote;
  * the Free Software Foundation.
  */
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit4.SpringRunner;
-import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.web.context.WebApplicationContext;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
-
-import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 
 
 public class RemoteClusteringTest {
@@ -37,24 +27,16 @@ public class RemoteClusteringTest {
   private static final String INPUT_DIRECTORY = "/home/obelix/workspace/documentare-simdoc/simdoc/simdoc-server/target/test-classes/animals-dna";
   private static final String OUTPUT_DIRECTORY = "/home/obelix/workspace/documentare-simdoc/simdoc/out";
 
-  private final ObjectMapper mapper = new ObjectMapper();
-
-  @Autowired
-  WebApplicationContext context;
-
-
   @Before
   public void setup() throws IOException {
     cleanup();
     new File(OUTPUT_DIRECTORY).mkdir();
-
   }
 
   @After
   public void cleanup() {
     FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
   }
-
 
   @Test
   @Ignore // a running simdoc-server is mandatory for this test
@@ -80,9 +62,4 @@ public class RemoteClusteringTest {
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("safe-working-dir");
   }
-
-  private String inputDirectory() throws IOException {
-    return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
-  }
-
 }

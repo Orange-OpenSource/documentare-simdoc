@@ -10,12 +10,10 @@ package com.orange.documentare.app.clusteringremote;
  * the Free Software Foundation.
  */
 
-import io.swagger.annotations.ApiModelProperty;
 import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class RemoteTask {
-  @ApiModelProperty(example = "{ 'id': 'LEOJ1-ESSIL' }")
   public final String id;
 
   // for deserialization framework

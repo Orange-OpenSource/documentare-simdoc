@@ -23,7 +23,6 @@ public class ResponseCollectorImpl  implements ResponseCollector<ClusteringReque
 
   @Override
   public void add(ClusteringRequest clusteringRequest) {
-
   }
 
   @Override
@@ -46,5 +45,4 @@ public class ResponseCollectorImpl  implements ResponseCollector<ClusteringReque
     @RequestLine("GET /task/{taskId}")
     Response clusteringResult(@Param("taskId") String taskId);
   }
-
 }

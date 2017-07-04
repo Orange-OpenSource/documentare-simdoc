@@ -71,8 +71,5 @@ public class ClusteringRemoteApp {
     }
     RemoteClustering remoteClustering = new RemoteClustering();
     remoteClustering.request("http://localhost:8080", req);
-
-
   }
-
 }

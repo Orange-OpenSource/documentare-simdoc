@@ -74,6 +74,4 @@ public class RemoteClustering  {
     return (ClusteringRequestResult) (new JacksonDecoder())
             .decode(response, ClusteringRequestResult.class);
   }
-
-
 }

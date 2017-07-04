@@ -23,6 +23,9 @@
     <commons-io.version>2.4</commons-io.version>
     <commons-cli.version>1.4</commons-cli.version>
     <commons-lang.version>3.5</commons-lang.version>
+    <guava.version>18.0</guava.version>
+    <feign.version>9.5.0</feign.version>
+    <logback.version>1.2.3</logback.version>
 
     <zohhak.version>1.1.1</zohhak.version>
     <lombok.version>1.16.12</lombok.version>
@@ -119,6 +122,31 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>${commons-lang.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>${guava.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-jackson</artifactId>
+        <version>${feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-okhttp</artifactId>
+        <version>${feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>io.github.openfeign</groupId>
+        <artifactId>feign-slf4j</artifactId>
+        <version>${feign.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>ch.qos.logback</groupId>
+        <artifactId>logback-classic</artifactId>
+        <version>${logback.version}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

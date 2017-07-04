@@ -10,10 +10,7 @@ package com.orange.documentare.app.clusteringremote;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
-import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.ClusteringParametersBuilder;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
-import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
@@ -22,74 +19,18 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ClusteringRequest {
-  @ApiModelProperty(example = "myDocuments")
   public final String inputDirectory;
-  @ApiModelProperty(example = "{[{'id':'titi', 'filepath':'/home/titi', 'bytes':[0x1,0x3...]},...])")
   public final BytesData[] bytesData;
-  @ApiModelProperty(hidden = true)
   public final boolean bytesDataMode;
-  @ApiModelProperty(example = "clusteringOutput", required = true)
   public final String outputDirectory;
-  @ApiModelProperty(example = "true")
   public final Boolean debug;
-  @ApiModelProperty(example = "2")
   public final Float acutSdFactor;
-  @ApiModelProperty(example = "2")
   public final Float qcutSdFactor;
-  @ApiModelProperty(example = "2")
   public final Float scutSdFactor;
-  @ApiModelProperty(example = "75")
   public final Integer ccutPercentile;
-  @ApiModelProperty(example = "false")
   public final Boolean wcut;
-  @ApiModelProperty(example = "5")
   public final Integer kNearestNeighboursThreshold;
-  @ApiModelProperty(example = "false")
   public final Boolean sloop;
-
-  public RequestValidation validate() {
-    boolean valid = false;
-    String error = null;
-    if (inputDirectory == null && bytesData == null) {
-      error = "inputDirectory and bytesData are missing";
-    } else if (outputDirectory == null) {
-      error = "outputDirectory is missing";
-    } else {
-      valid = true;
-    }
-    return new RequestValidation(valid, error);
-  }
-
-  public ClusteringParameters clusteringParameters() {
-    ClusteringParametersBuilder builder = ClusteringParameters.builder();
-    if (acutSdFactor != null) {
-      builder.acut(acutSdFactor);
-    }
-    if (qcutSdFactor != null) {
-      builder.qcut(qcutSdFactor);
-    }
-    if (scutSdFactor != null) {
-      builder.scut(scutSdFactor);
-    }
-    if (ccutPercentile != null) {
-      builder.ccut(ccutPercentile);
-    }
-    if (wcut != null && wcut) {
-      builder.wcut();
-    }
-    if (kNearestNeighboursThreshold!= null) {
-      builder.knn(kNearestNeighboursThreshold);
-    }
-    if (sloop != null && sloop) {
-      builder.sloop();
-    }
-
-    return builder.build();
-  }
-
-  public boolean debug() {
-    return debug != null && debug;
-  }
 
   public static ClusteringRequestBuilder builder() {
     return new ClusteringRequestBuilder();
