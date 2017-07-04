@@ -36,7 +36,7 @@ public class ClusteringRemoteOptions {
     public final ClusteringParameters.ClusteringParametersBuilder clusteringParametersBuilder = ClusteringParameters.builder();
     private String inputDirectory;
     private String outputDirectory;
-    private Boolean debug = false;
+    private Boolean debug = true;
 
     private SimClusteringOptionsBuilder() {
 
@@ -60,10 +60,6 @@ public class ClusteringRemoteOptions {
       if ((inputDirectory == null ) && (outputDirectory == null )) {
         throw new CommandLineException("Missing input file");
       }
-    }
-
-    public void debug() {
-      debug = true;
     }
   }
 }

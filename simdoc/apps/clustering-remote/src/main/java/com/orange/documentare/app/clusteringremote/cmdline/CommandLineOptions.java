@@ -17,9 +17,8 @@ import static com.orange.documentare.core.comp.clustering.graph.ClusteringParame
 
 public class CommandLineOptions {
   private static final String HELP = "h";
-  private static final String INPUT_DIRECTORY = "d1";
-  private static final String OUTPUT_DIRECTORY = "d2";
-  private static final String DEBUG = "d";
+  private static final String INPUT_DIRECTORY = "din";
+  private static final String OUTPUT_DIRECTORY = "dout";
 
   private static final String ACUT = "acut";
   private static final String QCUT = "qcut";
@@ -81,9 +80,6 @@ public class CommandLineOptions {
         builder.knn(Integer.parseInt(commandLine.getOptionValue(KNN)));
       }
 
-      if (commandLine.hasOption(DEBUG)) {
-        optionsBuilder.debug();
-      }
       if (commandLine.hasOption(INPUT_DIRECTORY)) {
         optionsBuilder.inputDirectory(commandLine.getOptionValue(INPUT_DIRECTORY));
       }
@@ -96,13 +92,10 @@ public class CommandLineOptions {
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
 
-    Option d = new Option(DEBUG, "debug");
-
-    Option d1 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory d1").create(INPUT_DIRECTORY);
-    Option d2 = OptionBuilder.withArgName("directory path").hasArg().withDescription("directory d2, not mandatory (we assume d2=d1)").create(OUTPUT_DIRECTORY);
+    Option din = OptionBuilder.withArgName("input directory").hasArg().withDescription("input directory").create(INPUT_DIRECTORY);
+    Option dout = OptionBuilder.withArgName("output directory").hasArg().withDescription("output directory").create(OUTPUT_DIRECTORY);
 
     Option sloop = new Option(SLOOP, "subgraph scalpel, adaptative mode");
-
 
     Option areaOpt = Option.builder(ACUT)
             .optionalArg(true)
@@ -138,9 +131,8 @@ public class CommandLineOptions {
               .build();
 
     options.addOption(help);
-    options.addOption(d);
-    options.addOption(d1);
-    options.addOption(d2);
+    options.addOption(din);
+    options.addOption(dout);
     options.addOption(sloop);
     options.addOption(qOpt);
     options.addOption(areaOpt);

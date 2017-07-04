@@ -18,26 +18,24 @@ import feign.jackson.JacksonEncoder;
 import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
-import java.util.Optional;
 
 @Slf4j
 public class RemoteClustering  {
 
-  public void request(String url, ClusteringRequest clusteringRequest) {
-    long t0 = System.currentTimeMillis();
-
+  public ClusteringRequestResult request(String url, ClusteringRequest clusteringRequest) {
     ResponseCollectorImpl.Clustering clustering  = buildFeignRequest(url);
     try {
-      doRequest(url, clustering, clusteringRequest);
+      return doRequest(url, clustering, clusteringRequest);
     } catch (FeignException |IOException |InterruptedException e) {
       handleError(url, e);
     }
+    return null;
   }
 
-  private void doRequest(String url, ResponseCollectorImpl.Clustering clustering, ClusteringRequest clusteringRequest) throws IOException, InterruptedException {
+  private ClusteringRequestResult doRequest(String url, ResponseCollectorImpl.Clustering clustering, ClusteringRequest clusteringRequest) throws IOException, InterruptedException {
     log.info("[POST REQUEST] {}", url);
     RemoteTask remoteTask = clustering.clustering(clusteringRequest);
-    ClusteringRequestResult result = waitForResult(remoteTask.id, url);
+    return waitForResult(remoteTask.id, url);
   }
 
   private void handleError(String url, Exception e) {
