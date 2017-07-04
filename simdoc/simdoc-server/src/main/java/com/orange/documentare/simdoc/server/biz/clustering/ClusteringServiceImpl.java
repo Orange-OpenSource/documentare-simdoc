@@ -46,7 +46,7 @@ public class ClusteringServiceImpl implements ClusteringService {
   public ClusteringRequestResult build(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
     ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
     ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode() ?
-      prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput) :
+      prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput, fileIO) :
       prepClusteringRequestResultInFilesMode(fileIO, clusteringOutput);
 
     fileIO.writeClusteringRequestResult(clusteringRequestResult);
@@ -109,9 +109,9 @@ public class ClusteringServiceImpl implements ClusteringService {
       ClusteringResultItem.buildItemsInFilesMode(fileIO, clusteringOutput.simClusteringItems);
     return ClusteringRequestResult.with(clusteringResultItems);
   }
-  private ClusteringRequestResult prepClusteringRequestResultInBytesDataMode(BytesData[] bytesDatas, ClusteringOutput clusteringOutput) {
+  private ClusteringRequestResult prepClusteringRequestResultInBytesDataMode(BytesData[] bytesData, ClusteringOutput clusteringOutput, FileIO fileIO) {
     ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItemsInBytesDataMode(bytesDatas, clusteringOutput.simClusteringItems);
+      ClusteringResultItem.buildItemsInBytesDataModeWithFilesPreparation(bytesData, clusteringOutput.simClusteringItems, fileIO);
     return ClusteringRequestResult.with(clusteringResultItems);
   }
 

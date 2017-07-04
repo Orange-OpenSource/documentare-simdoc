@@ -10,6 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import org.assertj.core.api.Assertions;
@@ -56,7 +57,7 @@ public class ClusteringAnimalsTest {
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
-    coreTest(req);
+    coreTest(req, "expected-clustering-result-animals-dna.json");
 
     // only result is kept without debug
     Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(2);
@@ -71,7 +72,7 @@ public class ClusteringAnimalsTest {
       .debug()
       .build();
 
-    coreTest(req);
+    coreTest(req, "expected-clustering-result-animals-dna.json");
 
     List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
     Assertions.assertThat(outputDirectoryList).contains("metadata.json");
@@ -82,19 +83,19 @@ public class ClusteringAnimalsTest {
   }
 
   @Test
-  public void build_animals_dna_clustering_with_bytes_data_in_debug_mode() throws Exception {
+  public void build_animals_dna_clustering_with_bytes_data_bytes_in_debug_mode() throws Exception {
     // Given
     JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
-    File bytesDataJson = new File(getClass().getResource("/bytes-data-animals-dna.json").getFile());
-    BytesDataArray bytesDatasArray = (BytesDataArray) jsonGenericHandler.getObjectFromJsonFile(BytesDataArray.class, bytesDataJson);
+    File bytesDataJson = new File(getClass().getResource("/bytes-data-bytes-animals-dna.json").getFile());
+    BytesDataArray bytesDataArray = (BytesDataArray) jsonGenericHandler.getObjectFromJsonFile(BytesDataArray.class, bytesDataJson);
 
     ClusteringRequest req = ClusteringRequest.builder()
-      .bytesData(bytesDatasArray.bytesData)
+      .bytesData(bytesDataArray.bytesData)
       .outputDirectory(OUTPUT_DIRECTORY)
       .debug()
       .build();
 
-    coreTest(req);
+    coreTest(req, "expected-clustering-result-bytes-data-animals-dna.json");
 
     List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
@@ -102,25 +103,41 @@ public class ClusteringAnimalsTest {
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
   }
 
-  private void coreTest(ClusteringRequest req) throws Exception {
+  @Test
+  public void build_animals_dna_clustering_with_bytes_data_files_in_debug_mode() throws Exception {
+    // Given
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
+
+    ClusteringRequest req = ClusteringRequest.builder()
+      .bytesData(bytesData)
+      .outputDirectory(OUTPUT_DIRECTORY)
+      .debug()
+      .build();
+
+    coreTest(req, "expected-clustering-result-bytes-data-files-animals-dna.json");
+
+    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
+    Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
+    Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
+  }
+
+  private void coreTest(ClusteringRequest req, String expectedJson) throws Exception {
     RemoteTask remoteTask = coreTest.postRequestAndRetrievePendingTaskId(req);
     Assertions.assertThat(remoteTask.id).isNotEmpty();
 
     ClusteringRequestResult result = coreTest.waitForRemoteTaskToBeDone(remoteTask);
-    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(req.bytesDataMode()));
-    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(req.bytesDataMode()));
+
+    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(expectedJson));
+    Assertions.assertThat(readResultOnDisk()).isEqualTo(expectedClusteringResult(expectedJson));
   }
 
   private String inputDirectory() throws IOException {
     return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
   }
 
-  private ClusteringRequestResult expectedClusteringResult(boolean bytesDataMode) throws IOException {
-    return coreTest.mapper.readValue(
-      context.getResource(
-        bytesDataMode ? "classpath:expected-clustering-result-bytes-data-animals-dna.json" : "classpath:expected-clustering-result-animals-dna.json").getFile(),
-      ClusteringRequestResult.class
-    );
+  private ClusteringRequestResult expectedClusteringResult(String expectedJson) throws IOException {
+    return coreTest.mapper.readValue(context.getResource("classpath:" + expectedJson).getFile(), ClusteringRequestResult.class);
   }
 
   private ClusteringRequestResult readResultOnDisk() throws IOException {
