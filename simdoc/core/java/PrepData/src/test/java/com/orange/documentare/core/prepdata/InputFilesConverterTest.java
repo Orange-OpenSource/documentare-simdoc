@@ -1,5 +1,8 @@
-package com.orange.documentare.core.system.inputfilesconverter;
+package com.orange.documentare.core.prepdata;
 
+import com.orange.documentare.core.system.inputfilesconverter.FileConverterException;
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
+import com.orange.documentare.core.system.inputfilesconverter.SymbolicLinkConverter;
 import org.apache.commons.io.FileUtils;
 import org.fest.assertions.Assertions;
 import org.junit.After;

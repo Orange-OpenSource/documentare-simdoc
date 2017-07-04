@@ -9,7 +9,14 @@ jdk:
 addons:
   apt:
     packages:
+    - maven
     - libgts-0.7-5
+    - devscripts
+    - fakeroot
+    - debhelper
+    - libopencv-core2.4
+    - libopencv2.4-java
+
 
 install: true
 

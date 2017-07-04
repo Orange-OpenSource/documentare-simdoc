@@ -13,7 +13,6 @@ package com.orange.documentare.core.prepdata;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
-import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import com.orange.documentare.core.system.inputfilesconverter.SymbolicLinkConverter;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -26,6 +25,7 @@ import java.util.Optional;
 @RequiredArgsConstructor(access = AccessLevel.PRIVATE)
 public class PrepData {
   private final File inputDirectory;
+  private final BytesData[] bytesData;
   private final File safeWorkingDirectory;
   private final File preppedBytesDataOutputFile;
   private final File metadataOutputFile;
@@ -56,11 +56,12 @@ public class PrepData {
 
     InputFilesConverter inputFilesConverter = InputFilesConverter.builder()
       .sourceDirectory(inputDirectory)
+      .bytesData(bytesData)
       .destinationDirectory(safeWorkingDirectory)
       .fileConverter(withRawConverter ? new RawFilesConverter() : new SymbolicLinkConverter())
       .build();
     FilesMap filesMap = inputFilesConverter.createSafeWorkingDirectory();
-    Metadata metadata = new Metadata(inputDirectory.getAbsolutePath(), filesMap, withRawConverter);
+    Metadata metadata = new Metadata(inputDirectory == null ? "bytes data mode" : inputDirectory.getAbsolutePath(), filesMap, withRawConverter);
 
     writeJson(metadata, metadataOutputFile, jsonGenericHandler);
   }
@@ -89,6 +90,7 @@ public class PrepData {
   @NoArgsConstructor(access = AccessLevel.PRIVATE)
   public static class PrepDataBuilder {
     private File inputDirectory;
+    private BytesData[] bytesData;
     private File safeWorkingDirectory;
     private File preppedBytesDataOutputFile;
     private File metadataOutputFile;
@@ -98,6 +100,11 @@ public class PrepData {
 
     public PrepDataBuilder inputDirectory(File inputDirectory) {
       this.inputDirectory = inputDirectory;
+      return this;
+    }
+
+    public PrepDataBuilder bytesData(BytesData[] bytesData) {
+      this.bytesData = bytesData;
       return this;
     }
 
@@ -135,9 +142,9 @@ public class PrepData {
       boolean prepBytesData = preppedBytesDataOutputFile != null;
 
       Optional<String> error = Optional.empty();
-      if (inputDirectory == null) {
-        error = Optional.of("input directory file is null");
-      } else if (!inputDirectory.isDirectory()) {
+      if (inputDirectory == null && bytesData == null) {
+        error = Optional.of("input directory file and bytes data are null");
+      } else if ((bytesData == null) && !inputDirectory.isDirectory()) {
         error = Optional.of("input directory is not a directory...: " + inputDirectory.getAbsolutePath());
       } else if (safeWorkingDirConverter && safeWorkingDirectory == null) {
         error = Optional.of("safe working directory is null");
@@ -149,7 +156,7 @@ public class PrepData {
       if (error.isPresent()) {
         throw new IllegalStateException(error.get());
       }
-      return new PrepData(inputDirectory, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, withRawConverter, withBytes);
+      return new PrepData(inputDirectory, bytesData, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, withRawConverter, withBytes);
     }
   }
 }

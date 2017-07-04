@@ -16,25 +16,26 @@ class TaskThread extends Thread {
 
   interface ActiveThreadListener {
     void finished(Thread thread);
+    void error(Thread thread, String taskId);
   }
 
-  private ActiveThreadListener listener;
+  private final ActiveThreadListener listener;
+  private final String taskId;
 
-  public TaskThread(Runnable runnable, ActiveThreadListener listener) {
+  public TaskThread(Runnable runnable, ActiveThreadListener listener, String taskId) {
     super(runnable);
     this.listener = listener;
+    this.taskId = taskId;
   }
 
   @Override
   public void run() {
-
     try {
       super.run();
-    } catch (Exception e) {
-      e.printStackTrace();
+      listener.finished(this);
+    } catch (Exception | Error e) {
       log.error("Thread crashed", e);
+      listener.error(this, taskId);
     }
-
-    listener.finished(this);
   }
 }

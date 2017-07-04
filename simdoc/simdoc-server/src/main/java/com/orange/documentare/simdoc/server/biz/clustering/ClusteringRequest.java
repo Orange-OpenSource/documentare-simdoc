@@ -26,8 +26,6 @@ public class ClusteringRequest {
   public final String inputDirectory;
   @ApiModelProperty(example = "{[{'id':'titi', 'filepath':'/home/titi', 'bytes':[0x1,0x3...]},...])")
   public final BytesData[] bytesData;
-  @ApiModelProperty(hidden = true)
-  public final boolean bytesDataMode;
   @ApiModelProperty(example = "clusteringOutput", required = true)
   public final String outputDirectory;
   @ApiModelProperty(example = "true")
@@ -87,6 +85,11 @@ public class ClusteringRequest {
     return builder.build();
   }
 
+  /** can not be a computed field, since json deserialization is not using the ctor */
+  public boolean bytesDataMode() {
+    return bytesData != null;
+  }
+
   public boolean debug() {
     return debug != null && debug;
   }
@@ -112,8 +115,7 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      boolean bytesDataMode = bytesData != null;
-      return new ClusteringRequest(inputDirectory, bytesData, bytesDataMode, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
+      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
 

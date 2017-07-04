@@ -1,0 +1,31 @@
+{
+  "clustering" : [ {
+    "id" : "d1.png",
+    "clusterId" : 1
+  }, {
+    "id" : "d2.png",
+    "clusterId" : 1
+  }, {
+    "id" : "d3.png",
+    "clusterId" : 1
+  }, {
+    "id" : "e1.png",
+    "clusterId" : 2
+  }, {
+    "id" : "e2.png",
+    "clusterId" : 2
+  }, {
+    "id" : "e3.png",
+    "clusterId" : 2
+  }, {
+    "id" : "s1.png",
+    "clusterId" : 3
+  }, {
+    "id" : "s2.png",
+    "clusterId" : 3
+  }, {
+    "id" : "s3.png",
+    "clusterId" : 3
+  } ],
+  "error" : false
+}
