@@ -1,4 +1,4 @@
-image: registry.gitlab.com/orange-opensource/documentare-simdoc-ci-docker:master
+image: registry.gitlab.com/orange-opensource/documentare/documentare-simdoc-ci-docker:master
 
 cache:
   paths:
