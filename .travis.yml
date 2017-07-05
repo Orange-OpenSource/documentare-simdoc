@@ -29,7 +29,7 @@ script:
 - ./.ci.sh
 
 before_deploy:
-- export TARBALL=$(ls *.tar.bz2)
+- export TARBALL=$(ls *.tar)
 - echo Will deploy ${TARBALL}
 
 deploy:
