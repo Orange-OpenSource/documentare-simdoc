@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 public class Base64App {
   private static final File OUTPUT_DIR = new File("base64");
   private static final File RAW_DIR = new File("raw");
-  private static final RawFilesConverter rawFilesConverter = new RawFilesConverter();
+  private static final RawFilesConverter rawFilesConverter = new RawFilesConverter(0);
   private static CommandLineOptions options;
 
   public static void main(String[] args) {
