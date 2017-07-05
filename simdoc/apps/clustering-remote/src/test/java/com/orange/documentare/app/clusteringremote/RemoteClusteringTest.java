@@ -61,31 +61,10 @@ public class RemoteClusteringTest {
 
   @Test
   @Ignore // a running simdoc-server is mandatory for this test
-  // FIXME bug with bytes data if only files are provided
   public void remote_build_animals_dna_clustering_with_bytes_data() throws IOException {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .bytesData(bytesData())
-      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
-      .debug()
-      .build();
-
-    RemoteClustering remoteClustering = new RemoteClustering();
-
-    // When
-    ClusteringRequestResult result = remoteClustering.request("http://localhost:8080", req);
-
-    // Then
-    ClusteringRequestResult expected = expectedClusteringResult(true);
-    Assertions.assertThat(result).isEqualTo(expected);
-  }
-
-  @Test
-  @Ignore // a running simdoc-server is mandatory for this test
-  public void remote_build_animals_dna_clustering_with_bytes_data_with_bytes_array() throws IOException {
-    // Given
-    ClusteringRequest req = ClusteringRequest.builder()
-      .bytesData(bytesDataWithBytes().bytesData)
       .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .debug()
       .build();

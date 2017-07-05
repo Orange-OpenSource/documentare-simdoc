@@ -7,7 +7,7 @@
     "clusterId" : 2
   }, {
     "id" : "baboon",
-    "clusterId" : 3
+    "clusterId" : 4
   }, {
     "id" : "blueWhale",
     "clusterId" : 2
@@ -16,22 +16,22 @@
     "clusterId" : 1
   }, {
     "id" : "chimpanzee",
-    "clusterId" : 3
+    "clusterId" : 4
   }, {
     "id" : "cow",
-    "clusterId" : 2
+    "clusterId" : 3
   }, {
     "id" : "dog",
     "clusterId" : 1
   }, {
     "id" : "donkey",
-    "clusterId" : 4
+    "clusterId" : 6
   }, {
     "id" : "elephant",
-    "clusterId" : 4
+    "clusterId" : 6
   }, {
     "id" : "fatDormouse",
-    "clusterId" : 5
+    "clusterId" : 3
   }, {
     "id" : "finWhale",
     "clusterId" : 2
@@ -40,10 +40,10 @@
     "clusterId" : 2
   }, {
     "id" : "gibbon",
-    "clusterId" : 3
+    "clusterId" : 4
   }, {
     "id" : "gorilla",
-    "clusterId" : 3
+    "clusterId" : 4
   }, {
     "id" : "graySeal",
     "clusterId" : 1
@@ -58,49 +58,49 @@
     "clusterId" : 2
   }, {
     "id" : "horse",
-    "clusterId" : 4
-  }, {
-    "id" : "human",
-    "clusterId" : 3
-  }, {
-    "id" : "indianRhinoceros",
-    "clusterId" : 4
-  }, {
-    "id" : "mouse",
-    "clusterId" : 5
-  }, {
-    "id" : "opossum",
     "clusterId" : 6
   }, {
-    "id" : "orangutan",
+    "id" : "human",
+    "clusterId" : 4
+  }, {
+    "id" : "indianRhinoceros",
+    "clusterId" : 6
+  }, {
+    "id" : "mouse",
     "clusterId" : 3
+  }, {
+    "id" : "opossum",
+    "clusterId" : 5
+  }, {
+    "id" : "orangutan",
+    "clusterId" : 4
   }, {
     "id" : "pig",
     "clusterId" : 2
   }, {
     "id" : "pigmyChimpanzee",
-    "clusterId" : 3
+    "clusterId" : 4
   }, {
     "id" : "platypus",
-    "clusterId" : 4
+    "clusterId" : 6
   }, {
     "id" : "rabbit",
     "clusterId" : 2
   }, {
     "id" : "rat",
-    "clusterId" : 5
+    "clusterId" : 3
   }, {
     "id" : "sheep",
-    "clusterId" : 2
+    "clusterId" : 3
   }, {
     "id" : "squirrel",
-    "clusterId" : 6
+    "clusterId" : 5
   }, {
     "id" : "wallaroo",
-    "clusterId" : 6
+    "clusterId" : 5
   }, {
     "id" : "whiteRhinoceros",
-    "clusterId" : 4
+    "clusterId" : 6
   } ],
   "error" : false
 }

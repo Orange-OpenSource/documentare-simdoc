@@ -21,7 +21,6 @@ import lombok.ToString;
 public class ClusteringRequest {
   public final String inputDirectory;
   public final BytesData[] bytesData;
-  public final boolean bytesDataMode;
   public final String outputDirectory;
   public final Boolean debug;
   public final Float acutSdFactor;
@@ -53,8 +52,7 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      boolean bytesDataMode = bytesData != null;
-      return new ClusteringRequest(inputDirectory, bytesData, bytesDataMode, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
+      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
 
@@ -103,7 +101,7 @@ public class ClusteringRequest {
       return this;
     }
 
-    public ClusteringRequestBuilder k(int kNearestNeighboursThreshold) {
+    public ClusteringRequestBuilder kNearestNeighboursThreshold(int kNearestNeighboursThreshold) {
       this.kNearestNeighboursThreshold = kNearestNeighboursThreshold;
       return this;
     }

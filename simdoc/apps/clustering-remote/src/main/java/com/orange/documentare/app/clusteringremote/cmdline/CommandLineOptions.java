@@ -9,9 +9,15 @@ package com.orange.documentare.app.clusteringremote.cmdline;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.app.clusteringremote.BytesDataArray;
+import com.orange.documentare.app.clusteringremote.ClusteringRequest;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.system.CommandLineException;
 import org.apache.commons.cli.*;
+
+import java.io.File;
+import java.io.IOException;
 
 import static com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.*;
 
@@ -19,6 +25,7 @@ public class CommandLineOptions {
   private static final String HELP = "h";
   private static final String INPUT_DIRECTORY = "din";
   private static final String OUTPUT_DIRECTORY = "dout";
+  private static final String BYTE_DATA_JSON = "json";
 
   private static final String ACUT = "acut";
   private static final String QCUT = "qcut";
@@ -30,17 +37,17 @@ public class CommandLineOptions {
 
   private static final Options options = new Options();
 
-  private ClusteringRemoteOptions.SimClusteringOptionsBuilder optionsBuilder = ClusteringRemoteOptions.builder();
+  private ClusteringRequest.ClusteringRequestBuilder builder = ClusteringRequest.builder();
 
-  public CommandLineOptions(String[] args) throws ParseException {
+  public CommandLineOptions(String[] args) throws ParseException, IOException {
     init(args);
   }
 
-  public ClusteringRemoteOptions simClusteringOptions() {
-    return optionsBuilder.build();
+  public ClusteringRequest clusteringRequest() {
+    return builder.build();
   }
 
-  private void init(String[] args) throws ParseException {
+  private void init(String[] args) throws ParseException, IOException {
     CommandLine commandLine = getCommandLineFromArgs(args);
     boolean helpRequested = commandLine.hasOption(HELP);
     if (helpRequested) {
@@ -50,14 +57,14 @@ public class CommandLineOptions {
     }
   }
 
-  private void initOptions(CommandLine commandLine) {
-    boolean d1Option = commandLine.hasOption(INPUT_DIRECTORY);
+  private void initOptions(CommandLine commandLine) throws IOException {
+    boolean dInOption = commandLine.hasOption(INPUT_DIRECTORY);
+    boolean dOutOption = commandLine.hasOption(OUTPUT_DIRECTORY);
+    boolean bytesDataOption = commandLine.hasOption(BYTE_DATA_JSON);
 
-    if (!d1Option) {
-      throw new CommandLineException("\nERROR: an input file argument is missing\n");
+    if (!dInOption && !bytesDataOption && !dOutOption) {
+      throw new CommandLineException("input directory or bytes data json or output directory argument is missing\n");
     } else {
-      ClusteringParameters.ClusteringParametersBuilder builder = optionsBuilder.clusteringParametersBuilder;
-
       if (commandLine.hasOption(ACUT)) {
         builder.acut(Float.parseFloat(commandLine.getOptionValue(ACUT, String.valueOf(A_DEFAULT_SD_FACTOR))));
       }
@@ -77,22 +84,36 @@ public class CommandLineOptions {
         builder.wcut();
       }
       if (commandLine.hasOption(KNN)) {
-        builder.knn(Integer.parseInt(commandLine.getOptionValue(KNN)));
+        builder.kNearestNeighboursThreshold(Integer.parseInt(commandLine.getOptionValue(KNN)));
       }
 
-      if (commandLine.hasOption(INPUT_DIRECTORY)) {
-        optionsBuilder.inputDirectory(commandLine.getOptionValue(INPUT_DIRECTORY));
+      if (dInOption) {
+        builder.inputDirectory(commandLine.getOptionValue(INPUT_DIRECTORY));
       }
-      if (commandLine.hasOption(OUTPUT_DIRECTORY)) {
-        optionsBuilder.outputDirectory(commandLine.getOptionValue(OUTPUT_DIRECTORY));
+
+      if (bytesDataOption) {
+        String filePath = commandLine.getOptionValue(BYTE_DATA_JSON);
+        builder.bytesData(loadBytesDataJson(filePath));
       }
+
+      if (dOutOption) {
+        builder.outputDirectory(commandLine.getOptionValue(OUTPUT_DIRECTORY));
+      }
+
+      builder.debug();
     }
+  }
+
+  private BytesData[] loadBytesDataJson(String filePath) throws IOException {
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+    return ((BytesDataArray) jsonGenericHandler.getObjectFromJsonFile(BytesDataArray.class, new File(filePath))).bytesData;
   }
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
 
     Option din = OptionBuilder.withArgName("input directory").hasArg().withDescription("input directory").create(INPUT_DIRECTORY);
+    Option bytesDataJson = OptionBuilder.withArgName("bytes data json").hasArg().withDescription("bytes data json").create(BYTE_DATA_JSON);
     Option dout = OptionBuilder.withArgName("output directory").hasArg().withDescription("output directory").create(OUTPUT_DIRECTORY);
 
     Option sloop = new Option(SLOOP, "subgraph scalpel, adaptative mode");
@@ -132,6 +153,7 @@ public class CommandLineOptions {
 
     options.addOption(help);
     options.addOption(din);
+    options.addOption(bytesDataJson);
     options.addOption(dout);
     options.addOption(sloop);
     options.addOption(qOpt);
