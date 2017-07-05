@@ -35,9 +35,14 @@ public class FileIO {
   public final String inputDirectoryAbsPath;
   public final String outputDirectoryAbsPath;
   private final boolean bytesDataMode;
+  private final boolean filesPrepped;
 
   public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
     this.bytesDataMode = req.bytesDataMode();
+
+    // false only if no files preparation is done, ie for bytes data mode when bytes are present in the request
+    this.filesPrepped = !bytesDataMode || (bytesDataMode && req.bytesData.length > 0 && req.bytesData[0].bytes == null);
+
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
       sharedDirectory.sharedDirectoryRootPath() :
       "";
@@ -131,5 +136,9 @@ public class FileIO {
 
   private File clusteringResultFile() {
     return new File(outputDirectoryAbsPath + CLUSTERING_RESULT_FILE);
+  }
+
+  public boolean filesPrepped() {
+    return filesPrepped;
   }
 }
