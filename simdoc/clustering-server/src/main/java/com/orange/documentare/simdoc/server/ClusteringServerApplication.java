@@ -28,10 +28,10 @@ import static springfox.documentation.builders.PathSelectors.regex;
 @SpringBootApplication
 @EnableSwagger2
 @ComponentScan
-public class SimdocServerApplication {
+public class ClusteringServerApplication {
 
   public static void main(String[] args) {
-    SpringApplication.run(SimdocServerApplication.class, args);
+    SpringApplication.run(ClusteringServerApplication.class, args);
   }
 
   @Bean

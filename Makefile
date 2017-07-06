@@ -4,12 +4,12 @@ VERSION=`git describe`
 build-notest:
 	(cd simdoc/core/java/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
 	(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
-	(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
+	(cd simdoc/clustering-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install -DskipTests=true)
 
 build-tests:
 	(cd simdoc/core/java/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
 	(cd simdoc/apps && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
-	(cd simdoc/simdoc-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
+	(cd simdoc/clustering-server/ && mvn -Dmaven.repo.local=${HOME}/.m2/repository install)
 
 # Used to build debian package
 # here we consider that artifacts are already built (to speed up continuous integration)
@@ -27,7 +27,7 @@ deb:
 # Debian package install
 install:
 	rm -rf usr && mkdir -p usr/share/java
-	cp simdoc/simdoc-server/target/simdoc-server-*.jar usr/share/java/simdoc-server.jar
+	cp simdoc/clustering-server/target/clustering-server-*.jar usr/share/java/clustering-server.jar
 	rm -rf etc && mkdir -p etc/init.d && cp debian/server-init-d etc/init.d/simdoc-server
 	mkdir etc/rc2.d && (cd etc/rc2.d && ln -s ../init.d/simdoc-server S08simdoc-server)
 

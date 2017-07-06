@@ -4,12 +4,12 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>com.orange.documentare.simdoc</groupId>
-  <artifactId>simdoc-server</artifactId>
+  <artifactId>clustering-server</artifactId>
   <packaging>jar</packaging>
   <version>1.0.0-SNAPSHOT</version>
 
-  <name>simdoc-server</name>
-  <description>Simdoc services server</description>
+  <name>clustering-server</name>
+  <description>Clustering services server</description>
 
   <parent>
     <groupId>org.springframework.boot</groupId>
