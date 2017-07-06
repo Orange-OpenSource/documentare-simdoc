@@ -87,6 +87,7 @@ public class ClusteringServiceImpl implements ClusteringService {
       .inputDirectory(fileIO.inputDirectory()) // may be null
       .bytesData(bytesData) // may be null
       .withRawConverter(true)
+      .expectedRawBytesCount(1024*1024)
       .safeWorkingDirConverter()
       .safeWorkingDirectory(fileIO.safeWorkingDirectory())
       .metadataOutputFile(fileIO.metadataFile())

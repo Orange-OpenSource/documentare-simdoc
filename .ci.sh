@@ -6,9 +6,9 @@ export LANG=C.UTF-8
 TAG=`git describe`
 echo git tag is: $TAG
 
-make build-notest build integration-test deb && \
+make build-tests integration-test deb && \
 echo Create tarball && \
-tar cvjf documentare-simdoc-$TAG.tar.bz2 usr ../simdoc*.deb && \
+tar cvf documentare-simdoc-$TAG.tar usr ../simdoc*.deb && \
 echo && \
 echo OK && exit 0
 

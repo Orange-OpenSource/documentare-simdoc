@@ -53,6 +53,7 @@ public class PrepDataApp {
             .metadataOutputFile(METADATA_JSON)
             .withRawConverter(options.isRawConverterEnabled())
             .withBytes(options.isWithBytes())
+            .expectedRawBytesCount(options.getExpectedBytesSize())
             .build();
     prepData.prep();
   }

@@ -12,6 +12,7 @@ package com.orange.documentare.core.image.opencv;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.highgui.Highgui;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 
@@ -27,6 +28,22 @@ public class OpenCvImage {
     return Highgui.imread(imageFile.getAbsolutePath());
   }
 
+
+  public static Mat resize(Mat mat, int bytesSizeTarget) {
+    long matBytesCount = matBytesCount(mat);
+    float ratio = (float)matBytesCount / bytesSizeTarget;
+    double sqrtRatio = Math.sqrt(ratio);
+    int newWidth = (int) (mat.size().width / sqrtRatio);
+    int newHeigth = (int) (mat.size().height / sqrtRatio);
+    Mat newMat = new Mat(newHeigth, newWidth, mat.type());
+    Imgproc.resize(mat, newMat, newMat.size(), sqrtRatio, sqrtRatio, Imgproc.INTER_LANCZOS4);
+    return newMat;
+  }
+
+  private static long matBytesCount(Mat mat) {
+    long pixelBytesCount = mat.elemSize();
+    return pixelBytesCount * mat.total();
+  }
 
   /**
    * @param image mat

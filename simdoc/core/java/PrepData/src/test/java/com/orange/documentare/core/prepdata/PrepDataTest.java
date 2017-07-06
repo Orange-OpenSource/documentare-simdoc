@@ -182,6 +182,7 @@ public class PrepDataTest {
       .safeWorkingDirConverter()
       .safeWorkingDirectory(SAFE_WORKING_DIRECTORY)
       .withRawConverter(true)
+      .expectedRawBytesCount(100 * 1024)
       .metadataOutputFile(METADATA_JSON)
       .build();
 
@@ -205,7 +206,7 @@ public class PrepDataTest {
     Assertions.assertThat(Files.isSymbolicLink(safeFiles[1].toPath())).isTrue();
     Assertions.assertThat(metadata.rawConversion).isTrue();
     Assertions.assertThat(filesMap.size()).isEqualTo(2);
-    Assertions.assertThat(crc32.getValue()).isEqualTo(2829745108L);
+    Assertions.assertThat(crc32.getValue()).isEqualTo(3935510044L);
   }
 
   @Test

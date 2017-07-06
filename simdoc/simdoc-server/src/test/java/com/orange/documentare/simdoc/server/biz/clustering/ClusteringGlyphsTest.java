@@ -68,7 +68,7 @@ public class ClusteringGlyphsTest {
 
     // in raw mode
     Assertions.assertThat(Files.isSymbolicLink(firstSafeFile.toPath())).isFalse();
-    Assertions.assertThat(crc32.getValue()).isEqualTo(2789537399L);
+    Assertions.assertThat(crc32.getValue()).isEqualTo(1953351831L);
   }
 
   @Test
@@ -92,7 +92,7 @@ public class ClusteringGlyphsTest {
     crc32.update(FileUtils.readFileToByteArray(firstSafeFile));
     // in raw mode
     Assertions.assertThat(Files.isSymbolicLink(firstSafeFile.toPath())).isFalse();
-    Assertions.assertThat(crc32.getValue()).isEqualTo(2789537399L);
+    Assertions.assertThat(crc32.getValue()).isEqualTo(1953351831L);
   }
 
   private ClusteringRequestResult coreTest(ClusteringRequest req) throws Exception {

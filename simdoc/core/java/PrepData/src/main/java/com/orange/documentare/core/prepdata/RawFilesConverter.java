@@ -13,6 +13,7 @@ package com.orange.documentare.core.prepdata;
 import com.orange.documentare.core.image.opencv.OpenCvImage;
 import com.orange.documentare.core.system.inputfilesconverter.FileConverter;
 import com.orange.documentare.core.system.inputfilesconverter.SymbolicLinkConverter;
+import lombok.RequiredArgsConstructor;
 import org.apache.commons.io.FileUtils;
 import org.opencv.core.Mat;
 
@@ -20,6 +21,7 @@ import java.io.File;
 import java.io.IOException;
 import java.util.Arrays;
 
+@RequiredArgsConstructor
 public class RawFilesConverter implements FileConverter {
 
   private static final String[] IMAGES_EXTENSION = {
@@ -27,6 +29,8 @@ public class RawFilesConverter implements FileConverter {
   };
 
   private final SymbolicLinkConverter symbolicLinkConverter = new SymbolicLinkConverter();
+
+  private final int expectedBytesCount;
 
   @Override
   public void convert(File source, File destination) {
@@ -39,6 +43,9 @@ public class RawFilesConverter implements FileConverter {
 
   public void convertToRaw(File source, File destination) {
     Mat mat = OpenCvImage.loadMat(source);
+    if (expectedBytesCount > 0) {
+      mat = OpenCvImage.resize(mat, expectedBytesCount);
+    }
     byte[] bytes = OpenCvImage.matToRaw(mat);
     try {
       FileUtils.writeByteArrayToFile(destination, bytes);

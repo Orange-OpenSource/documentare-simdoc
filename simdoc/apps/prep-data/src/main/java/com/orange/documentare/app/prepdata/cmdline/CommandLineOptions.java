@@ -24,12 +24,14 @@ public class CommandLineOptions {
   private static final String INPUT_DIR = "d";
   private static final String RAW = "raw";
   private static final String WITH_BYTES = "bytes";
+  private static final String BYTES_SIZE = "bsize";
 
   private static final Options options = new Options();
 
   private File inputDir;
   private boolean rawConverterEnabled;
   private boolean withBytes;
+  private int expectedBytesSize;
 
   public CommandLineOptions(String[] args) throws ParseException {
     init(args);
@@ -53,6 +55,7 @@ public class CommandLineOptions {
     setInputFiles(commandLine);
     rawConverterEnabled = commandLine.hasOption(RAW);
     withBytes = commandLine.hasOption(WITH_BYTES);
+    expectedBytesSize = commandLine.hasOption(BYTES_SIZE) ? Integer.parseInt(commandLine.getOptionValue(BYTES_SIZE)) : 0;
   }
 
   private void setInputFiles(CommandLine commandLine) {
@@ -76,10 +79,12 @@ public class CommandLineOptions {
     Option file = OptionBuilder.withArgName("inputDirectory path").hasArg().withDescription("input directory").create(INPUT_DIR);
     Option raw = new Option(RAW, "enable raw conversion for images");
     Option withBytes = new Option(WITH_BYTES, "embed bytes instead of filepath in BytesData");
+    Option bytesSize = OptionBuilder.withArgName("bytes size").hasArg().withDescription("expected raw bytes size").create(BYTES_SIZE);
     options.addOption(help);
     options.addOption(file);
     options.addOption(raw);
     options.addOption(withBytes);
+    options.addOption(bytesSize);
     CommandLineParser parser = new PosixParser();
     return parser.parse(options, args);
   }

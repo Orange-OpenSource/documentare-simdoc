@@ -33,6 +33,7 @@ public class PrepData {
   private final boolean safeWorkingDirConverter;
   private final boolean withRawConverter;
   private final boolean withBytes;
+  private final int expectedRawBytesCount;
 
   public static PrepDataBuilder builder() {
     return new PrepDataBuilder();
@@ -58,7 +59,7 @@ public class PrepData {
       .sourceDirectory(inputDirectory)
       .bytesData(bytesData)
       .destinationDirectory(safeWorkingDirectory)
-      .fileConverter(withRawConverter ? new RawFilesConverter() : new SymbolicLinkConverter())
+      .fileConverter(withRawConverter ? new RawFilesConverter(expectedRawBytesCount) : new SymbolicLinkConverter())
       .build();
     FilesMap filesMap = inputFilesConverter.createSafeWorkingDirectory();
     Metadata metadata = new Metadata(inputDirectory == null ? "bytes data mode" : inputDirectory.getAbsolutePath(), filesMap, withRawConverter);
@@ -97,6 +98,8 @@ public class PrepData {
     private boolean safeWorkingDirConverter;
     private boolean withRawConverter;
     private boolean withBytes;
+    private int expectedRawBytesCount;
+
 
     public PrepDataBuilder inputDirectory(File inputDirectory) {
       this.inputDirectory = inputDirectory;
@@ -138,6 +141,11 @@ public class PrepData {
       return this;
     }
 
+    public PrepDataBuilder expectedRawBytesCount(int expectedRawBytesCount) {
+      this.expectedRawBytesCount = expectedRawBytesCount;
+      return this;
+    }
+
     public PrepData build() {
       boolean prepBytesData = preppedBytesDataOutputFile != null;
 
@@ -156,7 +164,7 @@ public class PrepData {
       if (error.isPresent()) {
         throw new IllegalStateException(error.get());
       }
-      return new PrepData(inputDirectory, bytesData, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, withRawConverter, withBytes);
+      return new PrepData(inputDirectory, bytesData, safeWorkingDirectory, preppedBytesDataOutputFile, metadataOutputFile, prepBytesData, safeWorkingDirConverter, withRawConverter, withBytes, expectedRawBytesCount);
     }
   }
 }
