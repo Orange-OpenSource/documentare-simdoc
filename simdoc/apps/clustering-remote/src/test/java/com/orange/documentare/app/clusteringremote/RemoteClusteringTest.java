@@ -40,24 +40,6 @@ public class RemoteClusteringTest {
     FileUtils.deleteQuietly(OUTPUT_DIRECTORY);
   }
 
-  @Test
-  @Ignore // a running simdoc-server is mandatory for this test
-  public void remote_build_animals_dna_clustering() throws IOException {
-    // Given
-    ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(inputDirectory())
-      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
-      .debug()
-      .build();
-
-    RemoteClustering remoteClustering = new RemoteClustering();
-
-    // When
-    ClusteringRequestResult result = remoteClustering.request("http://localhost:8080", req);
-
-    // Then
-    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(false));
-  }
 
   @Test
   @Ignore // a running simdoc-server is mandatory for this test
@@ -75,7 +57,7 @@ public class RemoteClusteringTest {
     ClusteringRequestResult result = remoteClustering.request("http://localhost:8080", req);
 
     // Then
-    ClusteringRequestResult expected = expectedClusteringResult(true);
+    ClusteringRequestResult expected = expectedClusteringResult();
     Assertions.assertThat(result).isEqualTo(expected);
   }
 
@@ -87,9 +69,8 @@ public class RemoteClusteringTest {
     return (BytesDataArray)jsonGenericHandler.getObjectFromJsonFile(BytesDataArray.class, new File(getClass().getResource("/bytes-data-animals-dna.json").getFile()));
   }
 
-  private ClusteringRequestResult expectedClusteringResult(boolean bytesDataMode) throws IOException {
-    File file = new File(getClass().getResource(
-        bytesDataMode ? "/expected-clustering-result-bytes-data.json" : "/expected-clustering-result.json").getFile());
+  private ClusteringRequestResult expectedClusteringResult() throws IOException {
+    File file = new File(getClass().getResource("/expected-clustering-result-bytes-data-animals-dna.json").getFile());
     return (ClusteringRequestResult) jsonGenericHandler.getObjectFromJsonFile(ClusteringRequestResult.class, file);
   }
 

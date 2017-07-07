@@ -23,7 +23,6 @@ import static com.orange.documentare.core.comp.clustering.graph.ClusteringParame
 
 public class CommandLineOptions {
   private static final String HELP = "h";
-  private static final String INPUT_DIRECTORY = "din";
   private static final String OUTPUT_DIRECTORY = "dout";
   private static final String BYTE_DATA_JSON = "json";
 
@@ -58,12 +57,11 @@ public class CommandLineOptions {
   }
 
   private void initOptions(CommandLine commandLine) throws IOException {
-    boolean dInOption = commandLine.hasOption(INPUT_DIRECTORY);
     boolean dOutOption = commandLine.hasOption(OUTPUT_DIRECTORY);
     boolean bytesDataOption = commandLine.hasOption(BYTE_DATA_JSON);
 
-    if (!dInOption && !bytesDataOption && !dOutOption) {
-      throw new CommandLineException("input directory or bytes data json or output directory argument is missing\n");
+    if (!bytesDataOption && !dOutOption) {
+      throw new CommandLineException("bytes data json or output directory argument is missing\n");
     } else {
       if (commandLine.hasOption(ACUT)) {
         builder.acut(Float.parseFloat(commandLine.getOptionValue(ACUT, String.valueOf(A_DEFAULT_SD_FACTOR))));
@@ -87,9 +85,6 @@ public class CommandLineOptions {
         builder.kNearestNeighboursThreshold(Integer.parseInt(commandLine.getOptionValue(KNN)));
       }
 
-      if (dInOption) {
-        builder.inputDirectory(commandLine.getOptionValue(INPUT_DIRECTORY));
-      }
 
       if (bytesDataOption) {
         String filePath = commandLine.getOptionValue(BYTE_DATA_JSON);
@@ -112,7 +107,6 @@ public class CommandLineOptions {
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
     Option help = new Option(HELP, "print this message");
 
-    Option din = OptionBuilder.withArgName("input directory").hasArg().withDescription("input directory").create(INPUT_DIRECTORY);
     Option bytesDataJson = OptionBuilder.withArgName("bytes data json").hasArg().withDescription("bytes data json").create(BYTE_DATA_JSON);
     Option dout = OptionBuilder.withArgName("output directory").hasArg().withDescription("output directory").create(OUTPUT_DIRECTORY);
 
@@ -152,7 +146,6 @@ public class CommandLineOptions {
               .build();
 
     options.addOption(help);
-    options.addOption(din);
     options.addOption(bytesDataJson);
     options.addOption(dout);
     options.addOption(sloop);
