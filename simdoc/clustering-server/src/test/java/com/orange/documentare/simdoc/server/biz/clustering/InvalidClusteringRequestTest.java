@@ -12,6 +12,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
@@ -37,7 +38,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class InvalidClusteringRequestTest {
-  private static final String INPUT_DIRECTORY = "in";
   private static final String OUTPUT_DIRECTORY = "out";
 
   private final ObjectMapper mapper = new ObjectMapper();
@@ -59,7 +59,6 @@ public class InvalidClusteringRequestTest {
 
   @After
   public void cleanup() {
-    FileUtils.deleteQuietly(new File(INPUT_DIRECTORY));
     FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
   }
 
@@ -71,9 +70,9 @@ public class InvalidClusteringRequestTest {
   }
 
   @Test
-  public void clustering_api_return_bad_request_if_input_directory_and_bytes_data_are_missing() throws Exception {
+  public void clustering_api_return_bad_request_if_bytes_data_is_missing() throws Exception {
     // Given
-    String expectedMessage = "inputDirectory and bytesData are missing";
+    String expectedMessage = "bytesData is missing";
     ClusteringRequest req = ClusteringRequest.builder()
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
@@ -81,38 +80,15 @@ public class InvalidClusteringRequestTest {
     test(req, expectedMessage);
   }
 
-  @Test
-  public void clustering_api_return_bad_request_if_input_directory_is_not_reachable() throws Exception {
-    // Given
-    String expectedMessage = "inputDirectory can not be reached: /xxx";
-    ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory("/xxx")
-      .outputDirectory(OUTPUT_DIRECTORY)
-      .build();
 
-    test(req, expectedMessage);
-  }
-
-  @Test
-  public void clustering_api_return_bad_request_if_input_directory_is_not_a_directory() throws Exception {
-    // Given
-    String expectedMessage = "inputDirectory is not a directory: ";
-    FileUtils.writeStringToFile(new File(INPUT_DIRECTORY), "hi");
-    ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
-      .outputDirectory(OUTPUT_DIRECTORY)
-      .build();
-
-    test(req, expectedMessage);
-  }
 
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_missing() throws Exception {
     // Given
     String expectedMessage = "outputDirectory is missing";
-    createInputDirectory();
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
     ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
+      .bytesData(bytesData)
       .build();
 
     test(req, expectedMessage);
@@ -122,10 +98,10 @@ public class InvalidClusteringRequestTest {
   public void clustering_api_return_bad_request_if_output_directory_is_not_a_directory() throws Exception {
     // Given
     String expectedMessage = "outputDirectory is not a directory: ";
-    createInputDirectory();
     FileUtils.writeStringToFile(new File(OUTPUT_DIRECTORY), "hi");
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
     ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
+      .bytesData(bytesData)
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
@@ -135,10 +111,10 @@ public class InvalidClusteringRequestTest {
   @Test
   public void clustering_api_return_bad_request_if_output_directory_is_not_writable() throws Exception {
     // Given
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
     String expectedMessage = "outputDirectory is not writable:";
-    createInputDirectory();
     ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
+      .bytesData(bytesData)
       .outputDirectory("/")
       .build();
 
@@ -169,7 +145,7 @@ public class InvalidClusteringRequestTest {
     return mapper.writeValueAsString(req);
   }
 
-  private void createInputDirectory() {
-    (new File(INPUT_DIRECTORY)).mkdir();
+  private String inputDirectory() throws IOException {
+    return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
   }
 }

@@ -44,55 +44,26 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
-    ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode() ?
-      prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput, fileIO) :
-      prepClusteringRequestResultInFilesMode(fileIO, clusteringOutput);
+    ClusteringOutput clusteringOutput = buildClustering(clusteringRequest);
+
+    ClusteringRequestResult clusteringRequestResult = prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput, fileIO);
 
     fileIO.writeClusteringRequestResult(clusteringRequestResult);
     if (clusteringRequest.debug()) {
       fileIO.writeClusteringGraph(clusteringOutput.graph);
-    } else {
-      fileIO.cleanupClustering();
     }
-
     return clusteringRequestResult;
   }
 
-  private ClusteringOutput buildClustering(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    BytesData[] bytesDataArray = prepData(fileIO, clusteringRequest);
+  private ClusteringOutput buildClustering(ClusteringRequest clusteringRequest) throws IOException {
 
-    DistancesComputationResult distancesComputationResult = computeDistances(bytesDataArray);
+    DistancesComputationResult distancesComputationResult = computeDistances(clusteringRequest.bytesData);
 
     SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, clusteringRequest.clusteringParameters());
     ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
     ClusteringGraph graph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(simClusteringItems, clusteringRequest.clusteringParameters());
 
     return new ClusteringOutput(simClusteringItems, graph);
-  }
-
-  private BytesData[] prepData(FileIO fileIO, ClusteringRequest clusteringRequest) {
-    // if bytes are already loaded, there is no directory to prep
-    boolean nothingToPrep = clusteringRequest.bytesDataMode() && clusteringRequest.bytesData[0].bytes != null;
-    if (nothingToPrep) {
-      return clusteringRequest.bytesData;
-    }
-    createSafeWorkingDirectory(fileIO, clusteringRequest.bytesData);
-    File safeWorkingDirectory = fileIO.safeWorkingDirectory();
-    return BytesData.loadFromDirectory(safeWorkingDirectory, BytesData.relativePathIdProvider(safeWorkingDirectory));
-  }
-
-  private void createSafeWorkingDirectory(FileIO fileIO, BytesData[] bytesData) {
-    PrepData prepData = PrepData.builder()
-      .inputDirectory(fileIO.inputDirectory()) // may be null
-      .bytesData(bytesData) // may be null
-      .withRawConverter(true)
-      .expectedRawBytesCount(1024*1024)
-      .safeWorkingDirConverter()
-      .safeWorkingDirectory(fileIO.safeWorkingDirectory())
-      .metadataOutputFile(fileIO.metadataFile())
-      .build();
-    prepData.prep();
   }
 
 
@@ -105,11 +76,7 @@ public class ClusteringServiceImpl implements ClusteringService {
     return new DistancesComputationResult(ids, distanceArray);
   }
 
-  private ClusteringRequestResult prepClusteringRequestResultInFilesMode(FileIO fileIO, ClusteringOutput clusteringOutput) {
-    ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItemsInFilesMode(fileIO, clusteringOutput.simClusteringItems);
-    return ClusteringRequestResult.with(clusteringResultItems);
-  }
+
   private ClusteringRequestResult prepClusteringRequestResultInBytesDataMode(BytesData[] bytesData, ClusteringOutput clusteringOutput, FileIO fileIO) {
     ClusteringResultItem[] clusteringResultItems =
       ClusteringResultItem.buildItemsInBytesDataModeWithFilesPreparation(bytesData, clusteringOutput.simClusteringItems, fileIO);

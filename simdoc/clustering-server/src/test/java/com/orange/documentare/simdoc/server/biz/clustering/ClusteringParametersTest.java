@@ -13,6 +13,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import com.orange.documentare.simdoc.server.biz.SharedDirectory;
@@ -47,7 +48,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class ClusteringParametersTest {
-  private static final String INPUT_DIRECTORY = "in";
   private static final String OUTPUT_DIRECTORY = "out";
 
   private final ObjectMapper mapper = new ObjectMapper();
@@ -81,15 +81,15 @@ public class ClusteringParametersTest {
 
   @After
   public void cleanup() {
-    FileUtils.deleteQuietly(new File(INPUT_DIRECTORY));
     FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
   }
 
   @Test
   public void call_service_with_default_parameters() throws Exception {
     // Given
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
     ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
+      .bytesData(bytesData)
       .outputDirectory(OUTPUT_DIRECTORY)
       .build();
 
@@ -100,8 +100,9 @@ public class ClusteringParametersTest {
   @Test
   public void call_service_with_debug() throws Exception {
     // Given
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
     ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
+      .bytesData(bytesData)
       .outputDirectory(OUTPUT_DIRECTORY)
       .debug()
       .build();
@@ -118,8 +119,9 @@ public class ClusteringParametersTest {
     float scut = 3.1f;
     int ccut = 4;
     int k = 6;
+    BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory()), File::getName);
     ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(INPUT_DIRECTORY)
+      .bytesData(bytesData)
       .outputDirectory(OUTPUT_DIRECTORY)
       .acut(acut)
       .qcut(qcut)
@@ -135,7 +137,6 @@ public class ClusteringParametersTest {
   }
 
   private void test(ClusteringRequest req) throws Exception {
-    createInputDirectory();
     createOutputDirectory();
 
     RemoteTask remoteTask = postRequestAndRetrievePendingTaskId(req);
@@ -150,9 +151,6 @@ public class ClusteringParametersTest {
     return mapper.writeValueAsString(req);
   }
 
-  private void createInputDirectory() {
-    (new File(INPUT_DIRECTORY)).mkdir();
-  }
   private void createOutputDirectory() {
     (new File(OUTPUT_DIRECTORY)).mkdir();
   }
@@ -194,5 +192,8 @@ public class ClusteringParametersTest {
   private ClusteringRequestResult toClusteringResult(MockHttpServletResponse res) throws IOException {
     ClusteringRequestResult clusteringRequestResult = mapper.readValue(res.getContentAsString(), ClusteringRequestResult.class);
     return clusteringRequestResult;
+  }
+  private String inputDirectory() throws IOException {
+    return context.getResource("classpath:animals-dna").getFile().getAbsolutePath();
   }
 }

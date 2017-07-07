@@ -49,38 +49,6 @@ public class ClusteringAnimalsTest {
     coreTest.cleanup();
   }
 
-  @Test
-  public void build_animals_dna_clustering() throws Exception {
-    // Given
-    ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(inputDirectory())
-      .outputDirectory(OUTPUT_DIRECTORY)
-      .build();
-
-    coreTest(req, "expected-clustering-result-animals-dna.json");
-
-    // only result is kept without debug
-    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(2);
-  }
-
-  @Test
-  public void build_animals_dna_clustering_in_debug_mode() throws Exception {
-    // Given
-    ClusteringRequest req = ClusteringRequest.builder()
-      .inputDirectory(inputDirectory())
-      .outputDirectory(OUTPUT_DIRECTORY)
-      .debug()
-      .build();
-
-    coreTest(req, "expected-clustering-result-animals-dna.json");
-
-    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
-    Assertions.assertThat(outputDirectoryList).contains("metadata.json");
-    Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
-    Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
-    Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
-    Assertions.assertThat(outputDirectoryList).contains("safe-working-dir");
-  }
 
   @Test
   public void build_animals_dna_clustering_with_bytes_data_bytes_in_debug_mode() throws Exception {
@@ -114,7 +82,7 @@ public class ClusteringAnimalsTest {
       .debug()
       .build();
 
-    coreTest(req, "expected-clustering-result-bytes-data-files-animals-dna.json");
+    coreTest(req, "expected-clustering-result-bytes-data-animals-dna.json");
 
     List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");

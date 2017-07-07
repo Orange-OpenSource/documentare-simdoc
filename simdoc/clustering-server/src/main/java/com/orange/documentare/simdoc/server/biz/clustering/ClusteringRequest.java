@@ -22,8 +22,6 @@ import lombok.ToString;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ClusteringRequest {
-  @ApiModelProperty(example = "myDocuments")
-  public final String inputDirectory;
   @ApiModelProperty(example = "{[{'id':'titi', 'filepath':'/home/titi', 'bytes':[0x1,0x3...]},...])")
   public final BytesData[] bytesData;
   @ApiModelProperty(example = "clusteringOutput", required = true)
@@ -48,8 +46,8 @@ public class ClusteringRequest {
   public RequestValidation validate() {
     boolean valid = false;
     String error = null;
-    if (inputDirectory == null && bytesData == null) {
-      error = "inputDirectory and bytesData are missing";
+    if (bytesData == null) {
+      error = "bytesData is missing";
     } else if (outputDirectory == null) {
       error = "outputDirectory is missing";
     } else {
@@ -99,7 +97,6 @@ public class ClusteringRequest {
   }
 
   public static class ClusteringRequestBuilder {
-    private String inputDirectory;
     private BytesData[] bytesData;
     private String outputDirectory;
     private Boolean debug;
@@ -115,14 +112,10 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
+      return new ClusteringRequest(bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
 
-    public ClusteringRequestBuilder inputDirectory(String inputDirectory) {
-      this.inputDirectory = inputDirectory;
-      return this;
-    }
 
     public ClusteringRequestBuilder bytesData(BytesData[] bytesData) {
       this.bytesData = bytesData;

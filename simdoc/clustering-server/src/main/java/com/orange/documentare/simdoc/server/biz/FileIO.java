@@ -26,38 +26,30 @@ import java.io.IOException;
 
 @EqualsAndHashCode
 public class FileIO {
-  private static final String SAFE_WORKING_DIR = "/safe-working-dir";
   private static final String CLUSTERING_REQUEST_FILE = "/clustering-request.json.gz";
   private static final String CLUSTERING_RESULT_FILE = "/clustering-result.json.gz";
   private static final String CLUSTERING_GRAPH_FILE = "/clustering-graph.json.gz";
-  private static final String METADATA_JSON = "metadata.json";
 
-  public final String inputDirectoryAbsPath;
   public final String outputDirectoryAbsPath;
   private final boolean bytesDataMode;
-  private final boolean filesPrepped;
 
   public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
     this.bytesDataMode = req.bytesDataMode();
 
-    // false only if no files preparation is done, ie for bytes data mode when bytes are present in the request
-    this.filesPrepped = !bytesDataMode || (bytesDataMode && req.bytesData.length > 0 && req.bytesData[0].bytes == null);
 
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
       sharedDirectory.sharedDirectoryRootPath() :
       "";
 
-    inputDirectoryAbsPath = req.inputDirectory == null ? null : new File(prefix + req.inputDirectory).getAbsolutePath();
     outputDirectoryAbsPath = req.outputDirectory == null ? null : new File(prefix + req.outputDirectory).getAbsolutePath();
   }
 
   public RequestValidation validate() {
     boolean valid = false;
     String error = null;
-     if (!bytesDataMode && !inputDirectory().exists()) {
-      error = "inputDirectory can not be reached: " + inputDirectoryAbsPath;
-    } else if (!bytesDataMode && !inputDirectory().isDirectory()) {
-      error = "inputDirectory is not a directory: " + inputDirectoryAbsPath;
+
+     if (!bytesDataMode) {
+      error = "bytesDataMode is necessary";
     } else if (!outputDirectory().exists()) {
       error = "outputDirectory can not be reached: " + outputDirectoryAbsPath;
     } else if (!outputDirectory().isDirectory()) {
@@ -83,34 +75,11 @@ public class FileIO {
   }
 
   public void deleteAllClusteringFiles() {
-    cleanupClustering();
     FileUtils.deleteQuietly(clusteringRequestFile());
     FileUtils.deleteQuietly(clusteringResultFile());
     FileUtils.deleteQuietly(clusteringGraphFile());
   }
 
-  public void cleanupClustering() {
-    FileUtils.deleteQuietly(safeWorkingDirectory());
-    FileUtils.deleteQuietly(metadataFile());
-  }
-
-  public FilesMap loadFilesMap() {
-    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
-    try {
-      return ((Metadata)jsonGenericHandler.getObjectFromJsonFile(Metadata.class, metadataFile()))
-        .filesMap;
-    } catch (IOException e) {
-      throw new IllegalStateException(String.format("Failed to load metadata json '%s': %s", metadataFile().getAbsolutePath(), e.getMessage()));
-    }
-  }
-
-  public File safeWorkingDirectory() {
-    return new File(outputDirectoryAbsPath + SAFE_WORKING_DIR);
-  }
-
-  public File inputDirectory() {
-    return inputDirectoryAbsPath == null ? null : new File(inputDirectoryAbsPath);
-  }
 
   private File outputDirectory() {
     return new File(outputDirectoryAbsPath);
@@ -122,9 +91,6 @@ public class FileIO {
     jsonGenericHandler.writeObjectToJsonGzipFile(o, file);
   }
 
-  public File metadataFile() {
-    return new File(outputDirectoryAbsPath + "/" + METADATA_JSON);
-  }
 
   private File clusteringRequestFile() {
     return new File(outputDirectoryAbsPath + CLUSTERING_REQUEST_FILE);
@@ -138,7 +104,4 @@ public class FileIO {
     return new File(outputDirectoryAbsPath + CLUSTERING_RESULT_FILE);
   }
 
-  public boolean filesPrepped() {
-    return filesPrepped;
-  }
 }
