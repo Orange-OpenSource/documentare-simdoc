@@ -8,15 +8,15 @@ Library and tools for similarity measurement, classification and clustering of d
 
 Prerequisites:
  - java 8
- - you need to install graphviz (see .travis.yml to see how we install it)
+ - you need to install a rebuilt version of graphviz, provided here: https://gitlab.com/Orange-OpenSource/documentare/documentare-graphviz
  - you need to install convert (imagemagick)
 
-To build the core library: ```cd simdoc/core/java/libs && ./mvnw clean install```
+More information about graphviz are provided under `doc/graphviz/README.md`
 
-To build tools (***LineDetection***,***NCD***, etc): ```cd simdoc/apps/pc/ && ./compileAll.sh```
+To build the core library: ```cd simdoc/core/java && ./mvnw clean install```
 
-NB: gradle daemon is great to speed up builds, but it has a nasty effect: sometimes it will not see that the core library has changed after a rebuild. So if you update the core library, do a ```gradle --stop``` to be sure that the new core library version will be used for the next gradle build.
- 
+To build tools (***LineDetection***,***NCD***, etc): ```cd simdoc/apps/ && ./mvnw clean install```
+
 ## Introduction
 
 This software bundle is aimed for computer-aided transcription of digitised document produced with scanners or digital cameras. But other uses are allowed for NCD and SimClustering. Following tools are implemented:
