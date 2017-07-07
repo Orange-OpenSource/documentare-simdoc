@@ -22,7 +22,7 @@ integration-test:
 # Build debian package
 deb:
 	dch -v ${VERSION} "git update, version ${VERSION}"
-	debuild -uc -us -b
+	bash .dh_build.sh
 
 # Debian package install
 install:
