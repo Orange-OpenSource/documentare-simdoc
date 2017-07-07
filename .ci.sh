@@ -8,7 +8,7 @@ echo git tag is: $TAG
 
 make build-tests integration-test deb && \
 echo Create tar && \
-tar cvf documentare-simdoc-$TAG.tar usr ../simdoc*.deb && \
+tar cvf documentare-simdoc-$TAG.tar *.jar usr ../simdoc*.deb && \
 echo && \
 echo OK && exit 0
 
