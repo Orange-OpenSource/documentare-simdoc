@@ -21,6 +21,7 @@ integration-test:
 
 # Build debian package
 deb:
+	dch -v ${VERSION} "git update, version ${VERSION}"
 	debuild -uc -us -b
 
 # Debian package install
