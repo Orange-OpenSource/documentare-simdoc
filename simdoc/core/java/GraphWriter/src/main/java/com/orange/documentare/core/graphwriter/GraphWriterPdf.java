@@ -78,6 +78,6 @@ public class GraphWriterPdf implements GraphWriter {
   }
 
   private void buildPdf(String outputGraphFilename) {
-    NativeInterface.launch(GraphvizPath.PATH + "sfdp " + graphDot + " | " + GraphvizPath.PATH + "gvmap -e | /opt/local/bin/neato -Ecolor='#55555522' -n2 -Tpdf", null, outputGraphFilename + ".pdf");
+    NativeInterface.launch(GraphvizPath.PATH + "sfdp " + graphDot + " | " + GraphvizPath.PATH + "gvmap -e | " + GraphvizPath.PATH + "neato -Ecolor='#55555522' -n2 -Tpdf", null, outputGraphFilename + ".pdf");
   }
 }

@@ -7,7 +7,7 @@ TAG=`git describe`
 echo git tag is: $TAG
 
 make build-tests integration-test deb && \
-echo Create tarball && \
+echo Create tar && \
 tar cvf documentare-simdoc-$TAG.tar usr ../simdoc*.deb && \
 echo && \
 echo OK && exit 0

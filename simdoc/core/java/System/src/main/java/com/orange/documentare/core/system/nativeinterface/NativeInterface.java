@@ -1,6 +1,6 @@
-
-package com.orange.documentare.core.system.nativeinterface;/*
- * Copyright (c) 2016 Orange
+package com.orange.documentare.core.system.nativeinterface;
+/*
+ * Copyright (c) 2017 Orange
  *
  * Authors: Christophe Maldivi & Joel Gardes
  *
