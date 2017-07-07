@@ -15,10 +15,13 @@ import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
 import lombok.ToString;
 
+import java.io.File;
+
 @ToString
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ClusteringRequest {
+  public final String inputDirectory;
   public final BytesData[] bytesData;
   public final String outputDirectory;
   public final Boolean debug;
@@ -35,6 +38,7 @@ public class ClusteringRequest {
   }
 
   public static class ClusteringRequestBuilder {
+    private String inputDirectory;
     private BytesData[] bytesData;
     private String outputDirectory;
     private Boolean debug;
@@ -50,10 +54,15 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      return new ClusteringRequest(bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
+      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
 
+    public ClusteringRequestBuilder inputDirectory(String inputDirectory) {
+      BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory), File::getName);
+      this.bytesData(bytesData);
+      return this;
+    }
 
     public ClusteringRequestBuilder bytesData(BytesData[] bytesData) {
       this.bytesData = bytesData;
