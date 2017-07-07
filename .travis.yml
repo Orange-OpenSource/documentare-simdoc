@@ -21,9 +21,8 @@ addons:
 install: true
 
 before_script:
-- tar xvjf 3rdparty/graphviz-2.38-ubuntu-trusty.tar.bz2 && mv opt/local /opt/
-- /opt/local/bin/sfdp -V
-- /opt/local/bin/gvmap --help
+- wget https://gitlab.com/Orange-OpenSource/documentare/documentare-graphviz/-/jobs/21454333/artifacts/raw/graphviz_2.38.0-18_amd64.deb
+- sudo dpkg --force-all -i graphviz_2.38.0-18_amd64.deb
 
 script:
 - ./.ci.sh
