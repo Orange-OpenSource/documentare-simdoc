@@ -29,6 +29,7 @@ install:
 	rm -rf usr && mkdir -p usr/share/java
 	cp simdoc/simdoc-server/target/simdoc-server-*.jar usr/share/java/simdoc-server.jar
 	rm -rf etc && mkdir -p etc/init.d && cp debian/server-init-d etc/init.d/simdoc-server
+	mkdir etc/rc2.d && (cd etc/rc2.d && ln -s ../init.d/simdoc-server S08simdoc-server)
 
 	# We only include server in deb package, here we copy jars to have it in the tarball
 	cp simdoc/apps/line-detection/target/line*.jar line-detection.jar
