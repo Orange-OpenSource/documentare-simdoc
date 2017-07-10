@@ -44,32 +44,67 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   @Override
   public ClusteringRequestResult build(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    ClusteringOutput clusteringOutput = buildClustering(fileIO, clusteringRequest);
-    ClusteringRequestResult clusteringRequestResult = clusteringRequest.bytesDataMode() ?
-      prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringOutput, fileIO) :
-      prepClusteringRequestResultInFilesMode(fileIO, clusteringOutput);
+    // Raw result on prepped files
+    ClusteringRequestResult clusteringRequestResultInternal = buildRemoteClustering(fileIO, clusteringRequest);
 
-    fileIO.writeClusteringRequestResult(clusteringRequestResult);
-    if (clusteringRequest.debug()) {
-      fileIO.writeClusteringGraph(clusteringOutput.graph);
-    } else {
+    // Remap result on input files
+    ClusteringRequestResult remapResult = clusteringRequest.bytesDataMode() ?
+      prepClusteringRequestResultInBytesDataMode(clusteringRequest.bytesData, clusteringRequestResultInternal, fileIO) :
+      prepClusteringRequestResultInFilesMode(fileIO, clusteringRequestResultInternal);
+
+    fileIO.writeClusteringRequestResult(remapResult);
+    if (!clusteringRequest.debug()) {
       fileIO.cleanupClustering();
     }
+
+    return remapResult;
+  }
+
+  private ClusteringRequestResult buildRemoteClustering(FileIO fileIO, ClusteringRequest mediationRequest) throws IOException {
+    BytesData[] bytesDataArray = prepData(fileIO, mediationRequest);
+
+    ClusteringRequest.ClusteringRequestBuilder clusteringRequestBuilder = ClusteringRequest.builder()
+      .bytesData(bytesDataArray)
+      .outputDirectory(mediationRequest.outputDirectory);
+
+    if (mediationRequest.acutSdFactor != null) {
+      clusteringRequestBuilder.acut(mediationRequest.acutSdFactor);
+    }
+
+    if (mediationRequest.ccutPercentile != null) {
+      clusteringRequestBuilder.ccut(mediationRequest.ccutPercentile);
+    }
+
+    if (mediationRequest.qcutSdFactor != null) {
+      clusteringRequestBuilder.qcut(mediationRequest.qcutSdFactor);
+    }
+
+    if (mediationRequest.scutSdFactor != null) {
+      clusteringRequestBuilder.scut(mediationRequest.scutSdFactor);
+    }
+
+
+    if ((mediationRequest.wcut != null) && (mediationRequest.wcut == true)) {
+      clusteringRequestBuilder.wcut();
+    }
+
+    if ((mediationRequest.debug != null) && (mediationRequest.debug == true)) {
+      clusteringRequestBuilder.debug();
+    }
+
+    if ((mediationRequest.sloop != null) && (mediationRequest.sloop == true)) {
+      clusteringRequestBuilder.sloop();
+    }
+
+    ClusteringRequest clusteringRequest = clusteringRequestBuilder
+      .build();
+
+    RemoteClustering remoteClustering = new RemoteClustering();
+    ClusteringRequestResult clusteringRequestResult = remoteClustering.request("http://localhost:6969", clusteringRequest);
 
     return clusteringRequestResult;
   }
 
-  private ClusteringOutput buildClustering(FileIO fileIO, ClusteringRequest clusteringRequest) throws IOException {
-    BytesData[] bytesDataArray = prepData(fileIO, clusteringRequest);
-
-    DistancesComputationResult distancesComputationResult = computeDistances(bytesDataArray);
-
-    SimClusteringItem[] simClusteringItems = initClusteringItems(distancesComputationResult, clusteringRequest.clusteringParameters());
-    ClusteringGraphBuilder clusteringGraphBuilder = new ClusteringGraphBuilder();
-    ClusteringGraph graph = clusteringGraphBuilder.buildGraphAndUpdateClusterIdAndCenter(simClusteringItems, clusteringRequest.clusteringParameters());
-
-    return new ClusteringOutput(simClusteringItems, graph);
-  }
 
   private BytesData[] prepData(FileIO fileIO, ClusteringRequest clusteringRequest) {
     // if bytes are already loaded, there is no directory to prep
@@ -96,52 +131,18 @@ public class ClusteringServiceImpl implements ClusteringService {
   }
 
 
-  private DistancesComputationResult computeDistances(BytesData[] bytesDataArray) {
-    BytesDistances bytesDistances = new BytesDistances();
-    DistancesArray distanceArray = bytesDistances.computeDistancesInCollection(bytesDataArray);
-    String[] ids = Arrays.stream(bytesDataArray)
-      .map(bytesData -> bytesData.id)
-      .toArray(String[]::new);
-    return new DistancesComputationResult(ids, distanceArray);
-  }
 
-  private ClusteringRequestResult prepClusteringRequestResultInFilesMode(FileIO fileIO, ClusteringOutput clusteringOutput) {
+  private ClusteringRequestResult prepClusteringRequestResultInFilesMode(FileIO fileIO, ClusteringRequestResult clusteringRequestResultInternal) {
     ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItemsInFilesMode(fileIO, clusteringOutput.simClusteringItems);
+      ClusteringResultItem.buildItemsInFilesMode(fileIO, clusteringRequestResultInternal.clustering);
     return ClusteringRequestResult.with(clusteringResultItems);
   }
-  private ClusteringRequestResult prepClusteringRequestResultInBytesDataMode(BytesData[] bytesData, ClusteringOutput clusteringOutput, FileIO fileIO) {
+  private ClusteringRequestResult prepClusteringRequestResultInBytesDataMode(BytesData[] bytesData, ClusteringRequestResult clusteringRequestResultInternal, FileIO fileIO) {
     ClusteringResultItem[] clusteringResultItems =
-      ClusteringResultItem.buildItemsInBytesDataModeWithFilesPreparation(bytesData, clusteringOutput.simClusteringItems, fileIO);
+      ClusteringResultItem.buildItemsInBytesDataModeWithFilesPreparation(bytesData, clusteringRequestResultInternal.clustering, fileIO);
     return ClusteringRequestResult.with(clusteringResultItems);
   }
 
-  private SimClusteringItem[] initClusteringItems(
-    DistancesComputationResult distancesComputationResult, ClusteringParameters parameters) {
-    String[] ids = distancesComputationResult.ids;
-    int nbItems = ids.length;
-    int k = parameters.knn() ? parameters.kNearestNeighboursThreshold : nbItems;
-    SimClusteringItem[] simClusteringItems = new SimClusteringItem[nbItems];
-    for(int i = 0; i < nbItems; i++) {
-      simClusteringItems[i] = new SimClusteringItem(ids[i]);
-    }
-    buildTriangulationVertices(simClusteringItems, distancesComputationResult.distancesArray, k);
-    return simClusteringItems;
-  }
 
-  /** Memory in place creation, it is optimal since we do not allocate nearest arrays */
-  private void buildTriangulationVertices(SimClusteringItem[] simClusteringItems, DistancesArray distancesArray, int k) {
-    List<SimClusteringItem> itemsList = Arrays.asList(simClusteringItems);
-    for (int i = 0; i < simClusteringItems.length; i++) {
-      NearestItem vertex2 = distancesArray.nearestItemOf(i);
-      NearestItem vertex3 = distancesArray.nearestItemOfBut(vertex2.getIndex(), i);
-      NearestItem[] vertex1Nearest = distancesArray.nearestItemsFor(itemsList, i);
 
-      // FIXME we keep nearest items for singletons experimentation on Jo's side
-      simClusteringItems[i].setNearestItems(vertex1Nearest);
-
-      simClusteringItems[i].setTriangleVertices(
-        new TriangleVertices(vertex1Nearest, vertex3, k));
-    }
-  }
 }

@@ -53,7 +53,7 @@ public class ClusteringGlyphsTest {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(inputDirectory())
-      .outputDirectory(OUTPUT_DIRECTORY)
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .debug()
       .build();
 
@@ -78,7 +78,7 @@ public class ClusteringGlyphsTest {
     BytesData[] bytesData = BytesData.loadFromDirectory(inputDirectory, BytesData.relativePathIdProvider(inputDirectory));
     ClusteringRequest req = ClusteringRequest.builder()
       .bytesData(bytesData)
-      .outputDirectory(OUTPUT_DIRECTORY)
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .debug()
       .build();
 
@@ -87,7 +87,7 @@ public class ClusteringGlyphsTest {
     // only result is kept without debug
     Assertions.assertThat(result).isEqualTo(expectedClusteringResult());
 
-    File firstSafeFile = new File(OUTPUT_DIRECTORY + "/safe-working-dir/0");
+    File firstSafeFile = new File(OUTPUT_DIRECTORY.getAbsolutePath() + "/safe-working-dir/0");
     CRC32 crc32 = new CRC32();
     crc32.update(FileUtils.readFileToByteArray(firstSafeFile));
     // in raw mode

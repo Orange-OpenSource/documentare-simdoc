@@ -54,13 +54,13 @@ public class ClusteringAnimalsTest {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(inputDirectory())
-      .outputDirectory(OUTPUT_DIRECTORY)
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .build();
 
     coreTest(req, "expected-clustering-result-animals-dna.json");
 
     // only result is kept without debug
-    Assertions.assertThat(new File(OUTPUT_DIRECTORY).list()).hasSize(2);
+    Assertions.assertThat(OUTPUT_DIRECTORY.list()).hasSize(2);
   }
 
   @Test
@@ -68,13 +68,13 @@ public class ClusteringAnimalsTest {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(inputDirectory())
-      .outputDirectory(OUTPUT_DIRECTORY)
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .debug()
       .build();
 
     coreTest(req, "expected-clustering-result-animals-dna.json");
 
-    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
+    List<String> outputDirectoryList = Arrays.asList(OUTPUT_DIRECTORY.list());
     Assertions.assertThat(outputDirectoryList).contains("metadata.json");
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
@@ -91,13 +91,13 @@ public class ClusteringAnimalsTest {
 
     ClusteringRequest req = ClusteringRequest.builder()
       .bytesData(bytesDataArray.bytesData)
-      .outputDirectory(OUTPUT_DIRECTORY)
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .debug()
       .build();
 
     coreTest(req, "expected-clustering-result-bytes-data-animals-dna.json");
 
-    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
+    List<String> outputDirectoryList = Arrays.asList(OUTPUT_DIRECTORY.list());
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");
@@ -110,13 +110,13 @@ public class ClusteringAnimalsTest {
 
     ClusteringRequest req = ClusteringRequest.builder()
       .bytesData(bytesData)
-      .outputDirectory(OUTPUT_DIRECTORY)
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
       .debug()
       .build();
 
     coreTest(req, "expected-clustering-result-bytes-data-files-animals-dna.json");
 
-    List<String> outputDirectoryList = Arrays.asList(new File(OUTPUT_DIRECTORY).list());
+    List<String> outputDirectoryList = Arrays.asList(OUTPUT_DIRECTORY.list());
     Assertions.assertThat(outputDirectoryList).contains("clustering-request.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-graph.json.gz");
     Assertions.assertThat(outputDirectoryList).contains("clustering-result.json.gz");

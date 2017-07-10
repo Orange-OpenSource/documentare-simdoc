@@ -31,7 +31,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 public class CoreTest {
 
-  static final String OUTPUT_DIRECTORY = "out";
+  static final File OUTPUT_DIRECTORY = new File("out");
 
   final ObjectMapper mapper = new ObjectMapper();
 
@@ -39,7 +39,7 @@ public class CoreTest {
 
   CoreTest(WebApplicationContext context) throws IOException {
     cleanup();
-    new File(OUTPUT_DIRECTORY).mkdir();
+    OUTPUT_DIRECTORY.mkdir();
 
     mockMvc = MockMvcBuilders
       .webAppContextSetup(context)
@@ -48,7 +48,7 @@ public class CoreTest {
   }
 
   void cleanup() {
-    FileUtils.deleteQuietly(new File(OUTPUT_DIRECTORY));
+    FileUtils.deleteQuietly(OUTPUT_DIRECTORY);
   }
 
   RemoteTask postRequestAndRetrievePendingTaskId(ClusteringRequest req) throws Exception {
