@@ -22,6 +22,7 @@ import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import com.orange.documentare.core.prepdata.PrepData;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -31,6 +32,12 @@ import java.util.List;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
+
+  @Value("${clustering.server.host}")
+  private String clusteringServerHost;
+
+  @Value("${clustering.server.port}")
+  private String clusteringServerPort;
 
   static {
     OpencvLoader.load();
@@ -100,7 +107,8 @@ public class ClusteringServiceImpl implements ClusteringService {
       .build();
 
     RemoteClustering remoteClustering = new RemoteClustering();
-    ClusteringRequestResult clusteringRequestResult = remoteClustering.request("http://localhost:6969", clusteringRequest);
+    String url = clusteringServerHost+":"+clusteringServerPort;
+    ClusteringRequestResult clusteringRequestResult = remoteClustering.request(url, clusteringRequest);
 
     return clusteringRequestResult;
   }
