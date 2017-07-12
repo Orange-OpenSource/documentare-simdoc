@@ -10,7 +10,7 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  */
 
 
-import com.orange.documentare.simdoc.server.biz.task.RemoteTask;
+import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
