@@ -33,11 +33,8 @@ import java.util.List;
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
 
-  @Value("${clustering.server.host}")
-  private String clusteringServerHost;
-
-  @Value("${clustering.server.port}")
-  private String clusteringServerPort;
+  @Value("${clustering.server.url}")
+  private String clusteringServerUrl;
 
   static {
     OpencvLoader.load();
@@ -107,7 +104,7 @@ public class ClusteringServiceImpl implements ClusteringService {
       .build();
 
     RemoteClustering remoteClustering = new RemoteClustering();
-    String url = clusteringServerHost+":"+clusteringServerPort;
+    String url = clusteringServerUrl;
     ClusteringRequestResult clusteringRequestResult = remoteClustering.request(url, clusteringRequest);
 
     return clusteringRequestResult;
