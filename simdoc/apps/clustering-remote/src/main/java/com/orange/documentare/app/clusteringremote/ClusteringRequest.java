@@ -21,6 +21,7 @@ import java.io.File;
 @EqualsAndHashCode
 @RequiredArgsConstructor
 public class ClusteringRequest {
+  public final String url;
   public final String inputDirectory;
   public final BytesData[] bytesData;
   public final String outputDirectory;
@@ -38,6 +39,7 @@ public class ClusteringRequest {
   }
 
   public static class ClusteringRequestBuilder {
+    public String url;
     private String inputDirectory;
     private BytesData[] bytesData;
     private String outputDirectory;
@@ -54,9 +56,13 @@ public class ClusteringRequest {
     }
 
     public ClusteringRequest build() {
-      return new ClusteringRequest(inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
+      return new ClusteringRequest(url, inputDirectory, bytesData, outputDirectory, debug, acutSdFactor, qcutSdFactor, scutSdFactor, ccutPercentile, wcut, kNearestNeighboursThreshold, sloop);
     }
 
+    public ClusteringRequestBuilder url(String url) {
+      this.url = url;
+      return this;
+    }
 
     public ClusteringRequestBuilder inputDirectory(String inputDirectory) {
       BytesData[] bytesData = BytesData.loadFromDirectory(new File(inputDirectory), File::getName);

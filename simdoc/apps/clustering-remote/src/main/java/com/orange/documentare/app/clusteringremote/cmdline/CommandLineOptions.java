@@ -22,6 +22,7 @@ import java.io.IOException;
 import static com.orange.documentare.core.comp.clustering.graph.ClusteringParameters.*;
 
 public class CommandLineOptions {
+  private static final String URL_REMOTE_SERVER = "url";
   private static final String HELP = "h";
   private static final String INPUT_DIRECTORY = "din";
   private static final String OUTPUT_DIRECTORY = "dout";
@@ -58,12 +59,13 @@ public class CommandLineOptions {
   }
 
   private void initOptions(CommandLine commandLine) throws IOException {
+    boolean dUrlOption = commandLine.hasOption(URL_REMOTE_SERVER);
     boolean dInOption = commandLine.hasOption(INPUT_DIRECTORY);
     boolean dOutOption = commandLine.hasOption(OUTPUT_DIRECTORY);
     boolean bytesDataOption = commandLine.hasOption(BYTE_DATA_JSON);
 
-    if (!dInOption && !bytesDataOption && !dOutOption) {
-      throw new CommandLineException("input directory or bytes data json or output directory argument is missing\n");
+    if (!dUrlOption && !dInOption && !bytesDataOption && !dOutOption) {
+      throw new CommandLineException("remote server url or input directory or bytes data json or output directory argument is missing\n");
     } else {
       if (commandLine.hasOption(ACUT)) {
         builder.acut(Float.parseFloat(commandLine.getOptionValue(ACUT, String.valueOf(A_DEFAULT_SD_FACTOR))));
@@ -85,6 +87,10 @@ public class CommandLineOptions {
       }
       if (commandLine.hasOption(KNN)) {
         builder.kNearestNeighboursThreshold(Integer.parseInt(commandLine.getOptionValue(KNN)));
+      }
+
+      if (dUrlOption) {
+        builder.url(commandLine.getOptionValue(URL_REMOTE_SERVER));
       }
 
       if (dInOption) {
@@ -110,6 +116,7 @@ public class CommandLineOptions {
   }
 
   private CommandLine getCommandLineFromArgs(String[] args) throws ParseException {
+    Option url = OptionBuilder.withArgName("url for remote server").hasArg().withDescription("url for remote server").create(URL_REMOTE_SERVER);
     Option help = new Option(HELP, "print this message");
 
     Option din = OptionBuilder.withArgName("input directory").hasArg().withDescription("input directory").create(INPUT_DIRECTORY);
@@ -151,6 +158,7 @@ public class CommandLineOptions {
               .desc("kNearestNeighboursThreshold")
               .build();
 
+    options.addOption(url);
     options.addOption(help);
     options.addOption(din);
     options.addOption(bytesDataJson);
