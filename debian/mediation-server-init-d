@@ -4,18 +4,18 @@ if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
     set "$0" "$@"; INIT_D_SCRIPT_SOURCED=true . /lib/init/init-d-script
 fi
 ### BEGIN INIT INFO
-# Provides:          simdoc-server
+# Provides:          mediation-server
 # Required-Start:    $remote_fs $syslog
 # Required-Stop:     $remote_fs $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
-# Short-Description: simdoc-server service script
+# Short-Description: mediation-server service script
 ### END INIT INFO
 
 # Author: Christophe Maldivi <christophe.maldivi@orange.com>
 
-SERVICE_NAME=SimdocServer
-PATH_TO_JAR=/usr/share/java/simdoc-server.jar
+SERVICE_NAME=MediationServer
+PATH_TO_JAR=/usr/share/java/mediation-server.jar
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid
 
 case $1 in
