@@ -41,8 +41,48 @@ public class RemoteClusteringTest {
   }
 
   @Test
-  @Ignore // a running simdoc-server is mandatory for this test
+  @Ignore // a running clustering-server on port 6969 is mandatory for this test
   public void remote_build_animals_dna_clustering() throws IOException {
+    // Given
+    ClusteringRequest req = ClusteringRequest.builder()
+      .inputDirectory(inputDirectory())
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
+      .debug()
+      .build();
+
+    RemoteClustering remoteClustering = new RemoteClustering();
+
+    // When
+    ClusteringRequestResult result = remoteClustering.request("http://localhost:6969", req);
+
+    // Then
+    Assertions.assertThat(result).isEqualTo(expectedClusteringResult());
+  }
+
+  @Test
+  @Ignore // a running clustering-server on port 6969 is mandatory for this test
+  public void remote_build_animals_dna_clustering_with_bytes_data() throws IOException {
+    // Given
+    ClusteringRequest req = ClusteringRequest.builder()
+      .bytesData(bytesData())
+      .outputDirectory(OUTPUT_DIRECTORY.getAbsolutePath())
+      .debug()
+      .build();
+
+    RemoteClustering remoteClustering = new RemoteClustering();
+
+    // When
+    ClusteringRequestResult result = remoteClustering.request("http://localhost:6969", req);
+
+    // Then
+    ClusteringRequestResult expected = expectedClusteringResult();
+    Assertions.assertThat(result).isEqualTo(expected);
+  }
+
+
+  @Test
+  @Ignore // a running mediation-server on port 8080 and clustering-server on port 6969 is mandatory for this test
+  public void remote_build_animals_dna_clustering_with_mediation() throws IOException {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .inputDirectory(inputDirectory())
@@ -56,12 +96,12 @@ public class RemoteClusteringTest {
     ClusteringRequestResult result = remoteClustering.request("http://localhost:8080", req);
 
     // Then
-    Assertions.assertThat(result).isEqualTo(expectedClusteringResult(false));
+    Assertions.assertThat(result).isEqualTo(expectedClusteringResultWithMediation());
   }
 
   @Test
-  @Ignore // a running simdoc-server is mandatory for this test
-  public void remote_build_animals_dna_clustering_with_bytes_data() throws IOException {
+  @Ignore // a running mediation-server on port 8080 and clustering-server on port 6969 is mandatory for this test
+  public void remote_build_animals_dna_clustering_with_bytes_data_with_mediation() throws IOException {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
       .bytesData(bytesData())
@@ -75,7 +115,7 @@ public class RemoteClusteringTest {
     ClusteringRequestResult result = remoteClustering.request("http://localhost:8080", req);
 
     // Then
-    ClusteringRequestResult expected = expectedClusteringResult(true);
+    ClusteringRequestResult expected = expectedClusteringResultWithMediation();
     Assertions.assertThat(result).isEqualTo(expected);
   }
 
@@ -87,9 +127,15 @@ public class RemoteClusteringTest {
     return (BytesDataArray)jsonGenericHandler.getObjectFromJsonFile(BytesDataArray.class, new File(getClass().getResource("/bytes-data-animals-dna.json").getFile()));
   }
 
-  private ClusteringRequestResult expectedClusteringResult(boolean bytesDataMode) throws IOException {
-    File file = new File(getClass().getResource(
-        bytesDataMode ? "/expected-clustering-result-bytes-data.json" : "/expected-clustering-result.json").getFile());
+  private ClusteringRequestResult expectedClusteringResult() throws IOException {
+
+    File file = new File(getClass().getResource("/expected-clustering-result-bytes-data-animals-dna.json").getFile());
+    return (ClusteringRequestResult) jsonGenericHandler.getObjectFromJsonFile(ClusteringRequestResult.class, file);
+  }
+
+  private ClusteringRequestResult expectedClusteringResultWithMediation() throws IOException {
+
+    File file = new File(getClass().getResource("/expected-clustering-result-bytes-data-files-animals-dna.json").getFile());
     return (ClusteringRequestResult) jsonGenericHandler.getObjectFromJsonFile(ClusteringRequestResult.class, file);
   }
 

@@ -14,16 +14,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.cli.ParseException;
 
 import java.io.IOException;
+import java.util.Currency;
 
 @Slf4j
 public class ClusteringRemoteApp {
 
-  private static ClusteringRequest clusteringRequest;
+  private static ClusteringRequest remoteClusteringRequest;
 
   public static void main(String[] args) throws IllegalAccessException, IOException, ParseException {
     System.out.println("\n[ClusteringRemote - Start]");
     try {
-      clusteringRequest = (new CommandLineOptions(args)).clusteringRequest();
+      remoteClusteringRequest = (new CommandLineOptions(args)).clusteringRequest();
     } catch (Exception e) {
       CommandLineOptions.showHelp(e);
       return;
@@ -37,8 +38,49 @@ public class ClusteringRemoteApp {
   }
 
   private static void doTheJob() throws IOException {
-    System.out.println("Clustering parameters, " + clusteringRequest);
+    System.out.println("Clustering parameters, " + remoteClusteringRequest);
     RemoteClustering remoteClustering = new RemoteClustering();
-    remoteClustering.request("http://localhost:8080", clusteringRequest);
+    String url = remoteClusteringRequest.url;
+    ClusteringRequest clusteringRequest = buildClusteringRequest();
+
+    remoteClustering.request(url, clusteringRequest);
+  }
+
+  private static ClusteringRequest buildClusteringRequest() {
+    ClusteringRequest.ClusteringRequestBuilder clusteringRequestBuilder = ClusteringRequest.builder()
+      .bytesData(remoteClusteringRequest.bytesData)
+      .outputDirectory(remoteClusteringRequest.outputDirectory);
+
+    if (remoteClusteringRequest.acutSdFactor != null) {
+      clusteringRequestBuilder.acut(remoteClusteringRequest.acutSdFactor);
+    }
+
+    if (remoteClusteringRequest.ccutPercentile != null) {
+      clusteringRequestBuilder.ccut(remoteClusteringRequest.ccutPercentile);
+    }
+
+    if (remoteClusteringRequest.qcutSdFactor != null) {
+      clusteringRequestBuilder.qcut(remoteClusteringRequest.qcutSdFactor);
+    }
+
+    if (remoteClusteringRequest.scutSdFactor != null) {
+      clusteringRequestBuilder.scut(remoteClusteringRequest.scutSdFactor);
+    }
+
+
+    if ((remoteClusteringRequest.wcut != null) && (remoteClusteringRequest.wcut == true)) {
+      clusteringRequestBuilder.wcut();
+    }
+
+    if ((remoteClusteringRequest.debug != null) && (remoteClusteringRequest.debug == true)) {
+      clusteringRequestBuilder.debug();
+    }
+
+    if ((remoteClusteringRequest.sloop != null) && (remoteClusteringRequest.sloop == true)) {
+      clusteringRequestBuilder.sloop();
+    }
+
+    return clusteringRequestBuilder
+      .build();
   }
 }

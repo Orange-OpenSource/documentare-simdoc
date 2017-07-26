@@ -2,7 +2,7 @@
 [![License](https://img.shields.io/aur/license/yaourt.svg?maxAge=2592000)](https://github.com/Orange-OpenSource/documentare-simdoc/blob/master/LICENSE)
 
 # Documentare, SimDoc library & tools
-Library and tools for similarity measurement, classification and clustering of digital content and segmentation images from digitized document
+Library and tools for similarity measurement, classification and clustering of digital content and segmentation images from digitized document.
 
 ## Build
 
