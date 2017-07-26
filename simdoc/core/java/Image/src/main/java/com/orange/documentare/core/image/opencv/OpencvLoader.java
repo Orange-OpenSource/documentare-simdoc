@@ -14,8 +14,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class OpencvLoader {
 
-  private static final String OPENCV_MAC_LIB = "/opt/opencv-mac-lib/libopencv_java249.dylib";
-
   public static void load() {
     showMessage("Try to load OpenCV native library (" + org.opencv.core.Core.NATIVE_LIBRARY_NAME + ")");
     try {

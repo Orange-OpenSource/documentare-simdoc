@@ -1,0 +1,14 @@
+Source: simdoc
+Section: unknown
+Priority: optional
+Maintainer: Christophe Maldivi <christophe.maldivi@orange.com>
+Build-Depends: debhelper (>= 9), openjdk-8-jdk-headless, libgvc6, libopencv-core2.4v5 | libopencv-core2.4, libopencv2.4-java, imagemagick
+Standards-Version: 3.9.8
+Homepage: https://github.com/Orange-OpenSource/documentare-simdoc
+
+Package: simdoc
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, openjdk-8-jre-headless, libgvc6, libopencv-core2.4v5 | libopencv-core2.4, libopencv2.4-java, imagemagick, graphviz (=2.38.0-18)
+Description: Simdoc clustering server
+ Library and tools for similarity measurement, classification and clustering of digital content and segmentation images from digitized document 
+

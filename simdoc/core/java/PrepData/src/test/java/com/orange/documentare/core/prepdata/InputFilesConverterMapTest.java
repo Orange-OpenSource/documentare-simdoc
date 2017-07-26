@@ -1,4 +1,4 @@
-package com.orange.documentare.core.system.inputfilesconverter;
+package com.orange.documentare.core.prepdata;
 /*
  * Copyright (c) 2016 Orange
  *
@@ -10,6 +10,7 @@ package com.orange.documentare.core.system.inputfilesconverter;
  */
 
 
+import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import org.fest.assertions.Assertions;
 import org.junit.Test;
 

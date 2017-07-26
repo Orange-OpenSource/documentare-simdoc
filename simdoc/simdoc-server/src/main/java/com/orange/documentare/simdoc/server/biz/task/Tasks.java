@@ -25,8 +25,6 @@ public class Tasks implements TaskThread.ActiveThreadListener {
   private final int maxTasks = Runtime.getRuntime().availableProcessors();
   private final List<Thread> activeThreads = new ArrayList<>();
 
-
-
   public synchronized String newTask() {
     Task task = new Task();
     tasks.put(task.id, task);
@@ -64,8 +62,8 @@ public class Tasks implements TaskThread.ActiveThreadListener {
     return tasks.containsKey(id);
   }
 
-  public synchronized void run(Runnable runnable) {
-    Thread thread = new TaskThread(runnable, this);
+  public synchronized void run(Runnable runnable, String taskId) {
+    Thread thread = new TaskThread(runnable, this, taskId);
     activeThreads.add(thread);
     thread.start();
   }
@@ -73,6 +71,12 @@ public class Tasks implements TaskThread.ActiveThreadListener {
   @Override
   public synchronized void finished(Thread thread) {
     activeThreads.remove(thread);
+  }
+
+  @Override
+  public void error(Thread thread, String taskId) {
+    // remove silently
+    tasks.remove(taskId);
   }
 
   public boolean canAcceptNewTask() {

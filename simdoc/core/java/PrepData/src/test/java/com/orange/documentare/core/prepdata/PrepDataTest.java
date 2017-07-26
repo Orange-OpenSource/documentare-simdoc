@@ -9,6 +9,7 @@ package com.orange.documentare.core.prepdata;
  * the Free Software Foundation.
  */
 
+import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
 import com.orange.documentare.core.image.opencv.OpencvLoader;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
@@ -173,11 +174,49 @@ public class PrepDataTest {
   }
 
   @Test
-  public void prep_safe_working_directory_with_raw() throws IOException {
+  public void prep_safe_working_directory_with_raw_from_input_directory() throws IOException {
     // Given
     File inputDirectory = new File(getClass().getResource("/prep-data-test-input-dir").getFile());
     PrepData prepData = PrepData.builder()
       .inputDirectory(inputDirectory)
+      .safeWorkingDirConverter()
+      .safeWorkingDirectory(SAFE_WORKING_DIRECTORY)
+      .withRawConverter(true)
+      .expectedRawBytesCount(100 * 1024)
+      .metadataOutputFile(METADATA_JSON)
+      .build();
+
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+
+    // When
+    prepData.prep();
+    File[] safeFiles = SAFE_WORKING_DIRECTORY.listFiles();
+    Arrays.sort(safeFiles);
+    Metadata metadata =
+      (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, METADATA_JSON);
+    FilesMap filesMap = metadata.filesMap;
+
+    byte[] rawBytes = FileUtils.readFileToByteArray(safeFiles[0]);
+    CRC32 crc32 = new CRC32();
+    crc32.update(rawBytes);
+
+    // Then
+    Assertions.assertThat(safeFiles.length).isEqualTo(2);
+    Assertions.assertThat(Files.isSymbolicLink(safeFiles[0].toPath())).isFalse();
+    Assertions.assertThat(Files.isSymbolicLink(safeFiles[1].toPath())).isTrue();
+    Assertions.assertThat(metadata.rawConversion).isTrue();
+    Assertions.assertThat(filesMap.size()).isEqualTo(2);
+    Assertions.assertThat(crc32.getValue()).isEqualTo(3935510044L);
+  }
+
+  @Test
+  public void prep_safe_working_directory_with_raw_from_bytes_data() throws IOException {
+    // Given
+    File inputDirectory = new File(getClass().getResource("/prep-data-test-input-dir").getFile());
+    BytesData[] bytesData = BytesData.loadFromDirectory(inputDirectory);
+
+    PrepData prepData = PrepData.builder()
+      .bytesData(bytesData)
       .safeWorkingDirConverter()
       .safeWorkingDirectory(SAFE_WORKING_DIRECTORY)
       .withRawConverter(true)
@@ -205,5 +244,33 @@ public class PrepDataTest {
     Assertions.assertThat(metadata.rawConversion).isTrue();
     Assertions.assertThat(filesMap.size()).isEqualTo(2);
     Assertions.assertThat(crc32.getValue()).isEqualTo(2829745108L);
+  }
+
+  @Test
+  public void prep_from_bytes_data_with_bytes_but_without_filepaths_should_do_nothing() throws IOException {
+    // Given
+    JsonGenericHandler jsonGenericHandler = new JsonGenericHandler();
+
+    BytesData[] bytesData = new BytesData[1];
+    bytesData[0] = new BytesData("", new byte[] { 0x12 });
+
+    PrepData prepData = PrepData.builder()
+      .bytesData(bytesData)
+      .safeWorkingDirConverter()
+      .safeWorkingDirectory(SAFE_WORKING_DIRECTORY)
+      .withRawConverter(true)
+      .metadataOutputFile(METADATA_JSON)
+      .build();
+
+    // When
+    prepData.prep();
+
+    Metadata metadata =
+      (Metadata) jsonGenericHandler.getObjectFromJsonFile(Metadata.class, METADATA_JSON);
+    FilesMap filesMap = metadata.filesMap;
+
+    // Then
+    Assertions.assertThat(SAFE_WORKING_DIRECTORY.listFiles().length).isEqualTo(0);
+    Assertions.assertThat(filesMap.size()).isEqualTo(0);
   }
 }

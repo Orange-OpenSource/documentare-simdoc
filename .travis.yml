@@ -1,7 +1,7 @@
 language: java
 
 dist: trusty
-sudo: false
+sudo: required
 
 jdk:
 - oraclejdk8
@@ -9,20 +9,26 @@ jdk:
 addons:
   apt:
     packages:
+    - maven
     - libgts-0.7-5
+    - devscripts
+    - fakeroot
+    - debhelper
+    - libopencv-core2.4
+    - libopencv2.4-java
+
 
 install: true
 
 before_script:
-- tar xvjf 3rdparty/graphviz-2.38-ubuntu-trusty.tar.bz2 && mv opt/local /opt/
-- /opt/local/bin/sfdp -V
-- /opt/local/bin/gvmap --help
+- wget https://gitlab.com/Orange-OpenSource/documentare/documentare-graphviz/-/jobs/21454333/artifacts/raw/graphviz_2.38.0-18_amd64.deb
+- sudo dpkg --force-all -i graphviz_2.38.0-18_amd64.deb
 
 script:
 - ./.ci.sh
 
 before_deploy:
-- export TARBALL=$(ls *.tar.bz2)
+- export TARBALL=$(ls *.tar)
 - echo Will deploy ${TARBALL}
 
 deploy:
@@ -46,4 +52,5 @@ notifications:
     recipients:
     - christophe.maldivi@orange.com
     - joel.gardes@orange.com
+    - denis.boisset@orange.com
 

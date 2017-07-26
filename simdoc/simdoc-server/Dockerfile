@@ -1,4 +1,4 @@
-FROM registry.gitlab.com/orange-opensource/documentare-simdoc-ci-docker:master
+FROM registry.gitlab.com/orange-opensource/documentare/documentare-simdoc-ci-docker:master
 
 MAINTAINER Denis Boisset "denis.boisset@orange.com" & Christophe Maldivi "christophe.maldivi@orange.com"
 

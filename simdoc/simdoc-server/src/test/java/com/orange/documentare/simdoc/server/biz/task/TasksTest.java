@@ -88,7 +88,7 @@ public class TasksTest {
           Assertions.assertThat(tasks.canAcceptNewTask()).isTrue();
           tasks.run(() -> {
             do { System.out.print("*");} while (true);
-          });
+          }, "");
         }
       );
 

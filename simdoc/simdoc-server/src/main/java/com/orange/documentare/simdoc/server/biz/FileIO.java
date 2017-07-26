@@ -35,16 +35,20 @@ public class FileIO {
   public final String inputDirectoryAbsPath;
   public final String outputDirectoryAbsPath;
   private final boolean bytesDataMode;
+  private final boolean filesPrepped;
 
   public FileIO(SharedDirectory sharedDirectory, ClusteringRequest req) {
-    this.bytesDataMode = req.bytesDataMode;
+    this.bytesDataMode = req.bytesDataMode();
+
+    // false only if no files preparation is done, ie for bytes data mode when bytes are present in the request
+    this.filesPrepped = !bytesDataMode || (bytesDataMode && req.bytesData.length > 0 && req.bytesData[0].bytes == null);
+
     String prefix = sharedDirectory.sharedDirectoryAvailable() ?
       sharedDirectory.sharedDirectoryRootPath() :
       "";
-    String inPrefixedPath = prefix + req.inputDirectory;
-    String outPrefixedPath = prefix + req.outputDirectory;
-    inputDirectoryAbsPath = new File(inPrefixedPath).getAbsolutePath();
-    outputDirectoryAbsPath = new File(outPrefixedPath).getAbsolutePath();
+
+    inputDirectoryAbsPath = req.inputDirectory == null ? null : new File(prefix + req.inputDirectory).getAbsolutePath();
+    outputDirectoryAbsPath = req.outputDirectory == null ? null : new File(prefix + req.outputDirectory).getAbsolutePath();
   }
 
   public RequestValidation validate() {
@@ -105,7 +109,7 @@ public class FileIO {
   }
 
   public File inputDirectory() {
-    return new File(inputDirectoryAbsPath);
+    return inputDirectoryAbsPath == null ? null : new File(inputDirectoryAbsPath);
   }
 
   private File outputDirectory() {
@@ -132,5 +136,9 @@ public class FileIO {
 
   private File clusteringResultFile() {
     return new File(outputDirectoryAbsPath + CLUSTERING_RESULT_FILE);
+  }
+
+  public boolean filesPrepped() {
+    return filesPrepped;
   }
 }

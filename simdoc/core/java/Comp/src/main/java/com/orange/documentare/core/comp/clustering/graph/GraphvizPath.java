@@ -10,5 +10,5 @@ package com.orange.documentare.core.comp.clustering.graph;
  */
 
 public class GraphvizPath {
-  public static final String PATH = "/opt/local/bin/";
+  public static final String PATH = "";
 }

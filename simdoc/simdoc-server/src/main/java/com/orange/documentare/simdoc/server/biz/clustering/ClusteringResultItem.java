@@ -11,12 +11,15 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  */
 
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
+import com.orange.documentare.core.model.ref.clustering.ClusteringItem;
 import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
-import com.orange.documentare.core.system.inputfilesconverter.InputFilesConverter;
 import com.orange.documentare.simdoc.server.biz.FileIO;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.EqualsAndHashCode;
 import lombok.RequiredArgsConstructor;
+
+import java.util.*;
+import java.util.stream.IntStream;
 
 @RequiredArgsConstructor
 @EqualsAndHashCode
@@ -40,11 +43,43 @@ public class ClusteringResultItem {
     return items;
   }
 
-  static ClusteringResultItem[] buildItemsInBytesDataMode(BytesData[] bytesDatas, SimClusteringItem[] simClusteringItems) {
+  static ClusteringResultItem[] buildItemsInBytesDataModeWithFilesPreparation(BytesData[] bytesData, SimClusteringItem[] simClusteringItems, FileIO fileIO) {
     ClusteringResultItem[] items = new ClusteringResultItem[simClusteringItems.length];
+
+    return fileIO.filesPrepped() ?
+        buildItemsInBytesDataModeWithFilesPreparation(items, bytesData, simClusteringItems, fileIO) :
+      buildItemsInBytesDataMode(items, bytesData, simClusteringItems);
+  }
+
+  private static ClusteringResultItem[] buildItemsInBytesDataModeWithFilesPreparation(ClusteringResultItem[] items, BytesData[] bytesData, SimClusteringItem[] simClusteringItems, FileIO fileIO) {
+    FilesMap filesMap = fileIO.loadFilesMap();
+    IntStream.range(0, items.length).forEach(i -> {
+      BytesData bd = bytesData[i];
+      int fileId = getKeyByValue(filesMap, bd.filepath).get();
+      items[i] = new ClusteringResultItem(bd.id, lookUpSimClusteringItem(simClusteringItems, fileId).getClusterId());
+    });
+    return items;
+  }
+
+  private static ClusteringItem lookUpSimClusteringItem(SimClusteringItem[] simClusteringItems, int fileId) {
+    return Arrays.stream(simClusteringItems)
+      .filter(simClusteringItem -> Integer.parseInt(simClusteringItem.getHumanReadableId()) == fileId)
+      .findFirst()
+      .get();
+  }
+
+  private static ClusteringResultItem[] buildItemsInBytesDataMode(ClusteringResultItem[] items, BytesData[] bytesData, SimClusteringItem[] simClusteringItems) {
     for (int i = 0; i < items.length; i++) {
-      items[i] = new ClusteringResultItem(bytesDatas[i].id, simClusteringItems[i].getClusterId());
+      items[i] = new ClusteringResultItem(bytesData[i].id, simClusteringItems[i].getClusterId());
     }
     return items;
+  }
+
+  public static Optional<Integer> getKeyByValue(Map<Integer, String> map, String value) {
+    return map.entrySet()
+      .stream()
+      .filter(entry -> Objects.equals(entry.getValue(), value))
+      .map(Map.Entry::getKey)
+      .findFirst();
   }
 }
