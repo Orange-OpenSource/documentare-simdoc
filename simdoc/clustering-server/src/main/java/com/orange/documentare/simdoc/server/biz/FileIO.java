@@ -13,8 +13,6 @@ package com.orange.documentare.simdoc.server.biz;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.orange.documentare.core.model.json.JsonGenericHandler;
 import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.core.prepdata.Metadata;
-import com.orange.documentare.core.system.inputfilesconverter.FilesMap;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequest;
 import com.orange.documentare.simdoc.server.biz.clustering.ClusteringRequestResult;
 import com.orange.documentare.simdoc.server.biz.clustering.RequestValidation;

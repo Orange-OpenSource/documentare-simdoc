@@ -10,25 +10,15 @@ package com.orange.documentare.simdoc.server.biz.clustering;
  * the Free Software Foundation.
  */
 
-import com.orange.documentare.core.comp.clustering.graph.ClusteringGraphBuilder;
-import com.orange.documentare.core.comp.clustering.graph.ClusteringParameters;
-import com.orange.documentare.core.comp.distance.DistancesArray;
 import com.orange.documentare.core.comp.distance.bytesdistances.BytesData;
-import com.orange.documentare.core.comp.distance.bytesdistances.BytesDistances;
 import com.orange.documentare.core.image.opencv.OpencvLoader;
-import com.orange.documentare.core.model.ref.clustering.graph.ClusteringGraph;
-import com.orange.documentare.core.model.ref.comp.NearestItem;
-import com.orange.documentare.core.model.ref.comp.TriangleVertices;
 import com.orange.documentare.core.prepdata.PrepData;
 import com.orange.documentare.simdoc.server.biz.FileIO;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
 
 @Service
 public class ClusteringServiceImpl implements ClusteringService {
@@ -38,12 +28,6 @@ public class ClusteringServiceImpl implements ClusteringService {
 
   static {
     OpencvLoader.load();
-  }
-
-  @RequiredArgsConstructor
-  private class DistancesComputationResult {
-    public final String[] ids;
-    public final DistancesArray distancesArray;
   }
 
   @Override

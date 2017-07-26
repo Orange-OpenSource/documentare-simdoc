@@ -71,7 +71,7 @@
 
     <dependency>
       <groupId>com.orange.documentare.core</groupId>
-      <artifactId>PrepData</artifactId>
+      <artifactId>Comp</artifactId>
       <version>${simdoc.version}</version>
     </dependency>
 

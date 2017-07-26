@@ -15,6 +15,7 @@ fi
 # Author: Christophe Maldivi <christophe.maldivi@orange.com>
 
 SERVICE_NAME=MediationServer
+CLUSTERING_SERVER_URL=http://localhost:1958
 SERVER_PORT=2407
 PATH_TO_JAR=/usr/share/java/mediation-server.jar
 PID_PATH_NAME=/tmp/$SERVICE_NAME-pid
@@ -23,7 +24,7 @@ case $1 in
     start)
         echo "Starting $SERVICE_NAME ..."
         if [ ! -f $PID_PATH_NAME ]; then
-            nohup java -jar $PATH_TO_JAR --server.port=$SERVER_PORT 2>> /dev/null >> /dev/null &
+            nohup java -jar $PATH_TO_JAR --server.port=$SERVER_PORT --clustering.server.url=$CLUSTERING_SERVER_URL 2>> /dev/null >> /dev/null &
             echo $! > $PID_PATH_NAME
             echo "$SERVICE_NAME started ..."
         else
