@@ -1,13 +1,9 @@
-simdoc (1.50.3-20-gc022775) UNRELEASED; urgency=medium
+simdoc (1.50.2) UNRELEASED; urgency=medium
 
-  [ Christophe Maldivi ]
   * git update, version 1.50.2
   * git update, version 1.50.2
 
-  [ caym7340 ]
-  * git update, version 1.50.3-20-gc022775
-
- -- caym7340 <caym7340@g-z820-cm.rd.francetelecom.fr>  Wed, 26 Jul 2017 17:53:35 +0200
+ -- Christophe Maldivi <christophe.maldivi@orange.com>  Mon, 10 Jul 2017 20:24:34 +0200
 
 simdoc (1.41.2) unstable; urgency=medium
 

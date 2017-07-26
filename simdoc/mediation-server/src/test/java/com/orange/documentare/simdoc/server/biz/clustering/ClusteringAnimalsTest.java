@@ -16,6 +16,7 @@ import com.orange.documentare.simdoc.server.biz.RemoteTask;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,7 @@ import static com.orange.documentare.simdoc.server.biz.clustering.CoreTest.OUTPU
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(webEnvironment= SpringBootTest.WebEnvironment.RANDOM_PORT)
+@Ignore
 public class ClusteringAnimalsTest {
 
   @Autowired

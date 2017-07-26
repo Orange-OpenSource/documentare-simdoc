@@ -16,6 +16,7 @@ import org.apache.commons.io.FileUtils;
 import org.assertj.core.api.Assertions;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,6 +50,7 @@ public class ClusteringGlyphsTest {
   }
 
   @Test
+  @Ignore
   public void build_glyphs_clustering_with_input_directory() throws Exception {
     // Given
     ClusteringRequest req = ClusteringRequest.builder()
@@ -72,6 +74,7 @@ public class ClusteringGlyphsTest {
   }
 
   @Test
+  @Ignore
   public void build_glyphs_clustering_with_bytes_data() throws Exception {
     // Given
     File inputDirectory = new File(inputDirectory());
