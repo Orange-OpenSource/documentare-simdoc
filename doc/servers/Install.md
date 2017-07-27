@@ -48,14 +48,14 @@ Now simdoc servers should be installed.
 
 ## Run simdoc servers
 
-# Start the clustering server
+### Start the clustering server
 
 Start: `sudo service clustering-server start`
 Check status: `sudo service clustering-server status`
 
 To inspect / change starter script, have a look at the following file: `/etc/init.d/clustering-server`
 
-# Start the mediation server
+### Start the mediation server
 
 Start: `sudo service mediation-server start`
 Check status: `sudo service mediation-server status`
