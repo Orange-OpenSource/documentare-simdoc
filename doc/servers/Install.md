@@ -13,6 +13,8 @@ To download the last package version:
     - download the last "passed" job artifacts (icon on the right)
     - unzip it, you should have the debian package, for instance: `graphviz_2.38.0-18_amd64.deb`
 
+Install sudo after connected in root (su) : apt-get -install sudo
+
 Install the debian package: `sudo dpkg -i graphviz_2.38.0-18_amd64.deb`
 
 You may have such error:
