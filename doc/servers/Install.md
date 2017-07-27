@@ -69,7 +69,7 @@ Check status: `sudo service mediation-server status`
 To inspect / change starter script, have a look at the following file: `/etc/init.d/mediation-server`
 
 ### Uninstall simdoc server
-`sudo apt-get purge simdoc` suivi de `sudo apt-get autoremove`
+`sudo apt-get purge simdoc` followed by `sudo apt-get autoremove`
 
 # Create a debian VM with virtualbox
 
