@@ -68,6 +68,9 @@ Check status: `sudo service mediation-server status`
 
 To inspect / change starter script, have a look at the following file: `/etc/init.d/mediation-server`
 
+### Uninstall simdoc server
+`sudo apt-get purge simdoc`
+
 # Create a debian VM with virtualbox
 
 You can find debian ISO images here: https://cdimage.debian.org/debian-cd/current/amd64/iso-cd/
