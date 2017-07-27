@@ -19,3 +19,6 @@ Build with tests: `make build-tests`
 Build the servers debian package: `make deb`
 Start the simdoc library integration test: `make integration-test`
 
+# Docker installation
+
+Do not use the docker package provided by your distribution. Follow following installation instructions: https://docs.docker.com/engine/installation/linux/docker-ce/debian/
