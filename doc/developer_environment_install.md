@@ -13,6 +13,8 @@ NB: on ubuntu trusty, replace `libopencv-core2.4v5` by `libopencv-core2.4`
 
 Clone the repository : `git clone https://github.com/Orange-OpenSource/documentare-simdoc.git`
 
+Setup the proxy configuration for maven if needed: `export MAVEN_OPTS="-Dhttp.proxyHost=proxy -Dhttp.proxyPort=8080 -Dhttps.proxyHost=proxy -Dhttps.proxyPort=8080`
+
 Complete build as in the continuous integration: `./.ci.sh`
 => that is tha way to check that your installation is complete and works correctly
 
