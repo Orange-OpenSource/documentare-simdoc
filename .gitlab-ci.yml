@@ -41,13 +41,11 @@ deploy-job:
 #    - env | grep ^DOCKER_
 #    - env | grep ^CI_
 #    - docker info
-    - ls
-    - cp ./usr/share/java/simdoc-server.jar simdoc/simdoc-server
-    - ls simdoc/simdoc-server
+    - cp ./usr/share/java/clustering-server.jar simdoc/clustering-server
     - docker login $CI_REGISTRY --username gitlab-ci-token --password $CI_BUILD_TOKEN
 
   script:
-      - (cd simdoc/simdoc-server && docker build --pull -t $CI_REGISTRY_IMAGE:clustering-$CI_BUILD_TAG .)
+      - (cd simdoc/clustering-server && docker build --pull -t $CI_REGISTRY_IMAGE:clustering-$CI_BUILD_TAG .)
       - docker push $CI_REGISTRY_IMAGE:clustering-$CI_BUILD_TAG
 #  only:
 #     - tags
