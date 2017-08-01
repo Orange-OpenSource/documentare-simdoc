@@ -25,4 +25,6 @@ Start the simdoc library integration test: `make integration-test`
 
 # Docker installation
 
-Do not use the docker package provided by your distribution. Follow following installation instructions: https://docs.docker.com/engine/installation/linux/docker-ce/debian/
+Do not use the docker package provided by your distribution. Follow installation instructions here: https://docs.docker.com/engine/installation/linux/docker-ce/debian/
+
+If you use docker behind a proxy, you will need to configure it: https://docs.docker.com/engine/admin/systemd/#httphttps-proxy
