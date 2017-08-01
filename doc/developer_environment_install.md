@@ -7,7 +7,7 @@ Please follow the installation instructions provided in the `Install.md` documen
 
 First install the following dependencies on your debian/ubuntu system: `sudo apt-get install git make maven openjdk-8-jdk-headless devscripts libgvc6 libopencv-core2.4v5 libopencv2.4-java imagemagick`
 
-NB: on ubuntu, replace `libopencv-core2.4v5` by `libopencv-core2.4`
+NB: on ubuntu trusty, replace `libopencv-core2.4v5` by `libopencv-core2.4`
 
 # How to build & package
 
