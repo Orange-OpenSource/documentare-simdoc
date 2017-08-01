@@ -11,6 +11,8 @@ NB: on ubuntu trusty, replace `libopencv-core2.4v5` by `libopencv-core2.4`
 
 # How to build & package
 
+Clone the repository : `git clone https://github.com/Orange-OpenSource/documentare-simdoc.git`
+
 Complete build as in the continuous integration: `./.ci.sh`
 => that is tha way to check that your installation is complete and works correctly
 
