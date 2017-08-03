@@ -36,7 +36,7 @@ class KillAllTasks {
       buildFeignRequest(url)
         .killAllTasks();
     } catch (FeignException f) {
-      log.warn("Service {} can not handle tasks status {} when {}", url, f.status(), f.getMessage());
+      log.warn("Request kill-all-tasks on Service {} failed with status {}", url, f.status());
     }
   }
 
