@@ -21,6 +21,9 @@ build:
 integration-test:
 	(cd simdoc/apps/ && ./refIntegrationTest.sh)
 
+tar:
+	tar cvf documentare-simdoc-${VERSION}.tar *.jar usr ../simdoc*.deb
+
 # Build debian package
 deb:
 	dch -v ${VERSION} "git update, version ${VERSION}"
