@@ -10,8 +10,11 @@ package com.orange.documentare.app.ncdremote;
  */
 
 import feign.Feign;
+import feign.FeignException;
 import feign.RequestLine;
+import lombok.extern.slf4j.Slf4j;
 
+@Slf4j
 class KillAllTasks {
   interface IKillAllTasks {
     @RequestLine("POST /kill-all-tasks")
@@ -29,8 +32,12 @@ class KillAllTasks {
   }
 
   private static void kill(String url) {
-    buildFeignRequest(url)
-    .killAllTasks();
+    try {
+      buildFeignRequest(url)
+        .killAllTasks();
+    } catch (FeignException f) {
+      log.warn("Service {} can not handle tasks status {} when {}", url, f.status(), f.getMessage());
+    }
   }
 
   private static IKillAllTasks buildFeignRequest(String url) {
